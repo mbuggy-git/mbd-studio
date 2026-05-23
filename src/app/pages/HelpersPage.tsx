@@ -1,31 +1,21 @@
-import { useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
-import { Download, FileText, Eye } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
-import cheatSheetImage from "../../imports/MBD-AImodel-Cheat-Sheet.png";
+import cheatSheetPdf from "../../imports/MBD-AIModel-CheatSheet.pdf";
 
 export function HelpersPage() {
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [currentAsset, setCurrentAsset] = useState<any>(null);
-
   const assets = [
     {
       title: "MBD AI Model Cheat Sheet",
       description: "A comprehensive guide to AI models and their applications. Quick reference for understanding different AI architectures and use cases.",
-      fileUrl: cheatSheetImage,
-      fileName: "MBD-AImodel-Cheat-Sheet.png",
-      fileType: "Image",
-      fileSize: "~1 MB"
+      fileUrl: cheatSheetPdf,
+      fileName: "MBD-AIModel-CheatSheet.pdf",
+      fileType: "PDF",
+      fileSize: "~900 KB"
     }
   ];
-
-  const handleView = (asset: any) => {
-    setCurrentAsset(asset);
-    setLightboxOpen(true);
-  };
 
   const handleDownload = (fileUrl: string, fileName: string) => {
     const link = document.createElement('a');
@@ -72,11 +62,11 @@ export function HelpersPage() {
                 </CardHeader>
                 <CardContent>
                   <Button
-                    onClick={() => handleView(asset)}
+                    onClick={() => handleDownload(asset.fileUrl, asset.fileName)}
                     className="w-full bg-[#5928CB] hover:bg-[#5928CB]/90 text-white"
                   >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View
+                    <Download className="w-4 h-4 mr-2" />
+                    Download PDF
                   </Button>
                 </CardContent>
               </Card>
@@ -95,32 +85,6 @@ export function HelpersPage() {
         </div>
       </div>
       <Footer />
-
-      {/* Lightbox */}
-      {currentAsset && (
-        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-          <DialogContent className="max-w-[800px] w-[800px]" aria-describedby={undefined}>
-            <DialogHeader>
-              <DialogTitle>{currentAsset.title}</DialogTitle>
-            </DialogHeader>
-            <div className="relative">
-              <img
-                src={currentAsset.fileUrl}
-                alt={currentAsset.title}
-                className="w-full h-auto max-h-[70vh] object-contain"
-              />
-            </div>
-            <DialogFooter>
-              <div className="flex gap-2 w-full justify-end">
-                <Button onClick={() => handleDownload(currentAsset.fileUrl, currentAsset.fileName)}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
-              </div>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }
