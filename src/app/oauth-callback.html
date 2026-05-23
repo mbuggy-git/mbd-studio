@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Authorization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>Completing Authorization...</h2>
+        <p id="status">Processing OAuth response...</p>
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        (function() {
+            const statusEl = document.getElementById('status');
+            const errorEl = document.getElementById('error');
+            
+            try {
+                // Parse URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const error = urlParams.get('error');
+                
+                if (error) {
+                    console.error('OAuth error:', error);
+                    statusEl.textContent = 'Authorization failed';
+                    errorEl.textContent = `Error: ${error}`;
+                    errorEl.style.display = 'block';
+                    
+                    // Store error in localStorage for parent window
+                    try {
+                        localStorage.setItem('youtube_oauth_error', error);
+                    } catch (e) {
+                        console.error('Failed to store error in localStorage:', e);
+                    }
+                    
+                    // Close window after delay
+                    setTimeout(() => {
+                        window.close();
+                        // If window.close() didn't work, show a message
+                        setTimeout(() => {
+                            statusEl.textContent = 'You can close this window';
+                        }, 500);
+                    }, 2000);
+                    return;
+                }
+                
+                if (!code) {
+                    console.error('No authorization code received');
+                    statusEl.textContent = 'No authorization code received';
+                    errorEl.textContent = 'Authorization was cancelled or failed';
+                    errorEl.style.display = 'block';
+                    
+                    // Close window after delay
+                    setTimeout(() => {
+                        window.close();
+                        setTimeout(() => {
+                            statusEl.textContent = 'You can close this window';
+                        }, 500);
+                    }, 2000);
+                    return;
+                }
+                
+                console.log('✅ Authorization code received!');
+                statusEl.textContent = 'Authorization successful! Closing window...';
+                
+                // Store the code in localStorage for the parent window to pick up
+                try {
+                    localStorage.setItem('youtube_oauth_code', code);
+                    console.log('✅ Code stored in localStorage');
+                } catch (e) {
+                    console.error('Failed to store code in localStorage:', e);
+                    errorEl.textContent = 'Failed to store authorization code';
+                    errorEl.style.display = 'block';
+                }
+                
+                // Close the window after a brief delay
+                setTimeout(() => {
+                    console.log('Attempting to close window...');
+                    window.close();
+                    
+                    // If window.close() didn't work (it might not in some browsers)
+                    // show a message after a delay
+                    setTimeout(() => {
+                        statusEl.textContent = 'Authorization complete! You can close this window.';
+                    }, 500);
+                }, 1000);
+                
+            } catch (err) {
+                console.error('Error processing OAuth callback:', err);
+                statusEl.textContent = 'Error processing authorization';
+                errorEl.textContent = err.message || 'Unknown error occurred';
+                errorEl.style.display = 'block';
+                
+                setTimeout(() => {
+                    window.close();
+                    setTimeout(() => {
+                        statusEl.textContent = 'You can close this window';
+                    }, 500);
+                }, 2000);
+            }
+        })();
+    </script>
+</body>
+</html>
