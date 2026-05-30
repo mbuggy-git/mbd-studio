@@ -5,9 +5,15 @@ import lpSpread2 from "../../assets/lp-spread2.png";
 import aiHandbookCover from "../../assets/AI-handbook-cover.png";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
+import { projectId, publicAnonKey } from "../utils/supabase/info";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Prefer build-time env vars (VITE_SUPABASE_*), but fall back to the public
+// project constants committed in info.tsx so checkout works even when the
+// Vercel build has no .env.local. Both values are public/anon — safe to ship.
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL || `https://${projectId}.supabase.co`;
+const SUPABASE_ANON_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY || publicAnonKey;
 
 const includes = [
   "63-page PDF handbook",
