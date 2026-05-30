@@ -13,10 +13,12 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { HelpersPage } from "./pages/HelpersPage";
 import { DownloadsPage } from "./pages/DownloadsPage";
 import { Toaster } from "./components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App() {
   return (
     <BrowserRouter basename="/">
+      <Analytics />
       <Toaster />
       <Routes>
         <Route path="/" element={<HomePage />} />

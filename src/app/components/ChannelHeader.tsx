@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { track } from "@vercel/analytics";
 import Container from "../imports/Container-2049-38";
 import aiWorkflowHomeImage from "../../assets/ai-workflow-home-image.png";
 
@@ -31,6 +32,7 @@ export function ChannelHeader({ channelData, channelUrl }: ChannelHeaderProps) {
       </div>
       <Link
         to="/get-the-goods/ai-workflows"
+        onClick={() => track("home_banner_click", { banner: "ai-workflows" })}
         className="relative block w-full aspect-[1000/450] xl:w-auto xl:h-[223.975px] xl:aspect-[1000/450] xl:shrink-0 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105"
         aria-label="Explore AI workflows"
       >
