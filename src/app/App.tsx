@@ -3,6 +3,8 @@ import { HomePage } from "./pages/HomePage";
 import { TrainingPage } from "./pages/TrainingPage";
 import { ContactPage } from "./pages/ContactPage";
 import { GetTheGoodsPage } from "./pages/GetTheGoodsPage";
+import { AiWorkflowsPage } from "./pages/AiWorkflowsPage";
+import { ThankYouPage } from "./pages/ThankYouPage";
 import { VidPodStudioPage } from "./pages/VidPodStudioPage";
 import { TubeLabPage } from "./pages/TubeLabPage";
 import { OAuthCallbackPage } from "./pages/OAuthCallbackPage";
@@ -23,6 +25,8 @@ export default function App() {
         <Route path="/training" element={<TrainingPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/get-the-goods" element={<GetTheGoodsPage />} />
+        <Route path="/get-the-goods/ai-workflows" element={<AiWorkflowsPage />} />
+        <Route path="/thank-you" element={<ThankYouPage />} />
         <Route path="/vidpod" element={<VidPodStudioPage />} />
         <Route path="/app" element={<TubeLabPage />} />
         <Route path="/helpers" element={<HelpersPage />} />
