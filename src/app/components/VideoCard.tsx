@@ -81,7 +81,7 @@ export function VideoCard({ video, onClick }: VideoCardProps) {
           </div>
         </div>
         <div className="p-4">
-          <h3 className="line-clamp-2 mb-2 transition-colors font-[DM_Sans] text-[16px] font-bold" style={{ color: '#5816dd' }}>
+          <h3 className="line-clamp-2 mb-2 transition-colors text-[16px] font-bold" style={{ color: '#5816dd' }}>
             {video.snippet.title}
           </h3>
           <div className="flex items-center justify-between text-muted-foreground">

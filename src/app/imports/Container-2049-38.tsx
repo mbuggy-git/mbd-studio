@@ -1,26 +1,21 @@
 import svgPaths from "./svg-va07a6z3m6";
 import imgContainer from "figma:asset/c18032896c669b52257857422397d61b2796421f.png";
-import imgMbdBkndDark3 from "figma:asset/d347e35eeef9c4b77c4a69ee3fea9e166951b330.png";
-import { imgMbdBkndDark2 } from "./svg-b2nep";
+import mbdStudioLogo from "../../assets/MBD-studio-logo-wht.svg";
 import { Link } from "react-router-dom";
 
 function H() {
   return (
-    <div className="absolute h-[47.25px] left-[0.12px] top-[0.9px] w-[360.977px]" data-name="H">
-      <p className="absolute font-['DM_Sans:Bold',sans-serif] font-bold leading-[47.25px] left-0 text-[31.5px] text-white top-0 whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Unleash Your Creativity
-      </p>
-    </div>
+    <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-tight text-[24px] sm:text-[28px] xl:text-[24px] 2xl:text-[28px] text-white" style={{ fontVariationSettings: "'opsz' 14" }} data-name="H">
+      Design smarter and faster.
+    </p>
   );
 }
 
 function P() {
   return (
-    <div className="absolute h-[42px] left-[0.12px] top-[51.98px] w-[557px]" data-name="P">
-      <p className="absolute font-['DM_Sans:Medium',sans-serif] font-medium leading-[21px] left-0 text-[14px] text-[rgba(255,255,255,0.95)] top-0 w-[557px]" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Learn how to make your design process faster, and discover how design applications work together. Master these tools, and you can focus on unleashing your creativity.
-      </p>
-    </div>
+    <p className="font-['DM_Sans:Medium',sans-serif] font-medium leading-[20px] text-[14px] text-[rgba(255,255,255,0.95)]" style={{ fontVariationSettings: "'opsz' 14" }} data-name="P">
+      AI workflows and design tutorials to help you unleash your creativity.
+    </p>
   );
 }
 
@@ -82,7 +77,7 @@ function GetTheGoodsButton() {
   return (
     <Link
       to="/get-the-goods"
-      className="absolute bg-[rgba(255,93,228,0.95)] h-[41.984px] left-0 rounded-[8.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[159.961px] hover:opacity-90 transition-opacity cursor-pointer"
+      className="relative block bg-[rgba(255,93,228,0.95)] h-[41.984px] rounded-[8.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] w-[159.961px] hover:opacity-90 transition-opacity cursor-pointer"
       data-name="Link"
     >
       <Paragraph />
@@ -91,106 +86,29 @@ function GetTheGoodsButton() {
   );
 }
 
-function ContactStudioParagraph() {
-  return (
-    <div className="absolute h-[21px] left-[21px] top-[10.61px] w-[120px]" data-name="Paragraph">
-      <p className="absolute font-['DM_Sans:Medium',sans-serif] font-medium leading-[21px] left-0 text-[14px] text-white top-0 whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Contact the Studio
-      </p>
-    </div>
-  );
-}
-
-function ContactTheStudioButton() {
-  return (
-    <Link
-      to="/training"
-      className="absolute bg-[#22A8E1] h-[41.984px] left-[175px] rounded-[8.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[185px] hover:opacity-90 transition-opacity cursor-pointer"
-      data-name="ContactLink"
-    >
-      <ContactStudioParagraph />
-    </Link>
-  );
-}
-
-function Container3() {
-  return (
-    <div className="absolute h-[41.984px] left-[0.12px] top-[114.85px] w-[559px]" data-name="Container3">
-      <GetTheGoodsButton />
-      <ContactTheStudioButton />
-    </div>
-  );
-}
-
-function Container2() {
-  return (
-    <div className="absolute h-[157px] left-[197px] top-0 w-[560px]" data-name="Container2">
-      <H />
-      <P />
-      <Container3 />
-    </div>
-  );
-}
-
-function Group() {
-  return (
-    <div className="absolute inset-[0_0_24.7%_0]" data-name="Group">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 131.376 55.3291">
-        <g id="Group">
-          <path d={svgPaths.p23e32000} fill="var(--fill-0, white)" id="Vector" />
-          <path d={svgPaths.p35faa300} fill="var(--fill-0, white)" id="Vector_2" />
-          <path d={svgPaths.pb037100} fill="var(--fill-0, white)" id="Vector_3" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Group1() {
-  return (
-    <div className="absolute inset-[79.99%_29.56%_0_29.64%]" data-name="Group">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 216.654 59.4284">
-        <g id="Group">
-          <path d={svgPaths.p32cf9780} fill="var(--fill-0, white)" id="Vector" />
-          <path d={svgPaths.p2ad8f000} fill="var(--fill-0, white)" id="Vector_2" />
-          <path d={svgPaths.p36ba7980} fill="var(--fill-0, white)" id="Vector_3" />
-          <path d={svgPaths.p2c03c380} fill="var(--fill-0, white)" id="Vector_4" />
-          <path d={svgPaths.p3f43e00} fill="var(--fill-0, white)" id="Vector_5" />
-          <path d={svgPaths.p3b4eba80} fill="var(--fill-0, white)" id="Vector_6" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function MbdStudioLight() {
-  return (
-    <div className="absolute contents left-0 top-px drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]" data-name="mbd-studio-light">
-      <div className="absolute h-[166.152px] left-[-30.21px] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-position-[30.21px_7.429px] mask-size-[156px_156px] top-[-6.43px] w-[195.124px]" data-name="mbd-bknd-dark 2" style={{ maskImage: `url('${imgMbdBkndDark2}')` }}>
-        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgMbdBkndDark3} />
-      </div>
-      <div className="absolute inset-[22.72%_81.04%_30.48%_1.6%] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-position-[-12.133px_-34.667px] mask-size-[156px_156px] overflow-clip" data-name="MBD-logo-wht" style={{ maskImage: `url('${imgMbdBkndDark2}')` }}>
-        <Group />
-        <Group1 />
-      </div>
-      
-    </div>
-  );
-}
-
 function Container1() {
   return (
-    <div className="h-[157px] relative shrink-0 w-[757px]" data-name="Container1">
-      <Container2 />
-      <MbdStudioLight />
+    <div className="h-full relative shrink-0 w-full max-w-[757px] flex flex-col xl:flex-row items-center xl:items-center gap-4 xl:gap-6" data-name="Container1">
+      <img
+        src={mbdStudioLogo}
+        alt="mbd studio"
+        className="shrink-0 h-[90px] sm:h-[110px] xl:h-[130px] 2xl:h-[150px] w-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]"
+      />
+      <div className="flex flex-col justify-center gap-2 flex-1 min-w-0 w-full items-start" data-name="Container2">
+        <H />
+        <P />
+        <div className="pt-1">
+          <GetTheGoodsButton />
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function Container() {
   return (
-    <div className="content-stretch flex flex-col items-center justify-center overflow-clip p-[30px] relative rounded-[8.75px] size-full" data-name="Container">
-      <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[8.75px] size-full" src={imgContainer} />
+    <div className="content-stretch flex flex-col items-center justify-center overflow-clip p-[24px] sm:p-[30px] relative size-full" data-name="Container">
+      <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgContainer} />
       <Container1 />
     </div>
   );

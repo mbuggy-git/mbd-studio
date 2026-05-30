@@ -45,8 +45,8 @@ export function Navigation({ variant = 'default', currentPage }: NavigationProps
   
   const activePage = getCurrentPage();
   const isGradient = variant === 'gradient';
-  const navClasses = isGradient 
-    ? "w-full py-12" 
+  const navClasses = isGradient
+    ? "w-full py-6 border-b border-white/20"
     : "w-full py-6 border-b border-border";
   
   const getLinkClasses = (pageKey: string) => {
