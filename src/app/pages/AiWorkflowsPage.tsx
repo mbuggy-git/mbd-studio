@@ -98,10 +98,10 @@ export function AiWorkflowsPage() {
             />
           </div>
 
-          {/* 3. First CTA — "Download now for $19 USD" + button */}
+          {/* 3. First CTA — "Download now for $9.95 USD" + button */}
           <div className="text-center mb-20 lg:mb-28">
             <p className="text-white text-lg font-bold mb-4">
-              Download now for $19 USD
+              Download now for $9.95 USD
             </p>
             <HandbookButton />
           </div>
@@ -160,7 +160,7 @@ export function AiWorkflowsPage() {
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                 <HandbookButton />
-                <span className="text-white text-xl font-bold">$19 USD</span>
+                <span className="text-white text-xl font-bold">$9.95 USD</span>
               </div>
             </div>
           </div>

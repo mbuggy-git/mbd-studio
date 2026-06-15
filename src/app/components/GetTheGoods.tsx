@@ -18,7 +18,7 @@ const products: Product[] = [
     slug: "ai-workflows",
     image: aiHandbookCover,
     imageAlt: "New AI Workflows — A Creative Handbook for Designers",
-    price: "$19",
+    price: "$9.95 USD",
     title: "New AI Workflows",
     subtitle: "A Creative Handbook for Designers",
     description:
