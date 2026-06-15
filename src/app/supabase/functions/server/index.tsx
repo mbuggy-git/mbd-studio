@@ -7,6 +7,11 @@ const app = new Hono();
 // SERVER VERSION: v2.8.0 - Added automatic retry logic for YouTube API 500/503 errors with exponential backoff
 console.log("🚀 SERVER STARTING - VERSION 2.8.0");
 
+// Google OAuth client ID for the YouTube authorization flow.
+// Single source of truth — referenced by all OAuth handlers below.
+// Client ID is public (it ships in the auth URL); the secret stays in YOUTUBE_OAUTH_CLIENT_SECRET env var.
+const YOUTUBE_OAUTH_CLIENT_ID = "430888277505-u2rj0hok39fd0nh3t2n83hrkfovosim1.apps.googleusercontent.com";
+
 // Helper function to retry KV operations with exponential backoff
 async function retryKvOperation<T>(
   operation: () => Promise<T>,
@@ -1190,9 +1195,11 @@ app.delete("/make-server-6ab9c767/videos/:videoId", async (c) => {
 // OAuth: Get authorization URL
 app.get("/make-server-6ab9c767/oauth/youtube-analytics/auth-url", async (c) => {
   try {
-    const CLIENT_ID = "430888277505-u2rj0hok39fd0nh3t2n83hrkfovosim1.apps.googleusercontent.com";
+    const CLIENT_ID = YOUTUBE_OAUTH_CLIENT_ID;
     const originHeader = c.req.header("origin");
-    const redirectUri = `${originHeader || "https://figma-make-app.com"}/oauth-callback.html`;
+    // If no Origin header is present (non-browser caller), fall back to the production app domain.
+    // This was previously a stale figma-make-app.com default from the Figma Make export.
+    const redirectUri = `${originHeader || "https://tubelab.app"}/oauth-callback.html`;
     
     console.log("=== GENERATING OAUTH URL ===");
     console.log("Origin header received:", originHeader);
@@ -1221,7 +1228,7 @@ app.get("/make-server-6ab9c767/oauth/youtube-analytics/auth-url", async (c) => {
 app.post("/make-server-6ab9c767/oauth/youtube-analytics/callback", async (c) => {
   try {
     const { code, redirectUri } = await c.req.json();
-    const CLIENT_ID = "430888277505-u2rj0hok39fd0nh3t2n83hrkfovosim1.apps.googleusercontent.com";
+    const CLIENT_ID = YOUTUBE_OAUTH_CLIENT_ID;
     const CLIENT_SECRET = Deno.env.get("YOUTUBE_OAUTH_CLIENT_SECRET");
     
     // Get userId from Authorization header
@@ -1600,7 +1607,7 @@ async function getValidAccessToken(userId: string) {
   // Check if token is expired or will expire in next 5 minutes
   if (Date.now() >= tokens.expiresAt - (5 * 60 * 1000)) {
     // Refresh token
-    const CLIENT_ID = "430888277505-u2rj0hok39fd0nh3t2n83hrkfovosim1.apps.googleusercontent.com";
+    const CLIENT_ID = YOUTUBE_OAUTH_CLIENT_ID;
     const CLIENT_SECRET = Deno.env.get("YOUTUBE_OAUTH_CLIENT_SECRET");
     
     console.log("🔄 Access token expired, refreshing...");
