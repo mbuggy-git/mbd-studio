@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import titleImage from "figma:asset/928688118246c11022dd32ad61b41c1dc858b9d5.png";
 import aiHandbookCover from "../../assets/AI-handbook-cover.png";
+import claudeBookCover from "../../assets/claude-book-cover.png";
 import { Navigation } from "./Navigation";
 
 interface Product {
@@ -23,6 +24,16 @@ const products: Product[] = [
     subtitle: "A Creative Handbook for Designers",
     description:
       "A handbook to help you get more creative control over your AI workflows. 63 pages, 6 cheat sheets, plus example prompts.",
+  },
+  {
+    slug: "figma-to-claude",
+    image: claudeBookCover,
+    imageAlt: "Claude & Me — How to Switch From Figma Make to Claude Code",
+    price: "$9.95 USD",
+    title: "Claude & Me",
+    subtitle: "How to Switch From Figma Make to Claude Code",
+    description:
+      "Learn how to switch from Figma Make to Claude Code and never look back. See how Claude.ai and Claude Code can become your strategist and builder while you stay focused on what you do best: design.",
   },
 ];
 
