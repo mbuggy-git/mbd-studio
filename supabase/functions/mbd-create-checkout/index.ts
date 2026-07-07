@@ -7,6 +7,16 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+// Product slug → env var name that holds the Stripe price ID.
+// Adding a product: add a slug here and set the matching env var in Supabase.
+const PRICE_ENV_BY_SLUG: Record<string, string> = {
+  "ai-workflows": "MBD_STRIPE_PRICE_ID",
+  "figma-to-claude": "MBD_STRIPE_PRICE_ID_CLAUDE",
+};
+
+// Used when the request has no body — keeps the older AI Workflows page working.
+const DEFAULT_SLUG = "ai-workflows";
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -15,10 +25,28 @@ serve(async (req) => {
 
   try {
     const stripeSecretKey = Deno.env.get("MBD_STRIPE_SECRET_KEY");
-    const priceId = Deno.env.get("MBD_STRIPE_PRICE_ID");
-
-    if (!stripeSecretKey || !priceId) {
+    if (!stripeSecretKey) {
       throw new Error("Missing required environment variables");
+    }
+
+    // Pick the product the caller asked for, falling back to ai-workflows
+    // if the body is missing, malformed, or names an unknown slug.
+    let slug = DEFAULT_SLUG;
+    try {
+      const body = await req.json();
+      if (typeof body?.slug === "string" && PRICE_ENV_BY_SLUG[body.slug]) {
+        slug = body.slug;
+      }
+    } catch {
+      // No JSON body — that's fine, use the default.
+    }
+
+    const priceEnvName = PRICE_ENV_BY_SLUG[slug];
+    const priceId = Deno.env.get(priceEnvName);
+    if (!priceId) {
+      throw new Error(
+        `No Stripe price configured for product "${slug}" (expected env var ${priceEnvName})`
+      );
     }
 
     const stripe = new Stripe(stripeSecretKey, {
@@ -39,14 +67,14 @@ serve(async (req) => {
         },
       ],
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/get-the-goods/ai-workflows`,
+      cancel_url: `${origin}/get-the-goods/${slug}`,
       // Collect customer email so we can send the download link
       customer_email: undefined, // Stripe will prompt for it
       consent_collection: {
         promotions: "auto",
       },
       metadata: {
-        product_slug: "ai-workflows",
+        product_slug: slug,
       },
     });
 

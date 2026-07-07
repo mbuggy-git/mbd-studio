@@ -2,6 +2,31 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
+// Product slug → delivery details.
+// Adding a product: drop a new entry here and upload the matching PDF
+// to the mbd-products Storage bucket.
+const PRODUCTS: Record<string, {
+  pdfPath: string;
+  title: string;
+  emailSubject: string;
+  ctaLabel: string;
+}> = {
+  "ai-workflows": {
+    pdfPath: "MBD-studio-AI-Workflow-Handbook.pdf",
+    title: "New AI Workflows: A Creative Handbook for Designers",
+    emailSubject: "Your New AI Workflows handbook is ready",
+    ctaLabel: "Download your handbook →",
+  },
+  "figma-to-claude": {
+    pdfPath: "MBD-studio-Claude-and-Me.pdf",
+    title: "Claude & Me: How to Switch From Figma Make to Claude Code",
+    emailSubject: "Your Claude & Me guide is ready",
+    ctaLabel: "Download your guide →",
+  },
+};
+
+const DEFAULT_SLUG = "ai-workflows";
+
 serve(async (req) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
@@ -71,7 +96,7 @@ serve(async (req) => {
     }
 
     const customerEmail = session.customer_details?.email || session.customer_email;
-    const productSlug = session.metadata?.product_slug || "ai-workflows";
+    const productSlug = session.metadata?.product_slug || DEFAULT_SLUG;
     const amountPaid = session.amount_total || 0;
     const currency = session.currency || "usd";
     // Marketing consent collected via consent_collection.promotions on the
@@ -83,12 +108,16 @@ serve(async (req) => {
       throw new Error("No customer email on session");
     }
 
+    // Resolve product details, falling back to the default if the slug is
+    // unknown (defensive — should never happen since mbd-create-checkout
+    // also enforces an allowlist).
+    const product = PRODUCTS[productSlug] || PRODUCTS[DEFAULT_SLUG];
+
     // Generate a signed download URL valid for 7 days
-    const pdfPath = "MBD-studio-AI-Workflow-Handbook.pdf";
     const { data: signedUrlData, error: signedUrlError } = await supabase
       .storage
       .from("mbd-products")
-      .createSignedUrl(pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
+      .createSignedUrl(product.pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
 
     if (signedUrlError || !signedUrlData?.signedUrl) {
       throw new Error(`Failed to create signed URL: ${signedUrlError?.message}`);
@@ -119,10 +148,10 @@ serve(async (req) => {
       <html>
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
           <h1 style="color: #1a1a1a;">Thanks for your purchase!</h1>
-          <p>Your copy of <strong>New AI Workflows: A Creative Handbook for Designers</strong> is ready to download.</p>
+          <p>Your copy of <strong>${product.title}</strong> is ready to download.</p>
           <p style="margin: 32px 0;">
             <a href="${downloadUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
-              Download your handbook →
+              ${product.ctaLabel}
             </a>
           </p>
           <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
@@ -144,7 +173,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "MBD Studio <hello@mbd.studio>",
         to: customerEmail,
-        subject: "Your New AI Workflows handbook is ready",
+        subject: product.emailSubject,
         html: emailHtml,
       }),
     });
