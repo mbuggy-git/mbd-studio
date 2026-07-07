@@ -41,6 +41,62 @@ password manager — never in the repo):
 - `MBD_SUPABASE_SERVICE_ROLE_KEY` — lets the webhook write the table + sign URLs
 - `MBD_RESEND_API_KEY` — Resend
 
+## The Stripe integration in detail
+
+Stripe owns the payment UX end to end — the site never touches card data. Only
+two points of contact exist, both in the Edge Functions:
+
+**1. Creating the Checkout Session** (`mbd-create-checkout`). Anatomy of the
+session it creates:
+
+- `mode: "payment"`, card only, single line item, `quantity: 1`.
+- The price comes from the per-product secret — the amount itself lives in
+  Stripe, never in code.
+- `success_url: <origin>/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+  `cancel_url: <origin>/get-the-goods/<slug>` (back to the product page).
+- Buyer's email: Stripe prompts for it on the checkout page (we pass nothing).
+- `consent_collection.promotions: "auto"` — Stripe shows a marketing-consent
+  checkbox where legally required; the answer lands in `mbd_purchases.marketing_opt_in`.
+- `metadata.product_slug` — **the load-bearing field.** It's how the webhook
+  knows which PDF to deliver. Every product must set it.
+- API version is pinned (`2024-11-20.acacia`) with `stripe@14.21.0` via esm.sh
+  in both functions — keep the two in lockstep if ever upgrading.
+
+**2. Receiving the webhook** (`mbd-stripe-webhook`). One endpoint in the
+Stripe Dashboard (Developers → Webhooks) points at
+`https://agzfmgsgcfngpzbcfsbh.supabase.co/functions/v1/mbd-stripe-webhook`,
+subscribed to `checkout.session.completed` only. Its signing secret is the
+`MBD_STRIPE_WEBHOOK_SECRET` Supabase secret — if the endpoint is ever recreated,
+Stripe issues a new signing secret and that Supabase secret must be updated to
+match, or every delivery will fail signature verification. The function
+verifies the signature on every request and answers 200 to event types it
+doesn't handle so Stripe doesn't retry them.
+
+**Changing a price** (done once, June 2026: $19 → $9.95 — that's the precedent):
+
+1. Stripe prices are immutable — create a *new* price on the product in the
+   Stripe Dashboard.
+2. Repoint the secret: `npx supabase secrets set MBD_STRIPE_PRICE_ID_<PRODUCT>=price_new`.
+   Functions pick up secret changes automatically; no redeploy needed.
+3. Update the *displayed* price by hand — the catalog card in
+   `GetTheGoods.tsx` and every mention on the product page. Site copy is
+   hardcoded; only the Stripe checkout page shows the real price, so a mismatch
+   here is easy to miss.
+
+**Refunds** are pure Stripe Dashboard actions — the webhook ignores refund
+events, so the `mbd_purchases` row stays (fine: it's a log, not an
+entitlement system).
+
+**Monitoring / debugging:** the webhook endpoint's page in the Stripe
+Dashboard lists every delivery attempt with request/response bodies, and
+retries failures for ~3 days. Failed deliveries there + Supabase function logs
+are the two places to look when a buyer says "no email".
+
+**Test mode:** the secrets hold live keys only. Wiring up Stripe test mode
+would need a parallel set of test-key secrets and a test webhook endpoint —
+not worth it at this scale. The practical full-loop test is a self-purchase
+followed by a Dashboard refund.
+
 ## Launch checklist for the next product
 
 Pick a slug first (kebab-case, e.g. `motion-basics`) — it's the URL, the Stripe
