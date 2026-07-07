@@ -4,6 +4,7 @@ import { Download, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import cheatSheetPdf from "../../imports/MBD-AIModel-CheatSheet.pdf";
+import illustrationStylesPdf from "../../imports/MBDstudio-Illustration-styles.pdf";
 
 export function HelpersPage() {
   const assets = [
@@ -14,6 +15,14 @@ export function HelpersPage() {
       fileName: "MBD-AIModel-CheatSheet.pdf",
       fileType: "PDF",
       fileSize: "~900 KB"
+    },
+    {
+      title: "MBD Studio Illustration Styles",
+      description: "Download this list of illustration styles to get creative when generating vectors in Illustrator.",
+      fileUrl: illustrationStylesPdf,
+      fileName: "MBDstudio-Illustration-styles.pdf",
+      fileType: "PDF",
+      fileSize: "~600 KB"
     }
   ];
 
