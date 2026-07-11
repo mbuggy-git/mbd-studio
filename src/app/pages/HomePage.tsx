@@ -110,7 +110,7 @@ export function HomePage() {
         <Navigation currentPage="home" />
         <div className="max-w-7xl mx-auto px-6 lg:mx-[75px] lg:max-w-none">
           <a 
-            href="https://tubelab.app" 
+            href="https://tubelab.app/?utm_source=mbd_studio&utm_medium=banner&utm_campaign=homepage_banner"
             target="_blank" 
             rel="noopener noreferrer"
             className="block hover:opacity-90 transition-opacity mb-6 h-[68px]"
