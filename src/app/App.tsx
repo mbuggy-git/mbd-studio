@@ -15,8 +15,12 @@ import { HelpersPage } from "./pages/HelpersPage";
 import { DownloadsPage } from "./pages/DownloadsPage";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { useEffect } from "react";
+import { reportUtmClick } from "./utils/utmBeacon";
 
 export default function App() {
+  // Count utm_-tagged arrivals ourselves (Vercel's UTM reporting is paywalled).
+  useEffect(() => { reportUtmClick(); }, []);
   return (
     <BrowserRouter basename="/">
       <Analytics />
