@@ -1,5 +1,6 @@
 import { isAuthenticated } from "../_lib/auth.js";
 import {
+  fetchActiveProjectIds,
   fetchUninvoicedSummary,
   fetchUninvoicedTimeEntries,
   validateDateRange,
@@ -33,9 +34,10 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const activeProjectIds = await fetchActiveProjectIds();
     const [summary, entries] = await Promise.all([
-      fetchUninvoicedSummary(range.from, range.to),
-      fetchUninvoicedTimeEntries(range.from, range.to),
+      fetchUninvoicedSummary(range.from, range.to, activeProjectIds),
+      fetchUninvoicedTimeEntries(range.from, range.to, activeProjectIds),
     ]);
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json({

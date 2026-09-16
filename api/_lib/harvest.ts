@@ -40,8 +40,33 @@ export interface PortalSummary {
   currency: string;
 }
 
+// Active (non-archived) project IDs for the configured client. Archived
+// projects are treated as settled, whatever their invoice linkage in Harvest
+// (fixed-fee projects never link time entries to invoices).
+export async function fetchActiveProjectIds(): Promise<Set<number>> {
+  const clientId = requireEnv("HARVEST_CLIENT_ID");
+  const ids = new Set<number>();
+  let page = 1;
+  for (;;) {
+    const data = await harvestGet("/projects", {
+      client_id: clientId,
+      is_active: "true",
+      page: String(page),
+      per_page: "100",
+    });
+    for (const p of data.projects ?? []) ids.add(p.id);
+    if (!data.next_page) break;
+    page = data.next_page;
+  }
+  return ids;
+}
+
 // Uninvoiced report: summary totals for the configured client only.
-export async function fetchUninvoicedSummary(from: string, to: string): Promise<PortalSummary> {
+export async function fetchUninvoicedSummary(
+  from: string,
+  to: string,
+  activeProjectIds: Set<number>
+): Promise<PortalSummary> {
   const clientId = Number(requireEnv("HARVEST_CLIENT_ID"));
   let page = 1;
   let hours = 0;
@@ -55,7 +80,7 @@ export async function fetchUninvoicedSummary(from: string, to: string): Promise<
       per_page: "1000",
     });
     for (const row of data.results ?? []) {
-      if (row.client_id === clientId) {
+      if (row.client_id === clientId && activeProjectIds.has(row.project_id)) {
         hours += row.uninvoiced_hours ?? 0;
         amount += row.uninvoiced_amount ?? 0;
         if (row.currency) currency = row.currency;
@@ -69,7 +94,11 @@ export async function fetchUninvoicedSummary(from: string, to: string): Promise<
 
 // Unbilled time entries for the configured client, newest first.
 // Only the fields the dashboard needs are returned — no rates, no other clients.
-export async function fetchUninvoicedTimeEntries(from: string, to: string): Promise<PortalTimeEntry[]> {
+export async function fetchUninvoicedTimeEntries(
+  from: string,
+  to: string,
+  activeProjectIds: Set<number>
+): Promise<PortalTimeEntry[]> {
   const clientId = requireEnv("HARVEST_CLIENT_ID");
   const entries: PortalTimeEntry[] = [];
   let page = 1;
@@ -86,6 +115,7 @@ export async function fetchUninvoicedTimeEntries(from: string, to: string): Prom
       // Defense in depth: only billable, unbilled entries for the configured client.
       if (String(e.client?.id) !== String(clientId) || e.is_billed) continue;
       if (e.billable === false) continue;
+      if (!activeProjectIds.has(e.project?.id)) continue;
       entries.push({
         date: e.spent_date,
         project: e.project?.name ?? "",
