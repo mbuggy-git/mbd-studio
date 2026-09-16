@@ -44,7 +44,7 @@ const COLUMNS: { key: SortKey; label: string; align?: "right" }[] = [
   { key: "date", label: "Date" },
   { key: "project", label: "Project" },
   { key: "task", label: "Task" },
-  { key: "description", label: "Description" },
+  { key: "description", label: "Notes" },
   { key: "hours", label: "Hours", align: "right" },
 ];
 
@@ -243,19 +243,21 @@ export function ClientPortalPage() {
           </div>
         )}
 
-        {/* Summary cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6">
-            <p className="text-sm text-gray-500">Current Uninvoiced Hours</p>
-            <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
-              {loading ? "—" : `${data?.summary.hours ?? 0} hrs`}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6">
-            <p className="text-sm text-gray-500">Current Uninvoiced Total</p>
-            <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
-              {loading ? "—" : currencyFormat.format(data?.summary.amount ?? 0)}
-            </p>
+        {/* Summary card */}
+        <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mb-12">
+          <div className="grid grid-cols-2 divide-x divide-gray-100">
+            <div className="pr-6">
+              <p className="text-sm text-gray-500">Current Uninvoiced Hours</p>
+              <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
+                {loading ? "—" : `${data?.summary.hours ?? 0} hrs`}
+              </p>
+            </div>
+            <div className="pl-6">
+              <p className="text-sm text-gray-500">Current Uninvoiced Total</p>
+              <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
+                {loading ? "—" : currencyFormat.format(data?.summary.amount ?? 0)}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -283,17 +285,6 @@ export function ClientPortalPage() {
             No uninvoiced time in this period.
           </p>
         ) : (
-          <>
-          {taskTotals.length > 0 && (
-            <div className="mb-6 flex flex-wrap gap-x-8 gap-y-2 border-b border-gray-100 pb-5">
-              {taskTotals.map(([task, hours]) => (
-                <div key={task} className="text-sm">
-                  <span className="text-gray-500">{task}</span>{" "}
-                  <span className="font-bold text-gray-900">{hours.toFixed(2)} hrs</span>
-                </div>
-              ))}
-            </div>
-          )}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -335,9 +326,32 @@ export function ClientPortalPage() {
               </tbody>
             </table>
           </div>
-          </>
         )}
         </div>
+
+        {/* Task totals */}
+        {!loading && data && taskTotals.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mt-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Task Totals</h2>
+            <div>
+              {taskTotals.map(([task, hours]) => (
+                <div
+                  key={task}
+                  className="flex items-baseline justify-between py-3 border-b border-gray-100 text-sm"
+                >
+                  <span className="text-gray-600">{task}</span>
+                  <span className="text-gray-900">{hours.toFixed(2)} hrs</span>
+                </div>
+              ))}
+              <div className="flex items-baseline justify-between pt-4 text-sm">
+                <span className="font-bold text-gray-900">Total</span>
+                <span className="font-bold text-gray-900">
+                  {(data.summary.hours ?? 0).toFixed(2)} hrs · {currencyFormat.format(data.summary.amount ?? 0)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       <footer className="border-t border-white/20">
