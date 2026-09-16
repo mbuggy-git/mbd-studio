@@ -7,6 +7,7 @@ interface PortalEntry {
   task: string;
   description: string;
   hours: number;
+  amount?: number;
 }
 
 interface PortalData {
@@ -83,9 +84,14 @@ export function ClientPortalPage() {
 
   const taskTotals = useMemo(() => {
     if (!data) return [];
-    const totals = new Map<string, number>();
-    for (const e of data.entries) totals.set(e.task, (totals.get(e.task) ?? 0) + e.hours);
-    return [...totals.entries()].sort((a, b) => b[1] - a[1]);
+    const totals = new Map<string, { hours: number; amount: number }>();
+    for (const e of data.entries) {
+      const t = totals.get(e.task) ?? { hours: 0, amount: 0 };
+      t.hours += e.hours;
+      t.amount += e.amount ?? 0;
+      totals.set(e.task, t);
+    }
+    return [...totals.entries()].sort((a, b) => b[1].hours - a[1].hours);
   }, [data]);
 
   const load = useCallback(
@@ -261,6 +267,29 @@ export function ClientPortalPage() {
           </div>
         </div>
 
+        {/* Task totals */}
+        {!loading && data && taskTotals.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Task Totals</h2>
+            <div>
+              {taskTotals.map(([task, t], i) => (
+                <div
+                  key={task}
+                  className={`flex items-baseline justify-between gap-4 py-3 text-sm ${
+                    i < taskTotals.length - 1 ? "border-b border-gray-100" : ""
+                  }`}
+                >
+                  <span className="text-gray-600">{task}</span>
+                  <span className="whitespace-nowrap text-gray-900">
+                    {t.hours.toFixed(2)} hrs ·{" "}
+                    <span className="font-bold">{currencyFormat.format(t.amount)}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Time entries */}
         <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8">
         <div className="flex items-baseline justify-between mb-4">
@@ -328,30 +357,6 @@ export function ClientPortalPage() {
           </div>
         )}
         </div>
-
-        {/* Task totals */}
-        {!loading && data && taskTotals.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mt-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Task Totals</h2>
-            <div>
-              {taskTotals.map(([task, hours]) => (
-                <div
-                  key={task}
-                  className="flex items-baseline justify-between py-3 border-b border-gray-100 text-sm"
-                >
-                  <span className="text-gray-600">{task}</span>
-                  <span className="text-gray-900">{hours.toFixed(2)} hrs</span>
-                </div>
-              ))}
-              <div className="flex items-baseline justify-between pt-4 text-sm">
-                <span className="font-bold text-gray-900">Total</span>
-                <span className="font-bold text-gray-900">
-                  {(data.summary.hours ?? 0).toFixed(2)} hrs · {currencyFormat.format(data.summary.amount ?? 0)}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
 
       <footer className="border-t border-white/20">

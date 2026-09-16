@@ -32,6 +32,7 @@ export interface PortalTimeEntry {
   task: string;
   description: string;
   hours: number;
+  amount: number;
 }
 
 export interface PortalSummary {
@@ -116,12 +117,16 @@ export async function fetchUninvoicedTimeEntries(
       if (String(e.client?.id) !== String(clientId) || e.is_billed) continue;
       if (e.billable === false) continue;
       if (!activeProjectIds.has(e.project?.id)) continue;
+      const hours = e.rounded_hours ?? e.hours ?? 0;
       entries.push({
         date: e.spent_date,
         project: e.project?.name ?? "",
         task: e.task?.name ?? "",
         description: e.notes ?? "",
-        hours: e.rounded_hours ?? e.hours ?? 0,
+        hours,
+        // Billable rate is what the client is charged (not the internal cost
+        // rate) — used for per-task cost totals on the dashboard.
+        amount: round2(hours * (e.billable_rate ?? 0)),
       });
     }
     if (!data.next_page) break;
