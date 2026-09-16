@@ -5,5 +5,10 @@ export default async function handler(req: any, res: any) {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
-  res.status(200).json({ authenticated: isAuthenticated(req) });
+  // Temporary diagnostics while debugging the deploy — remove once stable.
+  try {
+    res.status(200).json({ authenticated: isAuthenticated(req) });
+  } catch (err: any) {
+    res.status(500).json({ diag: String(err?.message ?? err) });
+  }
 }
