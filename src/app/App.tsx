@@ -13,6 +13,8 @@ import { YouTubeSetupPage } from "./pages/YouTubeSetupPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { HelpersPage } from "./pages/HelpersPage";
 import { DownloadsPage } from "./pages/DownloadsPage";
+import { ClientLoginPage } from "./pages/ClientLoginPage";
+import { ClientPortalPage } from "./pages/ClientPortalPage";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect } from "react";
@@ -41,6 +43,8 @@ export default function App() {
         <Route path="/downloads" element={<DownloadsPage />} />
         <Route path="/youtube-setup" element={<YouTubeSetupPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/client" element={<ClientPortalPage />} />
+        <Route path="/client/login" element={<ClientLoginPage />} />
         <Route path="/video-database" element={<Navigate to="/app" replace />} />
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/oauth-callback.html" element={<OAuthCallbackPage />} />
