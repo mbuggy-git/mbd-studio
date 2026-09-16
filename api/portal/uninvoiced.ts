@@ -1,9 +1,9 @@
-import { isAuthenticated } from "../_lib/auth";
+import { isAuthenticated } from "../_lib/auth.js";
 import {
   fetchUninvoicedSummary,
   fetchUninvoicedTimeEntries,
   validateDateRange,
-} from "../_lib/harvest";
+} from "../_lib/harvest.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "GET") {
