@@ -22,6 +22,16 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
+  if (range.empty) {
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({
+      summary: { hours: 0, amount: 0, currency: "USD" },
+      entries: [],
+      lastUpdated: new Date().toISOString(),
+    });
+    return;
+  }
+
   try {
     const [summary, entries] = await Promise.all([
       fetchUninvoicedSummary(range.from, range.to),

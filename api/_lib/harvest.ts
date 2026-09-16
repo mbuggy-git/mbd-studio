@@ -106,7 +106,10 @@ function round2(n: number): number {
 }
 
 // Date validation: YYYY-MM-DD, real dates, from <= to, span <= 365 days (Harvest report limit).
-export function validateDateRange(from: unknown, to: unknown): { from: string; to: string } | { error: string } {
+export function validateDateRange(
+  from: unknown,
+  to: unknown
+): { from: string; to: string; empty?: boolean } | { error: string } {
   const pattern = /^\d{4}-\d{2}-\d{2}$/;
   if (typeof from !== "string" || !pattern.test(from)) return { error: "Invalid 'from' date" };
   if (typeof to !== "string" || !pattern.test(to)) return { error: "Invalid 'to' date" };
@@ -117,5 +120,13 @@ export function validateDateRange(from: unknown, to: unknown): { from: string; t
   if (fromDate > toDate) return { error: "'from' must be on or before 'to'" };
   const days = (toDate.getTime() - fromDate.getTime()) / 86400000;
   if (days > 365) return { error: "Date range cannot exceed 365 days" };
+  // Hours tracked before the hourly arrangement began (billed as fixed-price
+  // projects) are never linked to invoices in Harvest, so they'd show as
+  // "uninvoiced" forever. PORTAL_EARLIEST_DATE clamps them out server-side.
+  const earliest = process.env.PORTAL_EARLIEST_DATE;
+  if (earliest && pattern.test(earliest)) {
+    if (to < earliest) return { from: earliest, to: earliest, empty: true };
+    if (from < earliest) return { from: earliest, to };
+  }
   return { from, to };
 }
