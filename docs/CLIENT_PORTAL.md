@@ -108,3 +108,11 @@ set and the deploy is live, send the client:
 - To change the client's password: re-run the hash script, update
   `CLIENT_PASSWORD_HASH` on Vercel, redeploy (env changes need a redeploy).
 - To revoke access instantly: rotate `SESSION_SECRET` (invalidates all sessions).
+
+## Fixed-price-era hours
+
+Time tracked while billing was per-project is never linked to an invoice in
+Harvest, so the API reports it as "uninvoiced" forever. Set the optional
+`PORTAL_EARLIEST_DATE` env var (YYYY-MM-DD, the day hourly billing started) and
+the portal clamps every query to that date server-side — older entries can
+never appear, regardless of the date filter.
