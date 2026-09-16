@@ -38,6 +38,16 @@ function presetRange(preset: Preset): { from: string; to: string } {
 
 const CLIENT_NAME = "Design in Mind";
 
+type SortKey = "date" | "project" | "task" | "description" | "hours";
+
+const COLUMNS: { key: SortKey; label: string; align?: "right" }[] = [
+  { key: "date", label: "Date" },
+  { key: "project", label: "Project" },
+  { key: "task", label: "Task" },
+  { key: "description", label: "Description" },
+  { key: "hours", label: "Hours", align: "right" },
+];
+
 const PRESETS: { key: Preset; label: string }[] = [
   { key: "this-month", label: "This Month" },
   { key: "last-month", label: "Last Month" },
@@ -54,6 +64,29 @@ export function ClientPortalPage() {
   const [data, setData] = useState<PortalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "date", dir: -1 });
+
+  function toggleSort(key: SortKey) {
+    setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: key === "date" || key === "hours" ? -1 : 1 }));
+  }
+
+  const sortedEntries = useMemo(() => {
+    if (!data) return [];
+    const { key, dir } = sort;
+    return [...data.entries].sort((a, b) => {
+      const av = a[key];
+      const bv = b[key];
+      if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+      return String(av).localeCompare(String(bv)) * dir;
+    });
+  }, [data, sort]);
+
+  const taskTotals = useMemo(() => {
+    if (!data) return [];
+    const totals = new Map<string, number>();
+    for (const e of data.entries) totals.set(e.task, (totals.get(e.task) ?? 0) + e.hours);
+    return [...totals.entries()].sort((a, b) => b[1] - a[1]);
+  }, [data]);
 
   const load = useCallback(
     async (fromDate: string, toDate: string) => {
@@ -250,19 +283,43 @@ export function ClientPortalPage() {
             No uninvoiced time in this period.
           </p>
         ) : (
+          <>
+          {taskTotals.length > 0 && (
+            <div className="mb-6 flex flex-wrap gap-x-8 gap-y-2 border-b border-gray-100 pb-5">
+              {taskTotals.map(([task, hours]) => (
+                <div key={task} className="text-sm">
+                  <span className="text-gray-500">{task}</span>{" "}
+                  <span className="font-bold text-gray-900">{hours.toFixed(2)} hrs</span>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 text-left text-xs uppercase tracking-wider text-gray-400">
-                  <th className="py-3 pr-4 font-medium">Date</th>
-                  <th className="py-3 pr-4 font-medium">Project</th>
-                  <th className="py-3 pr-4 font-medium">Task</th>
-                  <th className="py-3 pr-4 font-medium">Description</th>
-                  <th className="py-3 text-right font-medium">Hours</th>
+                  {COLUMNS.map((col) => (
+                    <th
+                      key={col.key}
+                      className={`py-3 font-medium ${col.align === "right" ? "text-right" : "pr-4"}`}
+                    >
+                      <button
+                        onClick={() => toggleSort(col.key)}
+                        className={`uppercase tracking-wider hover:text-gray-600 transition ${
+                          sort.key === col.key ? "text-gray-700" : ""
+                        }`}
+                      >
+                        {col.label}
+                        <span className="inline-block w-3 text-[#5928CB]">
+                          {sort.key === col.key ? (sort.dir === 1 ? "▲" : "▼") : ""}
+                        </span>
+                      </button>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {data.entries.map((entry, i) => (
+                {sortedEntries.map((entry, i) => (
                   <tr key={i} className="border-b border-gray-100">
                     <td className="py-3 pr-4 whitespace-nowrap text-gray-600">
                       {dateFormat.format(new Date(`${entry.date}T00:00:00`))}
@@ -278,6 +335,7 @@ export function ClientPortalPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
         </div>
       </main>
