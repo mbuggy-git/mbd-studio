@@ -5,6 +5,7 @@ import {
   recordLoginFailure,
   sessionCookie,
   verifyPassword,
+  type SessionRole,
 } from "../_lib/auth.js";
 
 export default async function handler(req: any, res: any) {
@@ -15,7 +16,11 @@ export default async function handler(req: any, res: any) {
 
   const configuredEmail = process.env.CLIENT_LOGIN_EMAIL;
   const configuredHash = process.env.CLIENT_PASSWORD_HASH;
-  if (!configuredEmail || !configuredHash || !process.env.SESSION_SECRET) {
+  const adminEmail = process.env.ADMIN_LOGIN_EMAIL;
+  const adminHash = process.env.ADMIN_PASSWORD_HASH;
+  const clientConfigured = Boolean(configuredEmail && configuredHash);
+  const adminConfigured = Boolean(adminEmail && adminHash);
+  if ((!clientConfigured && !adminConfigured) || !process.env.SESSION_SECRET) {
     res.status(500).json({ error: "Portal is not configured" });
     return;
   }
@@ -35,15 +40,28 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const emailOk = email.trim().toLowerCase() === configuredEmail.trim().toLowerCase();
-  const passwordOk = verifyPassword(password, configuredHash);
-  if (!emailOk || !passwordOk) {
+  const normalized = email.trim().toLowerCase();
+  let role: SessionRole | null = null;
+  if (
+    adminConfigured &&
+    normalized === adminEmail!.trim().toLowerCase() &&
+    verifyPassword(password, adminHash!)
+  ) {
+    role = "admin";
+  } else if (
+    clientConfigured &&
+    normalized === configuredEmail!.trim().toLowerCase() &&
+    verifyPassword(password, configuredHash!)
+  ) {
+    role = "client";
+  }
+  if (!role) {
     recordLoginFailure(ip);
     res.status(401).json({ error: "Incorrect email or password" });
     return;
   }
 
   clearLoginFailures(ip);
-  res.setHeader("Set-Cookie", sessionCookie(createSessionToken()));
-  res.status(200).json({ ok: true });
+  res.setHeader("Set-Cookie", sessionCookie(createSessionToken(role)));
+  res.status(200).json({ ok: true, role });
 }

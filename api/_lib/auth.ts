@@ -21,28 +21,35 @@ function sign(payload: string): string {
   return b64url(createHmac("sha256", getSessionSecret()).update(payload).digest());
 }
 
-export function createSessionToken(): string {
+export type SessionRole = "client" | "admin";
+
+export function createSessionToken(role: SessionRole = "client"): string {
   const payload = b64url(
-    Buffer.from(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS }))
+    Buffer.from(
+      JSON.stringify({ exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS, role })
+    )
   );
   return `${payload}.${sign(payload)}`;
 }
 
-export function verifySessionToken(token: string | undefined): boolean {
-  if (!token) return false;
+// Returns the session's role, or null if the token is missing/invalid/expired.
+// Tokens issued before roles existed have no role field and count as "client".
+export function verifySessionToken(token: string | undefined): SessionRole | null {
+  if (!token) return null;
   const dot = token.lastIndexOf(".");
-  if (dot <= 0) return false;
+  if (dot <= 0) return null;
   const payload = token.slice(0, dot);
   const sig = token.slice(dot + 1);
   const expected = sign(payload);
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
   try {
-    const { exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    return typeof exp === "number" && exp > Math.floor(Date.now() / 1000);
+    const { exp, role } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (typeof exp !== "number" || exp <= Math.floor(Date.now() / 1000)) return null;
+    return role === "admin" ? "admin" : "client";
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -79,8 +86,12 @@ export function readSessionToken(req: { headers: Record<string, string | string[
   return undefined;
 }
 
-export function isAuthenticated(req: { headers: Record<string, string | string[] | undefined> }): boolean {
+export function getSessionRole(req: { headers: Record<string, string | string[] | undefined> }): SessionRole | null {
   return verifySessionToken(readSessionToken(req));
+}
+
+export function isAuthenticated(req: { headers: Record<string, string | string[] | undefined> }): boolean {
+  return getSessionRole(req) !== null;
 }
 
 // Password hashes use the format: scrypt:<saltHex>:<hashHex>

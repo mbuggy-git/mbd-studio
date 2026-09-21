@@ -13,9 +13,17 @@ Harvest; it's only the back-end data source.
 - **Backend:** Vercel serverless functions in `api/portal/` —
   `login`, `logout`, `session`, and `uninvoiced` (the Harvest proxy).
   Shared helpers live in `api/_lib/` (underscore-prefixed = not exposed as endpoints).
-- **Auth:** single client account. Email + scrypt password hash live in env vars.
+- **Auth:** two accounts, both defined by env vars: a client account
+  (`CLIENT_LOGIN_EMAIL` / `CLIENT_PASSWORD_HASH`, locked to `HARVEST_CLIENT_ID`)
+  and an optional admin account (`ADMIN_LOGIN_EMAIL` / `ADMIN_PASSWORD_HASH`).
   A successful login sets a signed, HttpOnly, SameSite=Lax session cookie
-  (Secure in production), valid 7 days. All Harvest data requests require it.
+  (Secure in production), valid 7 days, carrying the account's role. All Harvest
+  data requests require it.
+- **Admin role:** an admin session gets a "Viewing client" dropdown on the portal
+  (fed by admin-only `/api/portal/clients`, listing active Harvest clients) and may
+  pass `?client=<id>` to `/api/portal/uninvoiced` to view any client's numbers.
+  Client sessions cannot choose a client — the param is ignored for them, and the
+  `PORTAL_EARLIEST_DATE` clamp applies only when viewing the default client.
 - **Harvest:** all calls happen server-side using `HARVEST_ACCESS_TOKEN` +
   `HARVEST_ACCOUNT_ID`. Data is filtered to `HARVEST_CLIENT_ID` (unbilled,
   billable entries only) and stripped down to date / project / task /
@@ -51,6 +59,13 @@ node scripts/hash-portal-password.mjs "the-password-you-give-the-client"
 ```
 
 Copy the `scrypt:...` output → `CLIENT_PASSWORD_HASH`.
+
+### 3b. Admin login (optional)
+
+Pick your own admin email → `ADMIN_LOGIN_EMAIL`, and hash a password the same
+way → `ADMIN_PASSWORD_HASH`. Signing in with these at `/client/login` gives an
+admin session with a client switcher that can view any active Harvest client.
+Leave both unset to disable the admin login.
 
 ### 4. Session secret
 
