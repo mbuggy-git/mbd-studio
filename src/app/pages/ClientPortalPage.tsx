@@ -16,6 +16,12 @@ interface PortalData {
   lastUpdated: string;
 }
 
+interface ToDateData {
+  tasks: { task: string; hours: number; amount: number }[];
+  hours: number;
+  amount: number;
+}
+
 type Preset = "this-month" | "last-month" | "this-year" | "custom";
 
 function toISODate(d: Date): string {
@@ -38,6 +44,11 @@ function presetRange(preset: Preset): { from: string; to: string } {
 }
 
 const CLIENT_NAME = "Design in Mind";
+
+interface PortalClient {
+  id: number;
+  name: string;
+}
 
 type SortKey = "date" | "project" | "task" | "description" | "hours";
 
@@ -63,9 +74,13 @@ export function ClientPortalPage() {
   const [from, setFrom] = useState(defaultRange.from);
   const [to, setTo] = useState(defaultRange.to);
   const [data, setData] = useState<PortalData | null>(null);
+  const [toDate, setToDate] = useState<ToDateData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "date", dir: -1 });
+  const [role, setRole] = useState<"client" | "admin" | null>(null);
+  const [clients, setClients] = useState<PortalClient[]>([]);
+  const [clientId, setClientId] = useState<number | null>(null);
 
   function toggleSort(key: SortKey) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: key === "date" || key === "hours" ? -1 : 1 }));
@@ -95,12 +110,13 @@ export function ClientPortalPage() {
   }, [data]);
 
   const load = useCallback(
-    async (fromDate: string, toDate: string) => {
+    async (fromDate: string, toDate: string, client: number | null = null) => {
       setLoading(true);
       setError(null);
       try {
+        const clientParam = client != null ? `&client=${client}` : "";
         const res = await fetch(
-          `/api/portal/uninvoiced?from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}`
+          `/api/portal/uninvoiced?from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}${clientParam}`
         );
         if (res.status === 401) {
           navigate("/client/login", { replace: true });
@@ -120,9 +136,76 @@ export function ClientPortalPage() {
     [navigate]
   );
 
+  // To-date totals ignore the date filter — reload only when the viewed client changes.
+  const loadToDate = useCallback(async (client: number | null = null) => {
+    setToDate(null);
+    try {
+      const clientParam = client != null ? `?client=${client}` : "";
+      const res = await fetch(`/api/portal/todate${clientParam}`);
+      if (res.ok) setToDate(await res.json());
+    } catch {
+      // Non-critical card — the rest of the portal still works without it.
+    }
+  }, []);
+
+  // Resolve the session role first; admins also need the client list before loading data.
   useEffect(() => {
-    load(defaultRange.from, defaultRange.to);
-  }, [load, defaultRange]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const session = await fetch("/api/portal/session")
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null);
+        if (cancelled) return;
+        if (session && !session.authenticated) {
+          navigate("/client/login", { replace: true });
+          return;
+        }
+        if (session?.role === "admin") {
+          const data = await fetch("/api/portal/clients")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null);
+          if (cancelled) return;
+          if (data?.clients?.length) {
+            setClients(data.clients);
+            const preferred =
+              data.defaultId && data.clients.some((c: PortalClient) => c.id === data.defaultId)
+                ? data.defaultId
+                : data.clients[0].id;
+            setClientId(preferred);
+          } else {
+            setError("Could not load the client list right now.");
+            setLoading(false);
+          }
+          setRole("admin");
+        } else {
+          setRole("client");
+        }
+      } catch {
+        if (!cancelled) setRole("client");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
+
+  // Client sessions load once the role resolves; admin sessions load per selected client.
+  useEffect(() => {
+    if (role === "client") {
+      load(defaultRange.from, defaultRange.to);
+      loadToDate();
+    }
+  }, [role, load, loadToDate, defaultRange]);
+
+  useEffect(() => {
+    if (role === "admin" && clientId != null) {
+      load(from, to, clientId);
+      loadToDate(clientId);
+    }
+    // Reload only when the selected client changes — from/to are handled by the filter handlers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, clientId, load]);
 
   function selectPreset(p: Preset) {
     setPreset(p);
@@ -130,7 +213,7 @@ export function ClientPortalPage() {
       const range = presetRange(p);
       setFrom(range.from);
       setTo(range.to);
-      load(range.from, range.to);
+      load(range.from, range.to, clientId);
     }
   }
 
@@ -145,7 +228,7 @@ export function ClientPortalPage() {
       setError("Date range cannot exceed 365 days.");
       return;
     }
-    load(from, to);
+    load(from, to, clientId);
   }
 
   async function handleSignOut() {
@@ -189,7 +272,30 @@ export function ClientPortalPage() {
       </header>
 
       <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-10">
-        <h2 className="text-3xl font-bold tracking-tight text-white mb-8">{CLIENT_NAME}</h2>
+        {role === "admin" ? (
+          <div className="mb-8">
+            <label
+              htmlFor="portal-client"
+              className="block text-xs uppercase tracking-[0.2em] text-white/80 mb-2"
+            >
+              Viewing client
+            </label>
+            <select
+              id="portal-client"
+              value={clientId ?? ""}
+              onChange={(e) => setClientId(Number(e.target.value))}
+              className="rounded-lg bg-white px-4 py-2.5 text-xl font-bold tracking-tight text-gray-900"
+            >
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-8">{CLIENT_NAME}</h2>
+        )}
 
         {/* Date filter */}
         <div className="flex flex-wrap items-center gap-2 mb-8">
@@ -286,6 +392,37 @@ export function ClientPortalPage() {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Project to date */}
+        {toDate && toDate.tasks.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mb-8">
+            <div className="flex items-baseline justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900">Project to Date</h2>
+              <p className="text-xs text-gray-400">All billed &amp; unbilled work</p>
+            </div>
+            <div>
+              {toDate.tasks.map(({ task, hours, amount }) => (
+                <div
+                  key={task}
+                  className="flex items-baseline justify-between gap-4 py-3 text-sm border-b border-gray-100"
+                >
+                  <span className="text-gray-600">{task}</span>
+                  <span className="whitespace-nowrap text-gray-900">
+                    {hours.toFixed(2)} hrs ·{" "}
+                    <span className="font-bold">{currencyFormat.format(amount)}</span>
+                  </span>
+                </div>
+              ))}
+              <div className="flex items-baseline justify-between gap-4 pt-3 text-sm">
+                <span className="font-bold text-gray-900">Total to date</span>
+                <span className="whitespace-nowrap font-bold text-gray-900">
+                  {toDate.hours.toFixed(2)} hrs ·{" "}
+                  {currencyFormat.format(toDate.amount)}
+                </span>
+              </div>
             </div>
           </div>
         )}
