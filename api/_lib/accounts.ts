@@ -32,15 +32,21 @@ const ACCOUNT_DEFS = [
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+// Env values are trimmed so a stray space or newline pasted into Vercel
+// doesn't silently disable an account.
+function env(name: string): string | undefined {
+  return process.env[name]?.trim() || undefined;
+}
+
 // Accounts with a login email, password hash, and Harvest client ID all set.
 export function configuredAccounts(): PortalAccount[] {
   const accounts: PortalAccount[] = [];
   for (const def of ACCOUNT_DEFS) {
-    const email = process.env[def.email];
-    const passwordHash = process.env[def.hash];
-    const clientId = process.env[def.clientId];
+    const email = env(def.email);
+    const passwordHash = env(def.hash);
+    const clientId = env(def.clientId);
     if (!email || !passwordHash || !clientId || !/^\d+$/.test(clientId)) continue;
-    const earliest = process.env[def.earliest];
+    const earliest = env(def.earliest);
     accounts.push({
       key: def.key,
       name: def.name,
@@ -51,6 +57,24 @@ export function configuredAccounts(): PortalAccount[] {
     });
   }
   return accounts;
+}
+
+// Which account env vars are missing or malformed — names only, never values.
+// Logged on failed logins to diagnose configuration problems.
+export function accountConfigProblems(): Record<string, string[]> {
+  const problems: Record<string, string[]> = {};
+  for (const def of ACCOUNT_DEFS) {
+    const list: string[] = [];
+    if (!env(def.email)) list.push(`${def.email} missing`);
+    const hash = env(def.hash);
+    if (!hash) list.push(`${def.hash} missing`);
+    else if (!/^scrypt:[0-9a-f]+:[0-9a-f]+$/.test(hash)) list.push(`${def.hash} malformed`);
+    const clientId = env(def.clientId);
+    if (!clientId) list.push(`${def.clientId} missing`);
+    else if (!/^\d+$/.test(clientId)) list.push(`${def.clientId} not a plain number`);
+    if (list.length) problems[def.key] = list;
+  }
+  return problems;
 }
 
 export function findAccount(key: string): PortalAccount | undefined {

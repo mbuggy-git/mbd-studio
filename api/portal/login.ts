@@ -7,7 +7,7 @@ import {
   verifyPassword,
   type SessionRole,
 } from "../_lib/auth.js";
-import { configuredAccounts } from "../_lib/accounts.js";
+import { accountConfigProblems, configuredAccounts } from "../_lib/accounts.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -58,6 +58,13 @@ export default async function handler(req: any, res: any) {
     }
   }
   if (!role) {
+    // Diagnostics only — no emails, passwords, or hashes are logged.
+    const emailMatch = accounts.find((a) => normalized === a.email.trim().toLowerCase());
+    console.warn("Portal login failed", {
+      configuredAccounts: accounts.map((a) => a.key),
+      emailMatchedAccount: emailMatch?.key ?? null,
+      configProblems: accountConfigProblems(),
+    });
     recordLoginFailure(ip);
     res.status(401).json({ error: "Incorrect email or password" });
     return;
