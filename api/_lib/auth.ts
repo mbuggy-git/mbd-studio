@@ -23,18 +23,24 @@ function sign(payload: string): string {
 
 export type SessionRole = "client" | "admin";
 
-export function createSessionToken(role: SessionRole = "client"): string {
+export interface Session {
+  role: SessionRole;
+  // Portal account key (see _lib/accounts.ts); meaningful for client sessions.
+  account: string;
+}
+
+export function createSessionToken(role: SessionRole = "client", account = "default"): string {
   const payload = b64url(
     Buffer.from(
-      JSON.stringify({ exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS, role })
+      JSON.stringify({ exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS, role, account })
     )
   );
   return `${payload}.${sign(payload)}`;
 }
 
-// Returns the session's role, or null if the token is missing/invalid/expired.
-// Tokens issued before roles existed have no role field and count as "client".
-export function verifySessionToken(token: string | undefined): SessionRole | null {
+// Returns the session, or null if the token is missing/invalid/expired.
+// Tokens issued before roles/accounts existed count as the default client account.
+export function verifySessionToken(token: string | undefined): Session | null {
   if (!token) return null;
   const dot = token.lastIndexOf(".");
   if (dot <= 0) return null;
@@ -45,9 +51,12 @@ export function verifySessionToken(token: string | undefined): SessionRole | nul
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
   try {
-    const { exp, role } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    const { exp, role, account } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
     if (typeof exp !== "number" || exp <= Math.floor(Date.now() / 1000)) return null;
-    return role === "admin" ? "admin" : "client";
+    return {
+      role: role === "admin" ? "admin" : "client",
+      account: typeof account === "string" ? account : "default",
+    };
   } catch {
     return null;
   }
@@ -86,8 +95,12 @@ export function readSessionToken(req: { headers: Record<string, string | string[
   return undefined;
 }
 
-export function getSessionRole(req: { headers: Record<string, string | string[] | undefined> }): SessionRole | null {
+export function getSession(req: { headers: Record<string, string | string[] | undefined> }): Session | null {
   return verifySessionToken(readSessionToken(req));
+}
+
+export function getSessionRole(req: { headers: Record<string, string | string[] | undefined> }): SessionRole | null {
+  return getSession(req)?.role ?? null;
 }
 
 export function isAuthenticated(req: { headers: Record<string, string | string[] | undefined> }): boolean {

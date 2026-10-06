@@ -169,7 +169,7 @@ export interface ToDateTotals {
 }
 
 // All billable time to date — invoiced and uninvoiced — grouped by task.
-// `from` clamps out the pre-hourly fixed-price era (PORTAL_EARLIEST_DATE);
+// `from` clamps out the pre-hourly fixed-price era (the account's earliest date);
 // omit it to include the client's full history.
 export async function fetchToDateTaskTotals(
   activeProjectIds: Set<number>,
@@ -217,13 +217,12 @@ function round2(n: number): number {
 }
 
 // Date validation: YYYY-MM-DD, real dates, from <= to, span <= 365 days (Harvest report limit).
-// applyEarliestClamp: PORTAL_EARLIEST_DATE marks when the default client's
-// hourly billing began; it only makes sense for that client, so admin views
-// of other clients skip the clamp.
+// earliest: the date the viewed client's hourly billing began, if configured
+// (PORTAL_EARLIEST_DATE / EXABEAM_EARLIEST_DATE — see _lib/accounts.ts).
 export function validateDateRange(
   from: unknown,
   to: unknown,
-  applyEarliestClamp = true
+  earliest?: string
 ): { from: string; to: string; empty?: boolean } | { error: string } {
   const pattern = /^\d{4}-\d{2}-\d{2}$/;
   if (typeof from !== "string" || !pattern.test(from)) return { error: "Invalid 'from' date" };
@@ -237,9 +236,8 @@ export function validateDateRange(
   if (days > 365) return { error: "Date range cannot exceed 365 days" };
   // Hours tracked before the hourly arrangement began (billed as fixed-price
   // projects) are never linked to invoices in Harvest, so they'd show as
-  // "uninvoiced" forever. PORTAL_EARLIEST_DATE clamps them out server-side.
-  const earliest = process.env.PORTAL_EARLIEST_DATE;
-  if (applyEarliestClamp && earliest && pattern.test(earliest)) {
+  // "uninvoiced" forever. The earliest date clamps them out server-side.
+  if (earliest && pattern.test(earliest)) {
     if (to < earliest) return { from: earliest, to: earliest, empty: true };
     if (from < earliest) return { from: earliest, to };
   }

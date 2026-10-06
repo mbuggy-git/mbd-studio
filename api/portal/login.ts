@@ -7,6 +7,7 @@ import {
   verifyPassword,
   type SessionRole,
 } from "../_lib/auth.js";
+import { configuredAccounts } from "../_lib/accounts.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -14,13 +15,11 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const configuredEmail = process.env.CLIENT_LOGIN_EMAIL;
-  const configuredHash = process.env.CLIENT_PASSWORD_HASH;
+  const accounts = configuredAccounts();
   const adminEmail = process.env.ADMIN_LOGIN_EMAIL;
   const adminHash = process.env.ADMIN_PASSWORD_HASH;
-  const clientConfigured = Boolean(configuredEmail && configuredHash);
   const adminConfigured = Boolean(adminEmail && adminHash);
-  if ((!clientConfigured && !adminConfigured) || !process.env.SESSION_SECRET) {
+  if ((!accounts.length && !adminConfigured) || !process.env.SESSION_SECRET) {
     res.status(500).json({ error: "Portal is not configured" });
     return;
   }
@@ -42,18 +41,21 @@ export default async function handler(req: any, res: any) {
 
   const normalized = email.trim().toLowerCase();
   let role: SessionRole | null = null;
+  let account = "default";
   if (
     adminConfigured &&
     normalized === adminEmail!.trim().toLowerCase() &&
     verifyPassword(password, adminHash!)
   ) {
     role = "admin";
-  } else if (
-    clientConfigured &&
-    normalized === configuredEmail!.trim().toLowerCase() &&
-    verifyPassword(password, configuredHash!)
-  ) {
-    role = "client";
+  } else {
+    const match = accounts.find(
+      (a) => normalized === a.email.trim().toLowerCase() && verifyPassword(password, a.passwordHash)
+    );
+    if (match) {
+      role = "client";
+      account = match.key;
+    }
   }
   if (!role) {
     recordLoginFailure(ip);
@@ -62,6 +64,6 @@ export default async function handler(req: any, res: any) {
   }
 
   clearLoginFailures(ip);
-  res.setHeader("Set-Cookie", sessionCookie(createSessionToken(role)));
+  res.setHeader("Set-Cookie", sessionCookie(createSessionToken(role, account)));
   res.status(200).json({ ok: true, role });
 }

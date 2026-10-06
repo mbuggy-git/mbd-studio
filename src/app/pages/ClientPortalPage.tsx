@@ -43,8 +43,6 @@ function presetRange(preset: Preset): { from: string; to: string } {
   return { from: `${now.getFullYear()}-01-01`, to: toISODate(now) };
 }
 
-const CLIENT_NAME = "Design in Mind";
-
 interface PortalClient {
   id: number;
   name: string;
@@ -81,6 +79,7 @@ export function ClientPortalPage() {
   const [role, setRole] = useState<"client" | "admin" | null>(null);
   const [clients, setClients] = useState<PortalClient[]>([]);
   const [clientId, setClientId] = useState<number | null>(null);
+  const [clientName, setClientName] = useState("");
 
   function toggleSort(key: SortKey) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: key === "date" || key === "hours" ? -1 : 1 }));
@@ -179,6 +178,7 @@ export function ClientPortalPage() {
           }
           setRole("admin");
         } else {
+          setClientName(session?.clientName ?? "");
           setRole("client");
         }
       } catch {
@@ -294,7 +294,7 @@ export function ClientPortalPage() {
             </select>
           </div>
         ) : (
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-8">{CLIENT_NAME}</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-8">{clientName}</h2>
         )}
 
         {/* Date filter */}

@@ -13,17 +13,19 @@ Harvest; it's only the back-end data source.
 - **Backend:** Vercel serverless functions in `api/portal/` —
   `login`, `logout`, `session`, and `uninvoiced` (the Harvest proxy).
   Shared helpers live in `api/_lib/` (underscore-prefixed = not exposed as endpoints).
-- **Auth:** two accounts, both defined by env vars: a client account
-  (`CLIENT_LOGIN_EMAIL` / `CLIENT_PASSWORD_HASH`, locked to `HARVEST_CLIENT_ID`)
-  and an optional admin account (`ADMIN_LOGIN_EMAIL` / `ADMIN_PASSWORD_HASH`).
+- **Auth:** one login per client, each defined by env vars and locked to that
+  client's Harvest client ID (Design in Mind: `CLIENT_LOGIN_EMAIL` /
+  `CLIENT_PASSWORD_HASH` / `HARVEST_CLIENT_ID`; Exabeam: the `EXABEAM_*` vars —
+  see `api/_lib/accounts.ts`), plus an optional admin account
+  (`ADMIN_LOGIN_EMAIL` / `ADMIN_PASSWORD_HASH`).
   A successful login sets a signed, HttpOnly, SameSite=Lax session cookie
   (Secure in production), valid 7 days, carrying the account's role. All Harvest
   data requests require it.
 - **Admin role:** an admin session gets a "Viewing client" dropdown on the portal
   (fed by admin-only `/api/portal/clients`, listing active Harvest clients) and may
   pass `?client=<id>` to `/api/portal/uninvoiced` to view any client's numbers.
-  Client sessions cannot choose a client — the param is ignored for them, and the
-  `PORTAL_EARLIEST_DATE` clamp applies only when viewing the default client.
+  Client sessions cannot choose a client — the param is ignored for them. Each
+  client's earliest-date clamp applies whenever that client is viewed.
 - **Harvest:** all calls happen server-side using `HARVEST_ACCESS_TOKEN` +
   `HARVEST_ACCOUNT_ID`. Data is filtered to `HARVEST_CLIENT_ID` (unbilled,
   billable entries only) and stripped down to date / project / task /
@@ -59,6 +61,20 @@ node scripts/hash-portal-password.mjs "the-password-you-give-the-client"
 ```
 
 Copy the `scrypt:...` output → `CLIENT_PASSWORD_HASH`.
+
+### 3a. Additional clients (Exabeam)
+
+Each client has its own login on the same portal URL, locked to its own Harvest
+client ID. Accounts are listed in `api/_lib/accounts.ts`. For Exabeam set:
+
+- `EXABEAM_LOGIN_EMAIL` — the email Exabeam signs in with
+- `EXABEAM_PASSWORD_HASH` — from the hash script above
+- `EXABEAM_HARVEST_CLIENT_ID` — Exabeam's client ID (found as in step 2)
+- `EXABEAM_EARLIEST_DATE` — optional, same as `PORTAL_EARLIEST_DATE` below
+
+An account is enabled only once its email, hash, and client ID are all set. To
+add another client later, add an entry to `ACCOUNT_DEFS` in `api/_lib/accounts.ts`
+with its own env var names.
 
 ### 3b. Admin login (optional)
 
