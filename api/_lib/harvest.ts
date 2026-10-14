@@ -59,13 +59,13 @@ export async function fetchClients(): Promise<{ id: number; name: string }[]> {
   return clients;
 }
 
-// Active (non-archived) project IDs for a client. Archived
-// projects are treated as settled, whatever their invoice linkage in Harvest
-// (fixed-fee projects never link time entries to invoices).
-export async function fetchActiveProjectIds(
+// Active (non-archived) projects for a client, for the portal's project filter.
+// Archived projects are treated as settled, whatever their invoice linkage in
+// Harvest (fixed-fee projects never link time entries to invoices).
+export async function fetchActiveProjects(
   clientId: string = requireEnv("HARVEST_CLIENT_ID")
-): Promise<Set<number>> {
-  const ids = new Set<number>();
+): Promise<{ id: number; name: string }[]> {
+  const projects: { id: number; name: string }[] = [];
   let page = 1;
   for (;;) {
     const data = await harvestGet("/projects", {
@@ -74,11 +74,78 @@ export async function fetchActiveProjectIds(
       page: String(page),
       per_page: "100",
     });
-    for (const p of data.projects ?? []) ids.add(p.id);
+    for (const p of data.projects ?? []) projects.push({ id: p.id, name: p.name ?? String(p.id) });
     if (!data.next_page) break;
     page = data.next_page;
   }
-  return ids;
+  projects.sort((a, b) => a.name.localeCompare(b.name));
+  return projects;
+}
+
+export async function fetchActiveProjectIds(
+  clientId: string = requireEnv("HARVEST_CLIENT_ID")
+): Promise<Set<number>> {
+  return new Set((await fetchActiveProjects(clientId)).map((p) => p.id));
+}
+
+// Narrows a client's active project IDs to one project when the portal's
+// project filter is set. Returns null for an id outside the client's projects,
+// so a request can never reach another client's project.
+export function scopeProjectIds(
+  activeProjectIds: Set<number>,
+  projectParam: unknown
+): Set<number> | null {
+  if (projectParam == null || projectParam === "") return activeProjectIds;
+  if (!/^\d+$/.test(String(projectParam))) return null;
+  const id = Number(projectParam);
+  return activeProjectIds.has(id) ? new Set([id]) : null;
+}
+
+export interface UnpaidSummary {
+  amount: number;
+  count: number;
+  currency: string;
+}
+
+// Sent-but-unpaid invoices (Harvest state "open") for one client, regardless of
+// date filter. With a project filter, each invoice contributes its line items
+// for that project, scaled by the share of the invoice still due.
+export async function fetchUnpaidInvoices(
+  clientId: string,
+  projectId?: number
+): Promise<UnpaidSummary> {
+  let amount = 0;
+  let count = 0;
+  let currency = "USD";
+  let page = 1;
+  for (;;) {
+    const data = await harvestGet("/invoices", {
+      client_id: clientId,
+      state: "open",
+      page: String(page),
+      per_page: "100",
+    });
+    for (const inv of data.invoices ?? []) {
+      if (String(inv.client?.id) !== String(clientId)) continue;
+      const due = inv.due_amount ?? 0;
+      if (due <= 0) continue;
+      let share = due;
+      if (projectId != null) {
+        const total = inv.amount ?? 0;
+        const projectAmount = (inv.line_items ?? [])
+          .filter((li: any) => li.project?.id === projectId)
+          .reduce((sum: number, li: any) => sum + (li.amount ?? 0), 0);
+        if (projectAmount <= 0 || total <= 0) continue;
+        share = projectAmount * (due / total);
+      }
+      amount += share;
+      count += 1;
+      if (inv.currency) currency = inv.currency;
+    }
+    if (!data.next_page) break;
+    page = data.next_page;
+  }
+  return { amount: round2(amount), count, currency };
 }
 
 // Uninvoiced report: summary totals for one client only.

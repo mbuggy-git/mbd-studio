@@ -45,6 +45,7 @@ export function ClientLoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#5928CB] to-[#F65CE1] flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
+          <img src="/mbd-circle.svg" alt="" className="h-14 w-14 mx-auto mb-3" />
           <h1 className="text-2xl font-bold tracking-tight text-white">MBD Studio</h1>
           <p className="mt-1 text-sm uppercase tracking-[0.2em] text-white/80">Client Portal</p>
         </div>

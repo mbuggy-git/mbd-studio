@@ -1,8 +1,9 @@
 import { resolvePortalClient } from "../_lib/accounts.js";
 import {
-  fetchActiveProjectIds,
+  fetchActiveProjects,
   fetchUninvoicedSummary,
   fetchUninvoicedTimeEntries,
+  scopeProjectIds,
   validateDateRange,
 } from "../_lib/harvest.js";
 
@@ -24,26 +25,35 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  if (range.empty) {
-    res.setHeader("Cache-Control", "no-store");
-    res.status(200).json({
-      summary: { hours: 0, amount: 0, currency: "USD" },
-      entries: [],
-      lastUpdated: new Date().toISOString(),
-    });
-    return;
-  }
-
   try {
-    const activeProjectIds = await fetchActiveProjectIds(clientId);
+    // `projects` (all of the client's active projects) feeds the project filter.
+    const projects = await fetchActiveProjects(clientId);
+    const projectIds = scopeProjectIds(new Set(projects.map((p) => p.id)), req.query?.project);
+    if (!projectIds) {
+      res.status(400).json({ error: "Invalid project" });
+      return;
+    }
+
+    if (range.empty) {
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).json({
+        summary: { hours: 0, amount: 0, currency: "USD" },
+        entries: [],
+        projects,
+        lastUpdated: new Date().toISOString(),
+      });
+      return;
+    }
+
     const [summary, entries] = await Promise.all([
-      fetchUninvoicedSummary(range.from, range.to, activeProjectIds, clientId),
-      fetchUninvoicedTimeEntries(range.from, range.to, activeProjectIds, clientId),
+      fetchUninvoicedSummary(range.from, range.to, projectIds, clientId),
+      fetchUninvoicedTimeEntries(range.from, range.to, projectIds, clientId),
     ]);
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json({
       summary,
       entries,
+      projects,
       lastUpdated: new Date().toISOString(),
     });
   } catch (err: any) {

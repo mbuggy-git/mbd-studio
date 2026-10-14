@@ -13,6 +13,7 @@ interface PortalEntry {
 interface PortalData {
   summary: { hours: number; amount: number; currency: string };
   entries: PortalEntry[];
+  projects?: { id: number; name: string }[];
   lastUpdated: string;
 }
 
@@ -20,6 +21,8 @@ interface ToDateData {
   tasks: { task: string; hours: number; amount: number }[];
   hours: number;
   amount: number;
+  // Sent-but-unpaid invoices; null when Harvest's invoices couldn't be read.
+  unpaid: { amount: number; count: number; currency: string } | null;
 }
 
 type Preset = "this-month" | "last-month" | "this-year" | "custom";
@@ -80,6 +83,8 @@ export function ClientPortalPage() {
   const [clients, setClients] = useState<PortalClient[]>([]);
   const [clientId, setClientId] = useState<number | null>(null);
   const [clientName, setClientName] = useState("");
+  const [projectId, setProjectId] = useState<number | null>(null);
+  const projects = data?.projects ?? [];
 
   function toggleSort(key: SortKey) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: key === "date" || key === "hours" ? -1 : 1 }));
@@ -109,13 +114,14 @@ export function ClientPortalPage() {
   }, [data]);
 
   const load = useCallback(
-    async (fromDate: string, toDate: string, client: number | null = null) => {
+    async (fromDate: string, toDate: string, client: number | null, project: number | null) => {
       setLoading(true);
       setError(null);
       try {
         const clientParam = client != null ? `&client=${client}` : "";
+        const projectParam = project != null ? `&project=${project}` : "";
         const res = await fetch(
-          `/api/portal/uninvoiced?from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}${clientParam}`
+          `/api/portal/uninvoiced?from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}${clientParam}${projectParam}`
         );
         if (res.status === 401) {
           navigate("/client/login", { replace: true });
@@ -135,12 +141,16 @@ export function ClientPortalPage() {
     [navigate]
   );
 
-  // To-date totals ignore the date filter — reload only when the viewed client changes.
-  const loadToDate = useCallback(async (client: number | null = null) => {
+  // To-date totals and unpaid invoices ignore the date filter — reload only when
+  // the viewed client or project changes.
+  const loadToDate = useCallback(async (client: number | null, project: number | null) => {
     setToDate(null);
     try {
-      const clientParam = client != null ? `?client=${client}` : "";
-      const res = await fetch(`/api/portal/todate${clientParam}`);
+      const params = new URLSearchParams();
+      if (client != null) params.set("client", String(client));
+      if (project != null) params.set("project", String(project));
+      const query = params.toString();
+      const res = await fetch(`/api/portal/todate${query ? `?${query}` : ""}`);
       if (res.ok) setToDate(await res.json());
     } catch {
       // Non-critical card — the rest of the portal still works without it.
@@ -191,21 +201,21 @@ export function ClientPortalPage() {
   }, [navigate]);
 
   // Client sessions load once the role resolves; admin sessions load per selected client.
+  // Both reload when the project filter changes.
   useEffect(() => {
-    if (role === "client") {
-      load(defaultRange.from, defaultRange.to);
-      loadToDate();
+    if (role === "client" || (role === "admin" && clientId != null)) {
+      load(from, to, clientId, projectId);
+      loadToDate(clientId, projectId);
     }
-  }, [role, load, loadToDate, defaultRange]);
-
-  useEffect(() => {
-    if (role === "admin" && clientId != null) {
-      load(from, to, clientId);
-      loadToDate(clientId);
-    }
-    // Reload only when the selected client changes — from/to are handled by the filter handlers.
+    // from/to are handled by the filter handlers.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role, clientId, load]);
+  }, [role, clientId, projectId, load, loadToDate]);
+
+  function selectClient(id: number) {
+    // Project ids belong to one client, so switching clients clears the filter.
+    setProjectId(null);
+    setClientId(id);
+  }
 
   function selectPreset(p: Preset) {
     setPreset(p);
@@ -213,7 +223,7 @@ export function ClientPortalPage() {
       const range = presetRange(p);
       setFrom(range.from);
       setTo(range.to);
-      load(range.from, range.to, clientId);
+      load(range.from, range.to, clientId, projectId);
     }
   }
 
@@ -228,7 +238,7 @@ export function ClientPortalPage() {
       setError("Date range cannot exceed 365 days.");
       return;
     }
-    load(from, to, clientId);
+    load(from, to, clientId, projectId);
   }
 
   async function handleSignOut() {
@@ -256,11 +266,14 @@ export function ClientPortalPage() {
       {/* Header */}
       <header className="border-b border-white/20">
         <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">MBD Studio</h1>
-            <p className="text-xs uppercase tracking-[0.2em] text-white/80 mt-0.5">
-              Client Portal · Hours &amp; Project Activity
-            </p>
+          <div className="flex items-center gap-3">
+            <img src="/mbd-circle.svg" alt="" className="h-10 w-10 shrink-0" />
+            <div>
+              <h1 className="text-xl font-bold tracking-tight text-white">MBD Studio</h1>
+              <p className="text-xs uppercase tracking-[0.2em] text-white/80 mt-0.5">
+                Client Portal · Hours &amp; Project Activity
+              </p>
+            </div>
           </div>
           <button
             onClick={handleSignOut}
@@ -283,7 +296,7 @@ export function ClientPortalPage() {
             <select
               id="portal-client"
               value={clientId ?? ""}
-              onChange={(e) => setClientId(Number(e.target.value))}
+              onChange={(e) => selectClient(Number(e.target.value))}
               className="rounded-lg bg-white px-4 py-2.5 text-xl font-bold tracking-tight text-gray-900"
             >
               {clients.map((c) => (
@@ -312,6 +325,23 @@ export function ClientPortalPage() {
               {p.label}
             </button>
           ))}
+          {projects.length > 1 && (
+            <select
+              aria-label="Project"
+              value={projectId ?? ""}
+              onChange={(e) => setProjectId(e.target.value ? Number(e.target.value) : null)}
+              className="sm:ml-auto px-3.5 py-1.5 rounded-full text-sm font-medium text-white bg-transparent border border-white/40 hover:border-white transition"
+            >
+              <option value="" className="text-gray-900">
+                All projects
+              </option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id} className="text-gray-900">
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {preset === "custom" && (
@@ -357,18 +387,31 @@ export function ClientPortalPage() {
 
         {/* Summary card */}
         <div className="bg-white rounded-2xl shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] p-6 sm:p-8 mb-12">
-          <div className="grid grid-cols-2 divide-x divide-gray-100">
-            <div className="pr-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            <div className="pb-6 sm:pb-0 sm:pr-6">
               <p className="text-sm text-gray-500">Current Uninvoiced Hours</p>
               <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
                 {loading ? "—" : `${data?.summary.hours ?? 0} hrs`}
               </p>
             </div>
-            <div className="pl-6">
+            <div className="py-6 sm:py-0 sm:px-6">
               <p className="text-sm text-gray-500">Current Uninvoiced Total</p>
               <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
                 {loading ? "—" : currencyFormat.format(data?.summary.amount ?? 0)}
               </p>
+            </div>
+            <div className="pt-6 sm:pt-0 sm:pl-6">
+              <p className="text-sm text-gray-500">Unpaid Invoices</p>
+              <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900">
+                {toDate?.unpaid ? currencyFormat.format(toDate.unpaid.amount) : "—"}
+              </p>
+              {toDate?.unpaid && (
+                <p className="mt-1 text-xs text-gray-400">
+                  {toDate.unpaid.count === 0
+                    ? "All invoices paid"
+                    : `${toDate.unpaid.count} invoice${toDate.unpaid.count === 1 ? "" : "s"} awaiting payment`}
+                </p>
+              )}
             </div>
           </div>
         </div>
