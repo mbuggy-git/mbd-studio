@@ -86,6 +86,8 @@ export type BrandState = {
   imageConcepts: ImageConcept[];
   dna: LiveText;
   deliverable: string;
+  /** Prompt Studio: a brief for a board, or a prompt for one asset. Old drafts have neither and read as "brief". */
+  studioMode?: "brief" | "asset";
   customRequest: string;
   stage: Stage;
   fullBrief: LiveText;

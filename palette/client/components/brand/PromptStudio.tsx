@@ -1,8 +1,8 @@
 import { Wand2 } from "lucide-react";
 import { CopyButton, SubPanel, TextCard } from "./ui";
 import type { SectionProps } from "./sections/types";
-import { DELIVERABLES, STAGES } from "../../lib/brand/artVocab";
-import { composeBuilderPrompt, composeDNA, composeFullBrief, composeMiniPrompt, deliverableInfo } from "../../lib/brand/prompts";
+import { DELIVERABLES } from "../../lib/brand/artVocab";
+import { composeBuilderPrompt, composeDNA, composeFullBrief, composeMiniPrompt } from "../../lib/brand/prompts";
 import { newSeed } from "../../lib/brand/random";
 import type { BrandState, LiveText } from "../../lib/brand/types";
 
@@ -14,8 +14,21 @@ const COMPOSE: Record<LiveKey, (s: BrandState, seed: number) => string> = {
   miniPrompt: composeMiniPrompt,
 };
 
-/** Right-hand Prompt Studio: the three prompt outputs, always one click away from the Brand Board. */
+const BOARDS = DELIVERABLES.filter((x) => x.kind === "board");
+const ASSETS = DELIVERABLES.filter((x) => x.kind !== "board");
+
+/** Right-hand Prompt Studio: Brand DNA, then one card that is either a brief (for a board) or a prompt (for an asset). */
 export function PromptStudio({ brand, set, commit }: SectionProps) {
+  const mode: "brief" | "asset" = brand.studioMode ?? "brief";
+  // The stage follows the mode: exploring a board vs producing a finished board or an asset.
+  const stageFor = (m: "brief" | "asset", deliverable: string) => (m === "asset" || deliverable === "finished-board" ? "produce" : "explore");
+  const setMode = (m: "brief" | "asset") =>
+    set((s) => {
+      const list = m === "brief" ? BOARDS : ASSETS;
+      const deliverable = list.some((x) => x.id === s.deliverable) ? s.deliverable : list[0].id;
+      return { ...s, studioMode: m, deliverable, stage: stageFor(m, deliverable) };
+    });
+  const setDeliverable = (deliverable: string) => set((s) => ({ ...s, deliverable, stage: stageFor(mode, deliverable) }));
   const valueOf = (key: LiveKey) => brand[key].override ?? COMPOSE[key](brand, brand[key].seed);
   const patchLive = (key: LiveKey, p: Partial<LiveText>) => set((s) => ({ ...s, [key]: { ...s[key], ...p } }) as BrandState);
 
@@ -32,7 +45,6 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
     onReset: () => commit((s) => ({ ...s, [key]: { ...s[key], override: null, locked: false } }) as BrandState),
   });
 
-  const d = deliverableInfo(brand);
   const name = brand.name.trim() || "Untitled brand";
 
   return (
@@ -52,75 +64,59 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-ds-md rounded-xl border border-[color-mix(in_srgb,var(--primary)_22%,var(--border))] bg-[#d9c9f2] p-ds-md" data-oid="1f97f49157" data-oid-text-editable="false" data-oid-text-source="element:div|expression:38109287eb1f|element:div|element:p">
-        <div className="ds-field flex flex-col gap-ds-xs" data-oid="e65feabba1">
-          <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="6eecce2967">Deliverable for the full brief</label>
-          <select
-            id="studio-deliverable"
-            value={brand.deliverable}
-            onChange={(e) => set((s) => ({ ...s, deliverable: e.target.value }))}
-            className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" data-oid="32e51049a2">
-            {DELIVERABLES.map((x) => (
-              <option key={x.id} value={x.id} data-oid="3809ff0431" data-oid-shared="true" data-oid-instance-targetable="true">{x.label}</option>
-            ))}
-          </select>
+      <div className="flex flex-col gap-ds-md">
+        <div role="tablist" aria-label="Brief or asset prompt" data-mode={mode} className="group relative grid w-fit grid-cols-2 rounded-full border border-[#c4b0e6] bg-white p-1 shadow-[inset_0_1px_3px_rgba(60,40,100,0.18)]">
+          <span aria-hidden="true" className="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-4px)] rounded-full bg-foreground shadow-[0_2px_6px_rgba(30,10,50,0.35)] transition-transform duration-300 ease-out group-data-[mode=asset]:translate-x-full" />
+          <button type="button" role="tab" aria-selected={mode === "brief"} onClick={() => setMode("brief")} className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label text-[#5f5f7a] transition-colors duration-300 aria-selected:text-background">
+            Full brief
+          </button>
+          <button type="button" role="tab" aria-selected={mode === "asset"} onClick={() => setMode("asset")} className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label text-[#5f5f7a] transition-colors duration-300 aria-selected:text-background">
+            Asset prompt
+          </button>
         </div>
-        {brand.deliverable === "custom" && (
-          <div className="ds-field flex flex-col gap-ds-xs" data-oid="273417f4af">
-            <label htmlFor="studio-custom" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="4c08d5cc30">Describe the deliverable</label>
-            <input
-              id="studio-custom"
-              value={brand.customRequest}
-              onChange={(e) => set((s) => ({ ...s, customRequest: e.target.value }))}
-              placeholder="A launch poster series for our new iced coffee"
-              className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" data-oid="d2b151c294" />
-          </div>
+
+        {mode === "brief" ? (
+          <TextCard
+            title="Full Creative Brief"
+            {...handlers("fullBrief")}
+            rows={18}
+            mono
+            hint="An art-director-style brief for a brand board, built from everything above."
+            before={
+              <div className="ds-field flex flex-col gap-ds-xs">
+                <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Board</label>
+                <select id="studio-deliverable" value={brand.deliverable} onChange={(e) => setDeliverable(e.target.value)} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body">
+                  {BOARDS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+                </select>
+              </div>
+            } />
+        ) : (
+          <TextCard
+            title="Asset Prompt"
+            {...handlers("miniPrompt")}
+            rows={8}
+            mono
+            hint={brand.assetRequest?.trim() ? "Your request, combined with only the brand details this asset needs." : "Pick an asset, or describe one, and the prompt carries only the brand details it needs."}
+            before={
+              <div className="grid grid-cols-1 gap-ds-sm md:grid-cols-[1fr_2fr]">
+                <div className="ds-field flex flex-col gap-ds-xs">
+                  <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Asset</label>
+                  <select id="studio-deliverable" value={brand.deliverable} onChange={(e) => setDeliverable(e.target.value)} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body">
+                    {ASSETS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+                  </select>
+                </div>
+                <div className="ds-field flex flex-col gap-ds-xs">
+                  <label htmlFor="asset-request" className="ds-field-label font-caption text-caption text-[#5f5f7a]">{brand.deliverable === "custom" ? "Describe the asset" : "Be specific (optional)"}</label>
+                  <input
+                    id="asset-request"
+                    value={brand.assetRequest ?? ""}
+                    onChange={(e) => set((s) => ({ ...s, assetRequest: e.target.value, customRequest: e.target.value }))}
+                    placeholder="Product advertisement featuring a bag of coffee on a wooden table"
+                    className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" />
+                </div>
+              </div>
+            } />
         )}
-        <div className="flex flex-col gap-ds-xs" data-oid="f4e5389dc2">
-          <p className="font-caption text-caption text-[#5f5f7a]" data-oid="c32c465ed3">Design stage</p>
-          <div className="grid grid-cols-3 gap-ds-xs" role="group" aria-label="Design stage" data-oid="27c6ab19bb">
-            {STAGES.map((st) => (
-              <button
-                key={st.id}
-                type="button"
-                aria-pressed={brand.stage === st.id}
-                title={st.blurb}
-                onClick={() => set((s) => ({ ...s, stage: st.id }))}
-                className="rounded-lg bg-[#e8def7] px-ds-sm py-ds-sm font-label text-label font-medium text-[#5f5f7a] shadow-[0_1px_2px_rgba(60,40,100,0.12)] transition-colors hover:bg-[#f3eefa] aria-pressed:bg-foreground aria-pressed:text-background" data-oid="9aa46ca173" data-oid-shared="true" data-oid-instance-targetable="true">
-                {st.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <p className="font-caption text-caption text-[#5f5f7a]" data-oid="87b68c1948" data-oid-text-editable="false" data-oid-text-source="text|expression:079b305931e8|text">Full brief request: “{d.request}”</p>
-      </div>
-
-      <TextCard
-        title="Full Creative Brief"
-        {...handlers("fullBrief")}
-        rows={18}
-        mono
-        hint="An art-director-style brief for the deliverable and stage above." />
-
-      <div className="flex flex-col gap-ds-sm" data-oid="88517be30e">
-        <div className="ds-field flex flex-col gap-ds-xs" data-oid="c2061048aa">
-          <label htmlFor="asset-request" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="6ba71cd22a">What specific asset do you need?</label>
-          <input
-            id="asset-request"
-            value={brand.assetRequest ?? ""}
-            onChange={(e) => set((s) => ({ ...s, assetRequest: e.target.value }))}
-            placeholder="Product advertisement featuring a bag of coffee on a wooden table"
-            className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" data-oid="635d6e711d" />
-        </div>
-        <TextCard
-          title="Mini Asset Prompt"
-          {...handlers("miniPrompt")}
-          rows={7}
-          hint={
-            brand.assetRequest?.trim()
-                ? "Your request, combined with only the brand details this asset needs."
-                : "Describe an asset above, or it follows the deliverable you picked."
-          } />
       </div>
 
       <SubPanel

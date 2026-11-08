@@ -152,6 +152,7 @@ export const DELIVERABLES: { id: string; label: string; kind: DeliverableKind; r
   { id: "packaging", label: "Packaging", kind: "packaging", request: "packaging design" },
   { id: "campaign", label: "Marketing campaign", kind: "campaign", request: "a multi-asset marketing campaign" },
   { id: "storyboard", label: "Video storyboard", kind: "storyboard", request: "a video storyboard for a short brand film" },
+  { id: "website", label: "Website", kind: "layout", request: "a website design — home page and one inner page" },
   { id: "custom", label: "Custom", kind: "custom", request: "" },
 ];
 

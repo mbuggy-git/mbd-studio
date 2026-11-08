@@ -175,6 +175,7 @@ export function TextCard({
   onToggleLock,
   onRegenerate,
   onReset,
+  before,
   rows = 5,
   mono,
   regenerateLabel = "Regenerate"
@@ -191,7 +192,7 @@ export function TextCard({
 
 
 
-}: {title: string;hint?: string;value: string;locked: boolean;edited?: boolean;onChange: (text: string) => void;onToggleLock: () => void;onRegenerate?: () => void;onReset?: () => void;rows?: number;mono?: boolean;regenerateLabel?: string;}) {
+}: {title: string;hint?: string;value: string;locked: boolean;edited?: boolean;onChange: (text: string) => void;onToggleLock: () => void;onRegenerate?: () => void;onReset?: () => void;before?: ReactNode;rows?: number;mono?: boolean;regenerateLabel?: string;}) {
   return (
     <SubPanel
       title={title}
@@ -214,7 +215,7 @@ export function TextCard({
           <CopyButton text={value} />
         </>
       }>
-      
+      {before && <div className="mb-ds-md">{before}</div>}
       <textarea
         value={value}
         rows={rows}
