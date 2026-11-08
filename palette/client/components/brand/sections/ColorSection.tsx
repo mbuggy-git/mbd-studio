@@ -44,6 +44,16 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
       return { ...s, colorDirection: direction === undefined ? s.colorDirection : direction, palette: generatePalette(dir, s.palette, r) };
     });
 
+  // Re-roll one swatch: the other four are held while the generator fills this role.
+  const regenerateOne = (i: number) =>
+    commit((s) => {
+      const r = rng(newSeed());
+      const dir = s.colorDirection ?? directionFromTraits(s.traits, r);
+      const held = s.palette.map((sw, k) => ({ ...sw, locked: k !== i }));
+      const next = generatePalette(dir, held, r);
+      return { ...s, palette: s.palette.map((sw, k) => (k === i ? { hex: next[i].hex, locked: false } : sw)) };
+    });
+
   const paletteText = brand.palette.map((p, i) => `${PALETTE_ROLES[i]}: ${p.hex.toUpperCase()}`).join("\n");
 
   return (
@@ -92,7 +102,9 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
             <div className="flex flex-col gap-ds-sm p-ds-sm" data-oid="531c93e0be" data-oid-shared="true" data-oid-instance-targetable="true">
               <HexField value={sw.hex} onCommit={(hex) => updateSwatch(i, { hex })} label={`${PALETTE_ROLES[i]} hex value`} />
               <div className="flex items-center gap-ds-xs" data-oid="8d35b7d26f" data-oid-shared="true" data-oid-instance-targetable="true">
-                <LockButton compact locked={sw.locked} onToggle={() => updateSwatch(i, { locked: !sw.locked })} label={`${PALETTE_ROLES[i]} color`} />
+                <button type="button" className={`${softButton} px-ds-sm`} onClick={() => regenerateOne(i)} title={`New ${PALETTE_ROLES[i].toLowerCase()} color, keeping the other four`} aria-label={`Regenerate ${PALETTE_ROLES[i]} color`}>
+                  <RefreshCw className="h-4 w-4" />
+                </button>
                 <CopyButton text={sw.hex.toUpperCase()} label="Hex" className="flex-1 px-ds-sm" />
               </div>
             </div>
