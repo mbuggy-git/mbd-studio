@@ -7,6 +7,20 @@ import { surpriseTraits } from "../../../lib/brand/state";
 import { IndustryPanel } from "./IndustryPanel";
 import { newSeed } from "../../../lib/brand/random";
 
+/** Replaces this group's picks with a fresh combination of two or three words that hang together with the other groups' picks. */
+function surpriseGroup(group: TermGroup, traits: string[]): string[] {
+  const inGroup = new Set(group.terms.map((t) => t.name));
+  const kept = traits.filter((n) => !inGroup.has(n));
+  const picks: string[] = [];
+  const want = 2 + Math.floor(Math.random() * 2);
+  for (let i = 0; i < want; i++) {
+    const next = coherentPick(group, [...kept, ...picks]);
+    if (!next) break;
+    picks.push(next);
+  }
+  return [...kept, ...picks];
+}
+
 /** Pairings that keep a surprise coherent: a term from the group that shares a color or font hint with existing picks. */
 function coherentPick(group: TermGroup, selected: string[]): string | null {
   const fresh = group.terms.filter((t) => !selected.includes(t.name));
@@ -56,11 +70,8 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
                 type="button"
                 className={softButton}
                
-                onClick={() => {
-                  const pick = coherentPick(group, brand.traits);
-                  if (pick) commit((s) => ({ ...s, traits: [...s.traits, pick] }));
-                }}
-                title={`Adds one unexpected but coherent ${group.label.toLowerCase()} word`} data-oid="480f0b7d29" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true"
+                onClick={() => commit((s) => ({ ...s, traits: surpriseGroup(group, s.traits) }))}
+                title={`A fresh ${group.label.toLowerCase()} combination — replaces this group's picks, keeps the others`} data-oid="480f0b7d29" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true"
               >
                 <Dices className="h-4 w-4" data-oid="5f630c94e6" data-oid-shared="true" data-oid-instance-targetable="true" />
                 Surprise me
