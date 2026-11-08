@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { Eraser, RefreshCw, Sparkles } from "lucide-react";
 import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { COLOR_DIRECTIONS } from "../../../lib/brand/artVocab";
@@ -31,6 +31,8 @@ function HexField({ value, onCommit, label }: { value: string; onCommit: (hex: s
     </div>
   );
 }
+
+const NEUTRAL_PALETTE = ["#2b2b2b", "#6b6b6b", "#a3a3a3", "#efefef", "#141414"];
 
 export function ColorSection({ brand, set, commit }: SectionProps) {
   const updateSwatch = (i: number, patch: Partial<Swatch>) =>
@@ -73,6 +75,10 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
           <button type="button" className={softButton} style={{ backgroundColor: "#b267c7", color: "#ffffff" }} title="A random direction and a fresh palette" onClick={() => regenerate(pickR(Math.random, COLOR_DIRECTIONS.map((d) => d.name).filter((n) => n !== brand.colorDirection)))}>
             <Sparkles className="h-4 w-4" />
             Surprise me
+          </button>
+          <button type="button" className={softButton} title="Back to neutral greys, no direction (Undo brings the palette back)" onClick={() => commit((s) => ({ ...s, colorDirection: null, palette: NEUTRAL_PALETTE.map((hex) => ({ hex, locked: false })) }))}>
+            <Eraser className="h-4 w-4" />
+            Clear
           </button>
           <CopyButton text={paletteText} label="Copy palette" />
         </>
