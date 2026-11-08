@@ -45,7 +45,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
   return (
     <SectionShell
       index="01 · Brand concept & naming"
-      title="Name the idea"
+      title="Name the brand"
       blurb="Describe what the brand makes, then write your own name or generate options.">
       
       <SubPanel title="What kind of business is it?" hint="A type of business, product or industry. Changing it never resets your other choices.">
