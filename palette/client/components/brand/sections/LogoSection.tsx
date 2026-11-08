@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, Pencil, RefreshCw } from "lucide-react";
-import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
+import { CopyButton, LockButton, SectionShell, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { GRAPHIC_LANGUAGE, LOGO_DIRECTIONS } from "../../../lib/brand/artVocab";
 import { generateLogoConcept, pinsOf, regenerateLogos } from "../../../lib/brand/generate";
@@ -25,21 +25,11 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
   const patchConcept = (id: string, p: Partial<LogoConcept>) =>
     set((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c) => (c.id === id ? { ...c, ...p } : c)) }));
 
-  // Changing directions or graphic language refreshes the unlocked concepts right away, and a newly
-  // picked direction becomes the selected concept so the Brand Board reflects it.
-  const toggleList = (key: "logoDirections" | "graphicLanguage", name: string) =>
-    set((s) => {
-      const adding = !s[key].includes(name);
-      const next = { ...s, [key]: adding ? [...s[key], name] : s[key].filter((x) => x !== name) };
-      const logoConcepts = s.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(next, i, Number.isFinite(lc.seed) ? lc.seed : newSeed(), lc.id, pinsOf(lc))));
-      return { ...next, logoConcepts, logoConceptsReady: s.logoConceptsReady || (key === "logoDirections" && adding) };
-    });
-
   return (
     <SectionShell
       index="05 · Logo & graphic language"
       title="Explore the mark"
-      blurb="Choose directions and a graphic vocabulary, then compare three exploratory concepts. Previews are typographic sketches drawn in code — not finished or AI-rendered logos."
+      blurb="Three exploratory concepts side by side. Set each card's direction and graphic language, re-roll until the words land, then select one. Previews are typographic sketches drawn in code — not finished or AI-rendered logos."
       actions={
         <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="c75801596d" />
@@ -47,15 +37,6 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
         </button>
       }
     >
-      <div className="grid grid-cols-1 gap-ds-md 2xl:grid-cols-2" data-oid="6fd65e141c">
-        <SubPanel title="Logo directions" hint={`${brand.logoDirections.length} selected · concepts cycle through these`}>
-          <ChipPicker terms={LOGO_DIRECTIONS} selected={brand.logoDirections} onToggle={(n) => toggleList("logoDirections", n)} idPrefix="logo-dir" groupLabel="Logo direction" />
-        </SubPanel>
-        <SubPanel title="Graphic language" hint={`${brand.graphicLanguage.length} selected`}>
-          <ChipPicker terms={GRAPHIC_LANGUAGE} selected={brand.graphicLanguage} onToggle={(n) => toggleList("graphicLanguage", n)} idPrefix="logo-gfx" groupLabel="Graphic language" />
-        </SubPanel>
-      </div>
-
       <div className="grid grid-cols-1 gap-ds-md xl:grid-cols-3" data-oid="d3b644e0cf">
         {!ready && [0, 1, 2].map((i) => (
           <article key={`empty-${i}`} className="flex flex-col overflow-hidden rounded-xl border border-dashed border-[color-mix(in_srgb,var(--primary)_35%,var(--border))] bg-[#d9c9f2]">
@@ -65,7 +46,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
             <div className="flex flex-1 flex-col gap-ds-sm p-ds-md">
               <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Concept {i + 1}</p>
               <h3 className="font-heading text-heading text-[#9f8cc4]">Concept title</h3>
-              <p className="font-label text-label text-[#9f8cc4]">Pick logo directions above, or press Generate concepts, and three sketches appear here.</p>
+              <p className="font-label text-label text-[#9f8cc4]">Press Generate concepts and three sketches appear here, each with its own direction and graphic language.</p>
             </div>
             <div className="flex flex-col gap-ds-xs border-t border-[color-mix(in_srgb,var(--primary)_22%,var(--border))] p-ds-md">
               <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Generation prompt</p>
@@ -85,10 +66,10 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                 <div className="flex flex-wrap items-center gap-ds-xs">
                   <span className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Concept {i + 1}</span>
                   <select aria-label={`Direction for concept ${i + 1}`} value={lc.direction} onChange={(e) => repin(i, { direction: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
-                    {LOGO_DIRECTIONS.map((d) => <option key={d.name} value={d.name}>{d.name}{brand.logoDirections.includes(d.name) ? " ✓" : ""}</option>)}
+                    {LOGO_DIRECTIONS.map((d) => <option key={d.name} value={d.name} title={d.meaning}>{d.name}</option>)}
                   </select>
                   <select aria-label={`Graphic language for concept ${i + 1}`} value={lc.graphic} onChange={(e) => repin(i, { graphic: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
-                    {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name}>{g.name}{brand.graphicLanguage.includes(g.name) ? " ✓" : ""}</option>)}
+                    {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name} title={g.meaning}>{g.name}</option>)}
                   </select>
                 </div>
                 {editing === lc.id ? (
@@ -103,7 +84,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                   </>
                 )}
                 <div className="mt-auto flex flex-wrap gap-ds-xs pt-ds-sm" data-oid="219fd17585" data-oid-shared="true" data-oid-instance-targetable="true">
-                  <button type="button" aria-pressed={selected} onClick={() => set((s) => ({ ...s, selectedLogo: i }))} className="inline-flex items-center gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md py-ds-sm font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="7dee0ff61b" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:2ef296e6a963|expression:21b6694e3e0f">
+                  <button type="button" aria-pressed={selected} onClick={() => set((s) => ({ ...s, selectedLogo: i, logoDirections: [lc.direction], graphicLanguage: [lc.graphic] }))} className="inline-flex items-center gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md py-ds-sm font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="7dee0ff61b" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:2ef296e6a963|expression:21b6694e3e0f">
                     {selected && <Check className="h-4 w-4" data-oid="76a2149b0c" data-oid-shared="true" />}
                     {selected ? "Selected" : "Select"}
                   </button>

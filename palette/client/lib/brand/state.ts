@@ -1,4 +1,4 @@
-import type { BrandState, SectionId, TypeSlot } from "./types";
+import type { BrandState, LogoConcept, SectionId, TypeSlot } from "./types";
 import { newSeed, pickR, rng, sampleR, uid } from "./random";
 import { generatePalette } from "./color";
 import {
@@ -208,14 +208,17 @@ export function surpriseBrand(s: BrandState): BrandState {
         };
   next.display = typeSlot(s.display, "display");
   next.body = typeSlot(s.body, "body");
-  const anyLogoLocked = s.logoConcepts.some((l) => l.locked);
-  if (!anyLogoLocked) {
-    next.logoDirections = sampleR(r, LOGO_DIRECTIONS, 3).map((x) => x.name);
-    next.graphicLanguage = sampleR(r, GRAPHIC_LANGUAGE, 2).map((x) => x.name);
-  }
-  next.logoConcepts = regenerateLogos(next, seed + 3);
+  // Surprise: three fresh concepts with random, distinct pairs; the first becomes the selected one,
+  // and the brand's direction + graphic language follow that selection.
+  const dirs = sampleR(r, LOGO_DIRECTIONS, 3).map((x) => x.name);
+  const gfx = sampleR(r, GRAPHIC_LANGUAGE, 3).map((x) => x.name);
+  next.logoConcepts = (s.logoConcepts.length ? s.logoConcepts : [0, 1, 2].map(() => ({ id: uid(), seed: 0 }) as LogoConcept))
+    .map((lc, i) => generateLogoConcept(next, i, seed + 3 + i * 7, lc.id, { direction: dirs[i % dirs.length], graphic: gfx[i % gfx.length] }));
   next.logoConceptsReady = true;
-  if (next.selectedLogo < 0) next.selectedLogo = 0;
+  next.selectedLogo = next.selectedLogo >= 0 ? next.selectedLogo : 0;
+  const chosen = next.logoConcepts[next.selectedLogo] ?? next.logoConcepts[0];
+  next.logoDirections = [chosen.direction];
+  next.graphicLanguage = [chosen.graphic];
   next.imageConcepts = s.imageConcepts.map((c, i) => (c.locked ? c : generateImageConcept(next, i, seed + 9 + i, c)));
   next = refreshCopy(next, seed + 5);
   next.dna = s.dna.locked ? s.dna : { ...s.dna, seed: seed + 6 };

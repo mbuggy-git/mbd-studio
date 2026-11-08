@@ -252,8 +252,8 @@ export function generateLogoConcept(state: BrandState, index: number, seed: numb
   const r = rng(seed + index * 101);
   // Only three concepts exist, so they follow the three most recently picked directions — that way a
   // newly picked direction always shows up instead of being ignored once three are already selected.
-  const dirs = state.logoDirections.length ? state.logoDirections.slice(-3) : DEFAULT_DIRECTIONS;
-  const graphics = state.graphicLanguage.length ? state.graphicLanguage : DEFAULT_GRAPHIC;
+  const dirs = DEFAULT_DIRECTIONS;
+  const graphics = DEFAULT_GRAPHIC;
   const direction = pin?.direction ?? (dirs.length >= 3 ? dirs[index % dirs.length] : index < dirs.length ? dirs[index] : pickR(r, [...dirs, ...DEFAULT_DIRECTIONS]));
   const graphic = pin?.graphic ?? graphics[index % graphics.length];
   const motif = motifFor(state, r);
