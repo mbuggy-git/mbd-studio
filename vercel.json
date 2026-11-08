@@ -1,5 +1,16 @@
 {
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/palette",
+      "destination": "/palette/index.html"
+    },
+    {
+      "source": "/palette/((?!assets/).*)",
+      "destination": "/palette/index.html"
+    },
+    {
+      "source": "/((?!api/|palette/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
