@@ -112,28 +112,39 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[1.4fr_1fr]" data-oid="28b3545187">
-        <div className="flex h-40 overflow-hidden rounded-xl" aria-label="Palette in use proportions" data-oid="38e4337c2b">
-          <div className="flex-[6]" style={{ background: brand.palette[3].hex }} data-oid="35152794df" data-oid-style-dynamic="background" />
-          <div className="flex-[3]" style={{ background: brand.palette[0].hex }} data-oid="23cd607afc" data-oid-style-dynamic="background" />
-          <div className="flex-[2]" style={{ background: brand.palette[1].hex }} data-oid="2660904644" data-oid-style-dynamic="background" />
-          <div className="flex-1" style={{ background: brand.palette[2].hex }} data-oid="60db2a895d" data-oid-style-dynamic="background" />
-          <div className="flex-[1.5]" style={{ background: brand.palette[4].hex }} data-oid="b599d23489" data-oid-style-dynamic="background" />
+      <div className="flex flex-col gap-ds-md">
+        <div className="flex h-24 overflow-hidden rounded-xl" aria-label="Palette in use proportions">
+          <div className="flex-[6]" style={{ background: brand.palette[3].hex }} />
+          <div className="flex-[3]" style={{ background: brand.palette[0].hex }} />
+          <div className="flex-[2]" style={{ background: brand.palette[1].hex }} />
+          <div className="flex-1" style={{ background: brand.palette[2].hex }} />
+          <div className="flex-[1.5]" style={{ background: brand.palette[4].hex }} />
         </div>
-        <div className="flex flex-col justify-center gap-ds-xs rounded-xl p-ds-lg" style={{ background: brand.palette[3].hex }} data-oid="35d0da2c79" data-oid-style-dynamic="background">
-          <p className="font-display text-[32px] font-semibold leading-none" style={{ color: brand.palette[4].hex }} data-oid="1d9ba821fb" data-oid-style-dynamic="color">{brand.name || "Brand"}</p>
-          <p className="flex items-center gap-ds-sm font-label text-label" style={{ color: brand.palette[0].hex }} data-oid="37d1a47002" data-oid-style-dynamic="color">
-            Primary on light neutral <ContrastBadge fg={brand.palette[0].hex} bg={brand.palette[3].hex} />
-          </p>
-          <span className="mt-ds-sm flex w-fit items-center gap-ds-sm rounded-full px-ds-md py-ds-xs font-label text-label" style={{ background: brand.palette[2].hex, color: inkOn(brand.palette[2].hex) }} data-oid="54a9b74735" data-oid-style-dynamic="background,color">
-            Accent button <ContrastBadge fg={inkOn(brand.palette[2].hex)} bg={brand.palette[2].hex} />
-          </span>
-          <ContrastNote pairs={[
-            ["Primary on light neutral", brand.palette[0].hex, brand.palette[3].hex],
-            ["Deep neutral on light neutral", brand.palette[4].hex, brand.palette[3].hex],
-            ["Text on the accent", inkOn(brand.palette[2].hex), brand.palette[2].hex],
-          ]} />
+
+        <div className="grid grid-cols-1 gap-ds-md md:grid-cols-2">
+          {([
+            { label: "Light", surface: brand.palette[3].hex, ink: brand.palette[4].hex, surfaceName: "light neutral" },
+            { label: "Dark", surface: brand.palette[4].hex, ink: brand.palette[3].hex, surfaceName: "deep neutral" },
+          ] as const).map((m) => (
+            <div key={m.label} className="flex flex-col justify-center gap-ds-xs rounded-xl p-ds-lg" style={{ background: m.surface }}>
+              <p className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: m.ink, opacity: 0.7 }}>{m.label}</p>
+              <p className="font-display text-[32px] font-semibold leading-none" style={{ color: m.ink }}>{brand.name || "Brand"}</p>
+              <p className="flex items-center gap-ds-sm font-label text-label" style={{ color: brand.palette[0].hex }}>
+                Primary on {m.surfaceName} <ContrastBadge fg={brand.palette[0].hex} bg={m.surface} />
+              </p>
+              <span className="mt-ds-sm flex w-fit items-center gap-ds-sm rounded-full px-ds-md py-ds-xs font-label text-label" style={{ background: brand.palette[2].hex, color: inkOn(brand.palette[2].hex) }}>
+                Accent button <ContrastBadge fg={inkOn(brand.palette[2].hex)} bg={brand.palette[2].hex} />
+              </span>
+            </div>
+          ))}
         </div>
+
+        <ContrastNote pairs={[
+          ["Primary on light neutral", brand.palette[0].hex, brand.palette[3].hex],
+          ["Primary on deep neutral", brand.palette[0].hex, brand.palette[4].hex],
+          ["Deep neutral on light neutral", brand.palette[4].hex, brand.palette[3].hex],
+          ["Text on the accent", inkOn(brand.palette[2].hex), brand.palette[2].hex],
+        ]} />
       </div>
     </SectionShell>
   );
