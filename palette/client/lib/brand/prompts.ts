@@ -78,7 +78,9 @@ export function imagePrompt(s: BrandState, c: ImageConcept): string {
     `${cap(phraseOf(LIGHTING, c.lighting))}, ${phraseOf(CAMERA, c.camera)}, ${phraseOf(COMPOSITION, c.composition)}; ${phraseOf(ATMOSPHERE, c.atmosphere)} atmosphere.`,
     `Color story: ${f.colors[0].name} (${f.colors[0].hex}) and ${f.colors[1].name} (${f.colors[1].hex}) with ${f.colors[2].name} (${f.colors[2].hex}) accents on ${f.colors[3].name} (${f.colors[3].hex}).`,
     c.kind === "Illustration" ? `Style: ${s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : "clean, ownable"} illustration.` : `Materials and styling: ${f.profile.materials}.`,
-    `Aspect ratio ${c.ratio}. No text, logos or watermarks in frame.`,
+    c.kind === "Product"
+      ? `Aspect ratio ${c.ratio}. The packaging carries a plain, unprinted label or a blank panel where the logo will be placed later; no legible text or watermarks in frame.`
+      : `Aspect ratio ${c.ratio}. No text, logos or watermarks in frame.`,
   ].join(" ");
 }
 
