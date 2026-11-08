@@ -34,6 +34,9 @@ export type LogoConcept = {
   promptOverride: string | null;
   locked: boolean;
   seed: number;
+  /** Set from the card's own dropdowns; re-rolls and chip changes keep a pinned value. */
+  pinDirection?: string;
+  pinGraphic?: string;
 };
 
 export type Ratio = "1:1" | "4:5" | "3:4" | "9:16" | "16:9" | "3:2";

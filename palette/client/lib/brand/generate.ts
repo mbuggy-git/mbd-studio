@@ -248,14 +248,14 @@ export function describeLogo(direction: string, graphic: string, name: string, m
   return pickR(r, map[direction] ?? map.Wordmark);
 }
 
-export function generateLogoConcept(state: BrandState, index: number, seed: number, keepId?: string): LogoConcept {
+export function generateLogoConcept(state: BrandState, index: number, seed: number, keepId?: string, pin?: { direction?: string; graphic?: string }): LogoConcept {
   const r = rng(seed + index * 101);
   // Only three concepts exist, so they follow the three most recently picked directions — that way a
   // newly picked direction always shows up instead of being ignored once three are already selected.
   const dirs = state.logoDirections.length ? state.logoDirections.slice(-3) : DEFAULT_DIRECTIONS;
   const graphics = state.graphicLanguage.length ? state.graphicLanguage : DEFAULT_GRAPHIC;
-  const direction = dirs.length >= 3 ? dirs[index % dirs.length] : index < dirs.length ? dirs[index] : pickR(r, [...dirs, ...DEFAULT_DIRECTIONS]);
-  const graphic = graphics[index % graphics.length];
+  const direction = pin?.direction ?? (dirs.length >= 3 ? dirs[index % dirs.length] : index < dirs.length ? dirs[index] : pickR(r, [...dirs, ...DEFAULT_DIRECTIONS]));
+  const graphic = pin?.graphic ?? graphics[index % graphics.length];
   const motif = motifFor(state, r);
   return {
     id: keepId ?? uid(),
@@ -266,11 +266,16 @@ export function generateLogoConcept(state: BrandState, index: number, seed: numb
     promptOverride: null,
     locked: false,
     seed,
+    pinDirection: pin?.direction,
+    pinGraphic: pin?.graphic,
   };
 }
 
+/** The card's own choices, if any, carried into a re-roll. */
+export const pinsOf = (lc: LogoConcept) => ({ direction: lc.pinDirection, graphic: lc.pinGraphic });
+
 export function regenerateLogos(state: BrandState, seed: number): LogoConcept[] {
-  return state.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(state, i, seed + i * 7, lc.id)));
+  return state.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(state, i, seed + i * 7, lc.id, pinsOf(lc))));
 }
 
 // ——— Image concepts ———

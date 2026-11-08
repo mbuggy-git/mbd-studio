@@ -3,7 +3,7 @@ import { Check, Pencil, RefreshCw } from "lucide-react";
 import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { GRAPHIC_LANGUAGE, LOGO_DIRECTIONS } from "../../../lib/brand/artVocab";
-import { generateLogoConcept, regenerateLogos } from "../../../lib/brand/generate";
+import { generateLogoConcept, pinsOf, regenerateLogos } from "../../../lib/brand/generate";
 import { logoPrompt } from "../../../lib/brand/prompts";
 import { resolveFont } from "../../../lib/brand/fonts";
 import { newSeed } from "../../../lib/brand/random";
@@ -12,6 +12,12 @@ import { LogoPreview } from "../LogoPreview";
 
 export function LogoSection({ brand, set, commit }: SectionProps) {
   const ready = brand.logoConceptsReady !== false && brand.logoConcepts.length > 0;
+  // A dropdown choice pins that card: the concept is rewritten for the new direction/graphic and keeps it on re-rolls.
+  const repin = (i: number, pin: { direction?: string; graphic?: string }) =>
+    commit((s) => ({
+      ...s,
+      logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, { ...pinsOf(c), direction: pin.direction ?? c.direction, graphic: pin.graphic ?? c.graphic }) : c)),
+    }));
   const [editing, setEditing] = useState<string | null>(null);
   const font = resolveFont(brand.display, brand.traits, "display");
   const colors = brand.palette.map((p) => p.hex);
@@ -25,7 +31,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
     set((s) => {
       const adding = !s[key].includes(name);
       const next = { ...s, [key]: adding ? [...s[key], name] : s[key].filter((x) => x !== name) };
-      const logoConcepts = s.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(next, i, Number.isFinite(lc.seed) ? lc.seed : newSeed(), lc.id)));
+      const logoConcepts = s.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(next, i, Number.isFinite(lc.seed) ? lc.seed : newSeed(), lc.id, pinsOf(lc))));
       return { ...next, logoConcepts, logoConceptsReady: s.logoConceptsReady || (key === "logoDirections" && adding) };
     });
 
@@ -76,7 +82,15 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                 <LogoPreview direction={lc.direction} name={brand.name} colors={colors} fontStack={font.stack} variant={i} seed={lc.seed} />
               </div>
               <div className="flex flex-1 flex-col gap-ds-sm p-ds-md" data-oid="cfcd15dfff" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:p|expression:ec08feb84e85|element:div">
-                <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]" data-oid="594202dbe8" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="text|expression:80ab2b274cc6|text|expression:0c1756682228|text|expression:d16767eb18b1">Concept {i + 1} · {lc.direction} · {lc.graphic}</p>
+                <div className="flex flex-wrap items-center gap-ds-xs">
+                  <span className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Concept {i + 1}</span>
+                  <select aria-label={`Direction for concept ${i + 1}`} value={lc.direction} onChange={(e) => repin(i, { direction: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
+                    {LOGO_DIRECTIONS.map((d) => <option key={d.name} value={d.name}>{d.name}{brand.logoDirections.includes(d.name) ? " ✓" : ""}</option>)}
+                  </select>
+                  <select aria-label={`Graphic language for concept ${i + 1}`} value={lc.graphic} onChange={(e) => repin(i, { graphic: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
+                    {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name}>{g.name}{brand.graphicLanguage.includes(g.name) ? " ✓" : ""}</option>)}
+                  </select>
+                </div>
                 {editing === lc.id ? (
                   <>
                     <input value={lc.title} onChange={(e) => patchConcept(lc.id, { title: e.target.value, locked: false })} aria-label="Concept title" className="ds-input rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-heading text-heading" data-oid="026070bd2b" data-oid-shared="true" />
@@ -97,7 +111,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <Pencil className="h-4 w-4" data-oid="ca20990995" data-oid-shared="true" data-oid-instance-targetable="true" />
                     {editing === lc.id ? "Done" : "Edit"}
                   </button>
-                  <button type="button" className={softButton} disabled={lc.locked} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
+                  <button type="button" className={softButton} disabled={lc.locked} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, pinsOf(c)) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
                     <RefreshCw className="h-4 w-4" data-oid="2133b058bf" data-oid-shared="true" data-oid-instance-targetable="true" />
                   </button>
                   <LockButton compact locked={lc.locked} onToggle={() => patchConcept(lc.id, { locked: !lc.locked })} label={`concept ${i + 1}`} />
