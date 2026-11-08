@@ -96,17 +96,18 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
             {...handlers("miniPrompt")}
             rows={8}
             mono
-            hint={brand.assetRequest?.trim() ? "Your request, combined with only the brand details this asset needs." : "Pick an asset, or describe one, and the prompt carries only the brand details it needs."}
+            hint="Pick an asset and the prompt carries only the brand details it needs. Choose Custom to describe your own."
             before={
-              <div className="grid grid-cols-1 gap-ds-sm md:grid-cols-[1fr_2fr]">
+              <div className={`grid grid-cols-1 gap-ds-sm ${brand.deliverable === "custom" ? "md:grid-cols-[1fr_2fr]" : "md:max-w-sm"}`}>
                 <div className="ds-field flex flex-col gap-ds-xs">
                   <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Asset</label>
                   <select id="studio-deliverable" value={brand.deliverable} onChange={(e) => setDeliverable(e.target.value)} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body">
                     {ASSETS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
                   </select>
                 </div>
+                {brand.deliverable === "custom" && (
                 <div className="ds-field flex flex-col gap-ds-xs">
-                  <label htmlFor="asset-request" className="ds-field-label font-caption text-caption text-[#5f5f7a]">{brand.deliverable === "custom" ? "Describe the asset" : "Be specific (optional)"}</label>
+                  <label htmlFor="asset-request" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Describe the asset</label>
                   <input
                     id="asset-request"
                     value={brand.assetRequest ?? ""}
@@ -114,6 +115,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
                     placeholder="Product advertisement featuring a bag of coffee on a wooden table"
                     className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" />
                 </div>
+                )}
               </div>
             } />
         )}
