@@ -14,6 +14,8 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
     patch({ [key]: slot[key].includes(name) ? slot[key].filter((x) => x !== name) : [...slot[key], name] } as Partial<TypeSlot>);
   const recs = recommendFonts(slot, brand.traits, role);
   const active = resolveFont(slot, brand.traits, role);
+  // Nothing picked yet: no preview, so the sample never shows a font the chips don't describe.
+  const untouched = !slot.font && !slot.classification && slot.personality.length === 0 && slot.shape.length === 0;
   const sample = role === "display" ? brand.name || "Brand" : "Every detail is part of the experience. Good type is felt before it is read.";
 
   const remix = () =>
@@ -44,8 +46,14 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
     >
       <div className="flex flex-col gap-ds-lg" data-oid="0823285746">
         <div className="flex min-h-[150px] flex-col justify-center gap-ds-sm overflow-hidden rounded-lg p-ds-lg" style={{ background: brand.palette[3].hex, color: brand.palette[4].hex }} data-oid="a79fd46c04" data-oid-style-dynamic="background,color">
-          <p className={role === "display" ? "break-words text-[64px] leading-none" : "text-[20px] leading-relaxed"} style={previewStyle(slot, active)} data-oid="1001229201" data-oid-style-dynamic="*" data-oid-classname-dynamic="true">{sample}</p>
-          <p className="font-caption text-caption opacity-70" data-oid="e90d846475" data-oid-text-editable="false" data-oid-text-source="expression:f24e885009c2|text|expression:b2f22b073215">{active.name} · {active.note}</p>
+          {untouched ? (
+            <p className="font-label text-label opacity-60">Pick a classification, a few words below, or press Remix — the recommended typeface shows here.</p>
+          ) : (
+            <>
+              <p className={role === "display" ? "break-words text-[64px] leading-none" : "text-[20px] leading-relaxed"} style={previewStyle(slot, active)} data-oid="1001229201" data-oid-style-dynamic="*" data-oid-classname-dynamic="true">{sample}</p>
+              <p className="font-caption text-caption opacity-70" data-oid="e90d846475" data-oid-text-editable="false" data-oid-text-source="expression:f24e885009c2|text|expression:b2f22b073215">{active.name} · {active.note}</p>
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-ds-lg xl:grid-cols-3" data-oid="d0501eb2d9">
