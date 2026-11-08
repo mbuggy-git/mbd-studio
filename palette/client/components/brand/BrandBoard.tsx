@@ -4,7 +4,6 @@ import type { BrandState } from "../../lib/brand/types";
 import { brandFacts } from "../../lib/brand/prompts";
 import { inkOn } from "../../lib/brand/color";
 import { previewStyle } from "../../lib/brand/fonts";
-import { RATIOS } from "../../lib/brand/artVocab";
 import { exportBoardPng } from "../../lib/brand/exportPng";
 import { LogoPreview } from "./LogoPreview";
 
@@ -88,21 +87,14 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
           {brand.traits.length === 0 && <li className="font-caption text-caption text-[#5f5f7a]" data-oid="4e0e61a66c">Pick personality words to see them here.</li>}
         </ul>
 
-        <div className="flex flex-col gap-ds-sm" data-oid="5d2904d137">
-          <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="681b8f045e">Visual language · concept frames</p>
-          <div className="flex items-end gap-ds-sm" data-oid="2ac79e2247">
-            {brand.imageConcepts.map((c, i) => {
-              const ratio = RATIOS.find((r) => r.id === c.ratio) ?? RATIOS[0];
-              return (
-                <figure key={c.id} className="relative min-w-0 flex-1 overflow-hidden rounded-md" style={{ aspectRatio: `${ratio.w} / ${ratio.h}`, maxHeight: 190, background: `linear-gradient(${140 + i * 40}deg, ${colors[i % 3]} 0%, ${colors[(i + 1) % 3]} 55%, ${colors[3]} 100%)` }} data-oid="1258201a19" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="aspectRatio,background">
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/45 to-transparent p-ds-xs font-caption text-caption leading-tight text-white" data-oid="4b1cb2a3ac" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:a9fadb4951af|text|expression:479dc588ae7c">
-                    {c.kind} · {c.ratio}
-                  </figcaption>
-                </figure>
-              );
-            })}
-          </div>
-          <p className="font-caption text-caption text-[#5f5f7a]" data-oid="268db84642">Color-blocked frames stand in for image concepts until you generate images from their prompts.</p>
+        <div className="flex flex-col gap-ds-sm">
+          <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]">Visual language · image concepts</p>
+          <ul className="flex flex-wrap gap-ds-xs" aria-label="Image concepts">
+            {brand.imageConcepts.map((c) => (
+              <li key={c.id} className="rounded-full border border-[#3b2b4d]/30 px-ds-sm py-ds-xs font-caption text-caption text-[#3b2b4d]">{c.kind} · {c.ratio}</li>
+            ))}
+            {brand.imageConcepts.length === 0 && <li className="font-caption text-caption text-[#5f5f7a]">Choose image concepts in step 07 to see them here.</li>}
+          </ul>
         </div>
 
         <div className="flex flex-col gap-ds-xs border-t border-[#e0d4f1] pt-ds-md" data-oid="8fa513e17f">

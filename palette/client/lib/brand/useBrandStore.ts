@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { BrandState, SavedBrand } from "./types";
-import { createSampleBrand } from "./state";
+import { createBlankBrand } from "./state";
 import { loadDraft, loadLibrary, saveDraft, saveLibrary } from "./storage";
 import { uid } from "./random";
 
@@ -10,7 +10,7 @@ const HISTORY_LIMIT = 40;
 
 /** Central brand state with an undo stack and browser-local library persistence. */
 export function useBrandStore() {
-  const [brand, setBrand] = useState<BrandState>(() => loadDraft() ?? createSampleBrand());
+  const [brand, setBrand] = useState<BrandState>(() => loadDraft() ?? createBlankBrand());
   const [history, setHistory] = useState<BrandState[]>([]);
   const [library, setLibrary] = useState<SavedBrand[]>(() => loadLibrary());
   const brandRef = useRef(brand);
@@ -75,7 +75,7 @@ export function useBrandStore() {
   }, []);
 
   const startNew = useCallback(() => {
-    commit(() => ({ ...createSampleBrand(), id: uid() }));
+    commit(() => createBlankBrand());
   }, [commit]);
 
   return { brand, set, commit, undo, canUndo: history.length > 0, library, savedId, saveCurrent, openBrand, duplicateBrand, renameBrand, deleteBrand, startNew };
