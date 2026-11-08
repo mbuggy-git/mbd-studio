@@ -1,8 +1,8 @@
 import { Wand2 } from "lucide-react";
-import { TextCard } from "./ui";
+import { CopyButton, SubPanel, TextCard } from "./ui";
 import type { SectionProps } from "./sections/types";
 import { DELIVERABLES, STAGES } from "../../lib/brand/artVocab";
-import { composeDNA, composeFullBrief, composeMiniPrompt, deliverableInfo } from "../../lib/brand/prompts";
+import { composeBuilderPrompt, composeDNA, composeFullBrief, composeMiniPrompt, deliverableInfo } from "../../lib/brand/prompts";
 import { newSeed } from "../../lib/brand/random";
 import type { BrandState, LiveText } from "../../lib/brand/types";
 
@@ -122,6 +122,14 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
                 : "Describe an asset above, or it follows the deliverable you picked."
           } />
       </div>
+
+      <SubPanel
+        title="Firefly Builder design system"
+        hint="Paste as Builder's design-system prompt; every page it generates then carries this brand. Rewrites itself as the brand changes."
+        actions={<CopyButton text={composeBuilderPrompt(brand)} label="Copy prompt" />}
+      >
+        <textarea readOnly rows={6} value={composeBuilderPrompt(brand)} className="ds-input w-full resize-y rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-caption text-caption" />
+      </SubPanel>
     </section>
   );
 }

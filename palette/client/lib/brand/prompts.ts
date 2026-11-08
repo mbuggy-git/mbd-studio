@@ -369,3 +369,30 @@ export function composeMiniPrompt(s: BrandState, seed: number): string {
     `${stageLine} Keep text editable where supported.`,
   ].filter(Boolean).join(" ");
 }
+
+// ——— Firefly Builder design system ———
+/**
+ * One paragraph in the shape Builder's design-system panel expects: surface, type color,
+ * dominant brand color, supporting and accent colors (all with hexes so nothing is guessed),
+ * headline and body fonts, corner radius and overall feel. Paste it as the design-system prompt
+ * and every page Builder generates carries this brand.
+ */
+export function composeBuilderPrompt(s: BrandState): string {
+  const f = brandFacts(s);
+  const [primary, secondary, accent, light, deep] = f.colors;
+  const words = [...f.personality.slice(0, 2), ...f.aesthetics.slice(0, 1), ...f.values.slice(0, 1)];
+  const all = [...s.traits].map((t) => t.toLowerCase());
+  const tight = ["brutalist", "editorial", "minimalist", "art deco", "luxurious", "sophisticated"].some((w) => all.includes(w));
+  const round = ["playful", "whimsical", "approachable", "optimistic", "organic modern", "botanical"].some((w) => all.includes(w));
+  const radius = tight && !round ? "tight radii" : round && !tight ? "generously rounded corners" : "softly rounded corners";
+  const feel = words.length ? listJoin(words) : "clear, confident";
+  const dark = primaryOnDark(s.palette).toUpperCase();
+  const logo = f.logo ? ` The logo is ${article(f.logo.direction)} ${f.logo.direction.toLowerCase()}${s.graphicLanguage.length ? ` with ${listJoin(lower(s.graphicLanguage))} graphic elements` : ""}.` : "";
+  const imagery = s.imageConcepts.length
+    ? ` Imagery is ${listJoin(lower(s.imageConcepts.map((c) => c.kind)))} with ${s.imageConcepts[0].lighting.toLowerCase()}.`
+    : "";
+  return [
+    `${cap(feel)} ${f.industry}: ${light.name} ${light.hex} as the page surface, ${deep.name} ${deep.hex} for type, ${primary.name} ${primary.hex} as the dominant brand color, ${secondary.name} ${secondary.hex} supporting and ${accent.name} ${accent.hex} as a sharp accent (on dark surfaces use ${dark} as the primary).`,
+    `${f.display.name} for display and headings over ${f.body.name} body, labels and captions, with ${radius} for ${article(feel.split(", ")[0])} ${feel.split(", ")[0]} feel.${logo}${imagery}`,
+  ].join(" ");
+}
