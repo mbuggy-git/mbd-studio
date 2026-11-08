@@ -65,7 +65,8 @@ export function VocabularyBoard({
         role="tablist"
         aria-label="Vocabulary categories"
         onKeyDown={onTabKey}
-        className="flex flex-wrap gap-ds-xs rounded-xl border border-border bg-[#ccb7ed] p-ds-sm" data-oid="d15bd7a5ab">
+        className="flex flex-col items-start gap-ds-md rounded-xl border border-border bg-[#ccb7ed] p-ds-md md:flex-row md:items-center md:justify-between" data-oid="d15bd7a5ab">
+        <div className="grid grid-cols-2 gap-ds-sm sm:grid-cols-4">
         
         {CATEGORIES.map((category) => {
           const count = category.terms.filter((t) => selected.includes(t.name)).length;
@@ -83,7 +84,7 @@ export function VocabularyBoard({
                 onCategoryChange(category.id);
                 if (q) onClearQuery();
               }}
-              className="inline-flex items-center gap-ds-sm rounded-lg px-ds-md py-ds-sm font-label text-label font-medium text-[#5f5f7a] transition-colors duration-150 hover:bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] hover:text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:bg-foreground aria-selected:text-background" data-oid="38cf42f8e2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:26a101576c9d|expression:d604b044a85d">
+              className="inline-flex items-center justify-center gap-ds-sm rounded-full border border-border bg-white px-ds-md py-ds-sm font-label text-label font-medium text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-colors duration-150 hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:border-foreground aria-selected:bg-foreground aria-selected:text-background" data-oid="38cf42f8e2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:26a101576c9d|expression:d604b044a85d">
               
               <span className={cn("h-2.5 w-2.5 shrink-0 rounded-full", category.dotClass)} aria-hidden="true" data-oid="46779dea4e" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true" />
               {category.short ?? category.label}
@@ -95,7 +96,8 @@ export function VocabularyBoard({
             </button>);
 
         })}
-        <button type="button" onClick={onGetPrompt} disabled={!canGenerate} title={canGenerate ? "Build the image prompt from your picks" : "Pick a few words first"} className="ds-button ds-button-primary ml-auto h-[38px] rounded-lg px-ds-md">
+        </div>
+        <button type="button" onClick={onGetPrompt} disabled={!canGenerate} title={canGenerate ? "Build the image prompt from your picks" : "Pick a few words first"} className="ds-button ds-button-primary h-[42px] shrink-0 rounded-lg px-ds-lg">
           <Wand2 className="h-4 w-4" />
           Get prompt
         </button>
