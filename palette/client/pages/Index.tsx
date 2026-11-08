@@ -4,6 +4,7 @@ import { AppHeader } from "../components/AppHeader";
 import { DirectionPanel } from "../components/DirectionPanel";
 import { VocabularyBoard } from "../components/VocabularyBoard";
 import { CreativeRemix } from "../components/CreativeRemix";
+import { PromptBox } from "../components/PromptBox";
 import { buildPrompt } from "../lib/prompt";
 import { CATEGORIES, SURPRISE_PRESETS, type CategoryId } from "../lib/vocabulary";
 
@@ -25,6 +26,8 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
   const [brief, setBrief] = useState("");
   const [output, setOutput] = useState("");
   const [seed, setSeed] = useState(0);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const canGenerate = brief.trim().length > 0 || selected.length > 0;
   const [activeCategory, setActiveCategory] = useState<CategoryId>("mood");
   const lastPreset = useRef(-1);
 
@@ -64,7 +67,11 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
     document.getElementById("vocabulary")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const generate = () => setOutput(buildPrompt(brief, selected, seed));
+  const generate = () => {
+    setOutput(buildPrompt(brief, selected, seed));
+    setShowPrompt(true);
+    window.setTimeout(() => document.getElementById("prompt-box")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
 
   const regenerate = () => {
     const nextSeed = seed + 1;
@@ -91,14 +98,26 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
           totalCount={TOTAL} />
         
         <div id="vocabulary" className="mt-ds-2xl scroll-mt-ds-xl grid grid-cols-1 items-start gap-ds-xl lg:grid-cols-[minmax(0,1fr)_480px] 2xl:grid-cols-[minmax(0,1fr)_540px]" data-oid="3720033362">
-          <VocabularyBoard
-            query={query}
-            selected={selected}
-            onToggle={toggle}
-            activeCategory={activeCategory}
-            onCategoryChange={setActiveCategory}
-            onCategorySurprise={surpriseCategory}
-            onClearQuery={() => setQuery("")} />
+          <div className="flex min-w-0 flex-col gap-ds-xl">
+            <VocabularyBoard
+              query={query}
+              selected={selected}
+              onToggle={toggle}
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+              onCategorySurprise={surpriseCategory}
+              onClearQuery={() => setQuery("")}
+              onGetPrompt={generate}
+              canGenerate={canGenerate} />
+            {(showPrompt || output) && (
+              <PromptBox
+                output={output}
+                onOutputChange={setOutput}
+                onRegenerate={regenerate}
+                onClear={() => { setOutput(""); setShowPrompt(false); }}
+                canGenerate={canGenerate} />
+            )}
+          </div>
           <div className="flex flex-col gap-ds-xl lg:sticky lg:top-ds-xl" data-oid="7d1a6e69f3">
             <AppsCard />
             <DirectionPanel
@@ -108,11 +127,7 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
               onRemove={toggle}
               onJumpCategory={jumpToCategory}
               onClearSelection={() => setSelected([])}
-              output={output}
-              onOutputChange={setOutput}
-              onGenerate={generate}
-              onRegenerate={regenerate}
-              onClearOutput={() => setOutput("")} />
+              onGenerate={generate} />
             
           </div>
         </div>

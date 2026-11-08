@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Eraser, RefreshCw, Sparkles, Wand2, X } from "lucide-react";
+import { Sparkles, Wand2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, type CategoryId } from "../lib/vocabulary";
 
@@ -10,11 +10,7 @@ type Props = {
   onRemove: (name: string) => void;
   onJumpCategory: (id: CategoryId) => void;
   onClearSelection: () => void;
-  output: string;
-  onOutputChange: (value: string) => void;
   onGenerate: () => void;
-  onRegenerate: () => void;
-  onClearOutput: () => void;
 };
 
 export function DirectionPanel({
@@ -24,30 +20,10 @@ export function DirectionPanel({
   onRemove,
   onJumpCategory,
   onClearSelection,
-  output,
-  onOutputChange,
   onGenerate,
-  onRegenerate,
-  onClearOutput
 }: Props) {
-  const [copied, setCopied] = useState(false);
   const canGenerate = brief.trim().length > 0 || selected.length > 0;
-  const words = output.trim() ? output.trim().split(/\s+/).length : 0;
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(output);
-    } catch {
-      const area = document.createElement("textarea");
-      area.value = output;
-      document.body.appendChild(area);
-      area.select();
-      document.execCommand("copy");
-      area.remove();
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
-  };
 
   return (
     <aside className="flex flex-col gap-ds-lg rounded-xl border border-border bg-[color-mix(in_srgb,var(--primary)_8%,var(--background))] p-ds-xl shadow-[0_24px_60px_-30px_rgba(0,0,0,0.25)]" data-oid="ea377abf2b" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" style={{ backgroundColor: "#ccb7ed" }}>
@@ -119,40 +95,9 @@ export function DirectionPanel({
         className="ds-button ds-button-primary h-12 w-full rounded-lg text-body" data-oid="4fc0471290">
         
         <Wand2 className="h-4 w-4" data-oid="05d99a7840" />
-        Generate Art Direction
+        Get prompt
       </button>
 
-      <div className="flex flex-col gap-ds-sm border-t border-border pt-ds-lg" data-oid="0402217a46">
-        <div className="flex items-center justify-between" data-oid="27f02c02cf">
-          <label htmlFor="output" className="flex items-center gap-ds-xs font-label text-label font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="d143c3aa43" style={{ color: "#5f5f7a" }}>
-            <Sparkles className="h-4 w-4 text-primary" data-oid="5319143e10" />
-            Image prompt
-          </label>
-          <span className="font-caption text-caption text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]" data-oid="bfafd858c2" data-oid-text-editable="false" data-oid-text-source="expression:efb893611e6f|text" style={{ color: "#5f5f7a" }}>{words} words · editable</span>
-        </div>
-        <textarea
-          id="output"
-          rows={9}
-          value={output}
-          onChange={(e) => onOutputChange(e.target.value)}
-          placeholder="Your art direction will appear here. Describe what you are making, choose a few words, then generate."
-          className="ds-input resize-y bg-[color-mix(in_srgb,var(--primary)_12%,var(--background))] p-ds-md font-display text-[22px] leading-[1.35] text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="ece092bd77" />
-        
-        <div className="grid grid-cols-3 gap-ds-sm" data-oid="b4af48cdfd">
-          <button type="button" onClick={copy} disabled={!output} className="ds-button rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] hover:border-foreground hover:bg-[color-mix(in_srgb,var(--primary)_12%,var(--background))]" data-oid="dbb8673345" data-oid-text-editable="false" data-oid-text-source="expression:c9d6ce65cb4f|expression:e562b1923d4d">
-            {copied ? <Check className="h-4 w-4 text-success" data-oid="6008978096" /> : <Copy className="h-4 w-4" data-oid="7f2fcace61" />}
-            {copied ? "Copied" : "Copy Prompt"}
-          </button>
-          <button type="button" onClick={onRegenerate} disabled={!canGenerate} className="ds-button rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] hover:border-foreground hover:bg-[color-mix(in_srgb,var(--primary)_12%,var(--background))]" data-oid="4bc5b112f9">
-            <RefreshCw className="h-4 w-4" data-oid="21ad86d5c5" />
-            Regenerate
-          </button>
-          <button type="button" onClick={onClearOutput} disabled={!output} className="ds-button rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] hover:border-foreground hover:bg-[color-mix(in_srgb,var(--primary)_12%,var(--background))]" data-oid="f92b649dfe">
-            <Eraser className="h-4 w-4" data-oid="bea93cec2b" />
-            Clear
-          </button>
-        </div>
-      </div>
     </aside>);
 
 }

@@ -1,5 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
-import { Camera, Dices, SearchX } from "lucide-react";
+import { Camera, Dices, SearchX, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, type Category, type CategoryId, type Term } from "../lib/vocabulary";
 
@@ -9,6 +9,8 @@ type Props = {
   onToggle: (name: string) => void;
   activeCategory: CategoryId;
   onCategoryChange: (id: CategoryId) => void;
+  onGetPrompt: () => void;
+  canGenerate: boolean;
   onCategorySurprise: (id: CategoryId) => void;
   onClearQuery: () => void;
 };
@@ -21,6 +23,8 @@ export function VocabularyBoard({
   onToggle,
   activeCategory,
   onCategoryChange,
+  onGetPrompt,
+  canGenerate,
   onCategorySurprise,
   onClearQuery
 }: Props) {
@@ -91,6 +95,10 @@ export function VocabularyBoard({
             </button>);
 
         })}
+        <button type="button" onClick={onGetPrompt} disabled={!canGenerate} title={canGenerate ? "Build the image prompt from your picks" : "Pick a few words first"} className="ds-button ds-button-primary ml-auto h-[38px] rounded-lg px-ds-md">
+          <Wand2 className="h-4 w-4" />
+          Get prompt
+        </button>
       </div>
 
       {groups.length === 0 ?
