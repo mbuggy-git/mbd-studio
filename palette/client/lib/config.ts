@@ -8,3 +8,6 @@ export const APPS_PRODUCT = {
   name: "Brand Palette & Creative Remix Applications",
   price: "$10",
 };
+
+/** Firefly Builder is unannounced: hide the design-system prompt until Michelle flips this. */
+export const SHOW_FIREFLY_BUILDER = false;
