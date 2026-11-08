@@ -3,10 +3,10 @@ import { Check, Pencil, RefreshCw } from "lucide-react";
 import { CopyButton, LockButton, SectionShell, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { GRAPHIC_LANGUAGE, LOGO_DIRECTIONS } from "../../../lib/brand/artVocab";
-import { generateLogoConcept, pinsOf, regenerateLogos } from "../../../lib/brand/generate";
+import { freshPair, generateLogoConcept, pinsOf, regenerateLogos } from "../../../lib/brand/generate";
 import { logoPrompt } from "../../../lib/brand/prompts";
 import { resolveFont } from "../../../lib/brand/fonts";
-import { newSeed } from "../../../lib/brand/random";
+import { newSeed, rng } from "../../../lib/brand/random";
 import type { LogoConcept } from "../../../lib/brand/types";
 import { LogoPreview } from "../LogoPreview";
 
@@ -100,7 +100,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <Pencil className="h-4 w-4" data-oid="ca20990995" data-oid-shared="true" data-oid-instance-targetable="true" />
                     {editing === lc.id ? "Done" : "Edit"}
                   </button>
-                  <button type="button" className={softButton} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, pinsOf(c)) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
+                  <button type="button" className={softButton} title="A new idea for this card — new direction, graphic language and wording" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => { const seed = newSeed(); return { ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, seed, c.id, freshPair(rng(seed), c)) : c)) }; })} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
                     <RefreshCw className="h-4 w-4" data-oid="2133b058bf" data-oid-shared="true" data-oid-instance-targetable="true" />
                   </button>
                   <LockButton compact locked={lc.locked} onToggle={() => patchConcept(lc.id, { locked: !lc.locked })} label={`concept ${i + 1}`} />

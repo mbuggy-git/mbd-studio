@@ -1,7 +1,7 @@
 import type { BrandState, ImageConcept, LockedText, LogoConcept, Ratio } from "./types";
 import { findTerm, type NameFlavor } from "./vocab";
 import { cap, listJoin, pickR, rng, sampleR, uid, type Rand } from "./random";
-import { LIGHTING, CAMERA, COMPOSITION, ATMOSPHERE } from "./artVocab";
+import { LIGHTING, CAMERA, COMPOSITION, ATMOSPHERE, LOGO_DIRECTIONS, GRAPHIC_LANGUAGE } from "./artVocab";
 
 // ——— Industry understanding (local, keyword-based) ———
 export type IndustryProfile = { nouns: string[]; product: string; scene: string; materials: string; motifs: string[]; persona: string };
@@ -267,11 +267,26 @@ export function generateLogoConcept(state: BrandState, index: number, seed: numb
   };
 }
 
-/** The card's own choices, if any, carried into a re-roll. */
+/** The card's own choices, if any, carried into a rewrite. */
 export const pinsOf = (lc: LogoConcept) => ({ direction: lc.pinDirection, graphic: lc.pinGraphic });
 
+/** A fresh pair for one card, never the pair it already has. */
+export function freshPair(r: Rand, current?: { direction: string; graphic: string }): { direction: string; graphic: string } {
+  const dirs = LOGO_DIRECTIONS.map((d) => d.name);
+  const gfx = GRAPHIC_LANGUAGE.map((g) => g.name);
+  for (let i = 0; i < 20; i++) {
+    const pair = { direction: pickR(r, dirs), graphic: pickR(r, gfx) };
+    if (!current || pair.direction !== current.direction || pair.graphic !== current.graphic) return pair;
+  }
+  return { direction: pickR(r, dirs), graphic: pickR(r, gfx) };
+}
+
+/** Three new ideas: distinct directions, fresh wording. */
 export function regenerateLogos(state: BrandState, seed: number): LogoConcept[] {
-  return state.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(state, i, seed + i * 7, lc.id, pinsOf(lc))));
+  const r = rng(seed);
+  const dirs = sampleR(r, LOGO_DIRECTIONS, 3).map((d) => d.name);
+  const gfx = sampleR(r, GRAPHIC_LANGUAGE, 3).map((g) => g.name);
+  return state.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(state, i, seed + i * 7, lc.id, { direction: dirs[i % dirs.length], graphic: gfx[i % gfx.length] })));
 }
 
 // ——— Image concepts ———
