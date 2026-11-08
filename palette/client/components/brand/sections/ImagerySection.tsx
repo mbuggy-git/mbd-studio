@@ -74,11 +74,17 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
                   }
                 >
                   <div className="flex flex-col gap-ds-lg">
-                    <div className="ds-field flex max-w-xs flex-col gap-ds-xs">
+                    <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[1fr_2fr]">
+                    <div className="ds-field flex flex-col gap-ds-xs">
                       <label htmlFor={`ratio-${concept.id}`} className="ds-field-label font-caption text-caption text-[#5f5f7a]">Aspect ratio</label>
                       <select id={`ratio-${concept.id}`} value={concept.ratio} onChange={(e) => patch(concept.id, { ratio: e.target.value as Ratio })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]">
                         {RATIOS.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
                       </select>
+                    </div>
+                    <div className="ds-field flex flex-col gap-ds-xs">
+                      <label htmlFor={`subject-${concept.id}`} className="ds-field-label font-caption text-caption text-[#5f5f7a]">Subject (optional)</label>
+                      <input id={`subject-${concept.id}`} value={concept.subjectOverride ?? ""} onChange={(e) => patch(concept.id, { subjectOverride: e.target.value })} placeholder="Leave blank to let the image model decide, or e.g. the hero product on a seamless background" className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" />
+                    </div>
                     </div>
                     {CHIP_GROUPS.map((g) => (
                       <div key={g.key} className="flex flex-col gap-ds-sm">

@@ -45,6 +45,8 @@ export type ImageConcept = {
   id: string;
   kind: string;
   subject: string;
+  /** Typed by the user; when set it replaces the generated subject in every prompt. */
+  subjectOverride?: string;
   ratio: Ratio;
   lighting: string;
   camera: string;

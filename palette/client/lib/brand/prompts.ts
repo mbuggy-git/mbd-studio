@@ -4,6 +4,9 @@ import { resolveFont } from "./fonts";
 import { industryProfile, voiceWords } from "./generate";
 import { article, cap, listJoin, pickR, rng } from "./random";
 import { ATMOSPHERE, CAMERA, COMPOSITION, DELIVERABLES, LIGHTING, STAGES, type DeliverableKind } from "./artVocab";
+
+/** Only what the user typed. Empty means the prompt names no subject and the image model decides. */
+const subjectOf = (c: { subjectOverride?: string }) => (c.subjectOverride ?? "").trim().replace(/\.$/, "");
 import { AESTHETICS, CHARACTERISTICS, PERSONALITY } from "./vocab";
 
 const inGroup = (names: string[], group: { terms: { name: string }[] }) => names.filter((n) => group.terms.some((t) => t.name === n));
@@ -71,7 +74,7 @@ export function imagePrompt(s: BrandState, c: ImageConcept): string {
   const mood = [...f.personality.slice(0, 2), ...f.aesthetics.slice(0, 1)];
   return [
     `${kindPhrase[c.kind] ?? "Image"} for ${f.name}, ${mood.length ? `${article(mood[0])} ${listJoin(mood)} ` : ""}${f.industry}.`,
-    `Subject: ${c.subject}.`,
+    subjectOf(c) ? `Subject: ${subjectOf(c)}.` : "",
     `${cap(phraseOf(LIGHTING, c.lighting))}, ${phraseOf(CAMERA, c.camera)}, ${phraseOf(COMPOSITION, c.composition)}; ${phraseOf(ATMOSPHERE, c.atmosphere)} atmosphere.`,
     `Color story: ${f.colors[0].name} (${f.colors[0].hex}) and ${f.colors[1].name} (${f.colors[1].hex}) with ${f.colors[2].name} (${f.colors[2].hex}) accents on ${f.colors[3].name} (${f.colors[3].hex}).`,
     c.kind === "Illustration" ? `Style: ${s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : "clean, ownable"} illustration.` : `Materials and styling: ${f.profile.materials}.`,
@@ -161,7 +164,7 @@ export function composeStructuredBrief(s: BrandState, seed: number): string {
     `• Graphic language: ${s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : "to be explored"}.`,
     "",
     "IMAGERY & ART DIRECTION",
-    ...s.imageConcepts.map((c, i) => `• Concept ${i + 1} (${c.ratio}, ${c.kind.toLowerCase()}): ${c.subject}; ${c.lighting.toLowerCase()}, ${c.camera.toLowerCase()}, ${c.composition.toLowerCase()} composition, ${c.atmosphere.toLowerCase()} atmosphere.`),
+    ...s.imageConcepts.map((c, i) => `• Concept ${i + 1} (${c.ratio}, ${c.kind.toLowerCase()}): ${subjectOf(c) ? `${subjectOf(c)}; ` : ""}${c.lighting.toLowerCase()}, ${c.camera.toLowerCase()}, ${c.composition.toLowerCase()} composition, ${c.atmosphere.toLowerCase()} atmosphere.`),
     "",
     "DELIVERABLES",
     DELIVERABLE_TEXT[d.kind],
@@ -192,7 +195,7 @@ function composeDeliverableMini(s: BrandState, seed: number): string {
   if (d.kind === "photo" || d.kind === "portrait") {
     return [
       `${opener} ${d.request} for ${f.name}, ${article(mood || "a")} ${mood || "distinctive"} ${f.industry}.`,
-      concept ? `Subject: ${concept.subject}.` : "",
+      concept && subjectOf(concept) ? `Subject: ${subjectOf(concept)}.` : "",
       concept ? `${cap(phraseOf(LIGHTING, concept.lighting))}, ${phraseOf(CAMERA, concept.camera)}, ${phraseOf(COMPOSITION, concept.composition)}, ${phraseOf(ATMOSPHERE, concept.atmosphere)} atmosphere.` : "",
       `Color: ${palette}.`,
       `Materials and props: ${f.profile.materials}.`,
@@ -215,7 +218,7 @@ function composeDeliverableMini(s: BrandState, seed: number): string {
     `Palette: ${palette}, with ${f.colors[4].name} ${f.colors[4].hex} for type.`,
     `Typography: ${f.display.name} for headlines, ${f.body.name} for supporting text.`,
     f.logo ? `Logo: ${f.logo.direction.toLowerCase()} placed with clear space.` : "",
-    concept && d.kind !== "board" ? `Imagery: ${concept.subject}, ${concept.lighting.toLowerCase()}, ${concept.atmosphere.toLowerCase()} mood.` : "",
+    concept && d.kind !== "board" ? `Imagery: ${subjectOf(concept) ? `${subjectOf(concept)}, ` : ""}${concept.lighting.toLowerCase()}, ${concept.atmosphere.toLowerCase()} mood.` : "",
     d.kind === "board" ? `Include palette swatches with hex labels, type specimens and imagery samples on one artboard.` : "",
     `${LAYOUT_TEXT[d.kind]} ${stageShort} stage: ${stageLine} Keep text editable where supported.`,
   ].filter(Boolean).join(" ");
@@ -265,7 +268,7 @@ function includesFor(s: BrandState, kind: DeliverableKind): string[] {
     : `Logo or graphic language concepts using ${graphic} graphic elements`;
   const concept = s.imageConcepts[0];
   const imageryLine = concept
-    ? `Relevant imagery or illustration samples, such as ${concept.subject.replace(/\.$/, "")}, with ${concept.lighting.toLowerCase()} and ${article(concept.atmosphere)} ${concept.atmosphere.toLowerCase()} atmosphere`
+    ? `Relevant imagery or illustration samples${subjectOf(concept) ? `, such as ${subjectOf(concept)},` : ""} with ${concept.lighting.toLowerCase()} and ${article(concept.atmosphere)} ${concept.atmosphere.toLowerCase()} atmosphere`
     : "Relevant imagery or illustration samples that share one lighting and color story";
   const personality = "A short description of the brand's visual personality";
 
@@ -284,7 +287,7 @@ function includesFor(s: BrandState, kind: DeliverableKind): string[] {
     const c = s.imageConcepts.find((x) => x.kind === "Lifestyle") ?? concept;
     return [
       `${palette}, used to grade every scene and for on-screen text`,
-      `A shot-by-shot sequence${c ? ` featuring ${c.subject.replace(/\.$/, "")}, with ${phraseOf(LIGHTING, c.lighting)} and ${phraseOf(CAMERA, c.camera)}` : ""}`,
+      `A shot-by-shot sequence${c ? `${subjectOf(c) ? ` featuring ${subjectOf(c)},` : ""} with ${phraseOf(LIGHTING, c.lighting)} and ${phraseOf(CAMERA, c.camera)}` : ""}`,
       `On-screen typography in ${f.display.name} for titles and ${f.body.name} for captions${f.tagline ? `, closing on the tagline “${f.tagline}”` : ""}`,
       f.logo ? `A logo end card using the ${f.logo.direction.toLowerCase()} direction, plus any animated graphic elements in a ${graphic} style` : `A logo end card and ${graphic} animated graphic elements`,
       `Notes on pacing, transitions, music and sound that match a ${f.personality.slice(0, 2).join(" and ") || "distinctive"} tone`,
