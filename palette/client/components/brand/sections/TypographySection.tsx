@@ -34,7 +34,7 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
       hint="Recommendations update as you change characteristics and personality words."
       actions={
         <>
-          <button type="button" className={softButton} onClick={remix} disabled={slot.locked} data-oid="ba006f7195" data-oid-classname-dynamic="true">
+          <button type="button" className={softButton} onClick={remix} data-oid="ba006f7195" data-oid-classname-dynamic="true">
             <Shuffle className="h-4 w-4" data-oid="550c894f36" />
             Remix
           </button>
@@ -51,15 +51,15 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
         <div className="grid grid-cols-1 gap-ds-lg xl:grid-cols-3" data-oid="d0501eb2d9">
           <div className="flex flex-col gap-ds-sm" data-oid="7c83e6405b">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="d631459042">Classification</h4>
-            <ChipPicker terms={TYPE_CLASSIFICATIONS} selected={[slot.classification]} onToggle={(n) => patch({ classification: n, font: null })} idPrefix={`${role}-cls`} groupLabel="Classification" disabled={slot.locked} />
+            <ChipPicker terms={TYPE_CLASSIFICATIONS} selected={[slot.classification]} onToggle={(n) => patch({ classification: n, font: null })} idPrefix={`${role}-cls`} groupLabel="Classification" />
           </div>
           <div className="flex flex-col gap-ds-sm" data-oid="0f89c18b04">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="7605c7336e">Personality</h4>
-            <ChipPicker terms={TYPE_PERSONALITY} selected={slot.personality} onToggle={(n) => toggleIn("personality", n)} idPrefix={`${role}-per`} groupLabel="Type personality" disabled={slot.locked} />
+            <ChipPicker terms={TYPE_PERSONALITY} selected={slot.personality} onToggle={(n) => toggleIn("personality", n)} idPrefix={`${role}-per`} groupLabel="Type personality" />
           </div>
           <div className="flex flex-col gap-ds-sm" data-oid="aefcce815a">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="e04f9a4b57">Weight & shape</h4>
-            <ChipPicker terms={TYPE_SHAPE} selected={slot.shape} onToggle={(n) => toggleIn("shape", n)} idPrefix={`${role}-shape`} groupLabel="Weight and shape" disabled={slot.locked} />
+            <ChipPicker terms={TYPE_SHAPE} selected={slot.shape} onToggle={(n) => toggleIn("shape", n)} idPrefix={`${role}-shape`} groupLabel="Weight and shape" />
           </div>
         </div>
 
@@ -70,7 +70,7 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
               const isActive = font.name === active.name;
               return (
                 <li key={font.name} role="option" aria-selected={isActive} className="ds-listbox-option flex flex-col gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] p-ds-md aria-selected:border-foreground aria-selected:shadow-[inset_0_0_0_1px_var(--foreground)]" data-oid="b66c6c42cb" data-oid-shared="true">
-                  <button type="button" disabled={slot.locked} onClick={() => patch({ font: font.name })} className="flex flex-col items-start gap-ds-xs text-left disabled:cursor-not-allowed" data-oid="68ece9f065" data-oid-shared="true">
+                  <button type="button" onClick={() => patch({ font: font.name })} className="flex flex-col items-start gap-ds-xs text-left disabled:cursor-not-allowed" data-oid="68ece9f065" data-oid-shared="true">
                     <span className="font-caption text-caption text-[#5f5f7a]" data-oid="c294f38a31" data-oid-shared="true" data-oid-text-editable="false" data-oid-text-source="expression:5daf9ec29965|expression:f7c3380d4b9b">{i === 0 && !slot.font ? "Top match · auto" : font.classification}{isActive ? " · in use" : ""}</span>
                     <span className="truncate text-[28px] leading-tight text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" style={{ fontFamily: font.stack }} data-oid="9ef8bca292" data-oid-shared="true" data-oid-style-dynamic="fontFamily">{font.name}</span>
                     <span className="font-caption text-caption text-[#5f5f7a]" data-oid="f8cbee8fd7" data-oid-shared="true">{font.note}</span>

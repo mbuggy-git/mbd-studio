@@ -73,7 +73,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
             hint="Generate name ideas or add your own."
             actions={namingSwitch}>
               <div className="mb-ds-md flex flex-wrap items-center gap-ds-sm" data-oid="d15c49dbc3">
-                  <button type="button" className={softButton} onClick={regenerate} disabled={busy || !brand.industry.trim()} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
+                  <button type="button" className={softButton} onClick={regenerate} disabled={busy || !brand.industry.trim()} title={!brand.industry.trim() ? "Say what kind of business it is in step 01 first" : undefined} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
                     <RefreshCw className="h-4 w-4" data-oid="fc1302bbb4" />
                     {hasGenerated ? "Regenerate names" : "Generate names"}
                   </button>

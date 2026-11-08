@@ -89,7 +89,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
             hint="Art direction for this image only."
             actions={
               <>
-                <button type="button" className={softButton} disabled={concept.locked} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c, k) => (k === idx ? generateImageConcept(s, idx, newSeed(), c) : c)) }))} data-oid="17f09b74b6" data-oid-classname-dynamic="true">
+                <button type="button" className={softButton} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c, k) => (k === idx ? generateImageConcept(s, idx, newSeed(), c) : c)) }))} data-oid="17f09b74b6" data-oid-classname-dynamic="true">
                   <RefreshCw className="h-4 w-4" data-oid="3e709e9dcf" />
                   {brand.imageKinds.length ? "Regenerate concept" : "Generate concept"}
                 </button>
@@ -101,17 +101,17 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
               <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[1fr_2fr_1fr]" data-oid="5edf774a46">
                 <div className="ds-field flex flex-col gap-ds-xs" data-oid="156d9406a3">
                   <label htmlFor="concept-kind" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="ec0df5ea88">Imagery type</label>
-                  <select id="concept-kind" value={concept.kind} disabled={concept.locked} onChange={(e) => guarded({ kind: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="a74415e330">
+                  <select id="concept-kind" value={concept.kind} onChange={(e) => guarded({ kind: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="a74415e330">
                     {IMAGE_KINDS.map((k) => <option key={k.name} value={k.name} data-oid="9707aee513" data-oid-shared="true" data-oid-instance-targetable="true">{k.name}</option>)}
                   </select>
                 </div>
                 <div className="ds-field flex flex-col gap-ds-xs" data-oid="7e7a232f3f">
                   <label htmlFor="concept-subject" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="7b66a7d5ea">Subject</label>
-                  <input id="concept-subject" value={concept.subject} disabled={concept.locked} onChange={(e) => guarded({ subject: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="938d1e31cd" />
+                  <input id="concept-subject" value={concept.subject} onChange={(e) => guarded({ subject: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="938d1e31cd" />
                 </div>
                 <div className="ds-field flex flex-col gap-ds-xs" data-oid="9c4162f85b">
                   <label htmlFor="concept-ratio" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="05dafebe27">Aspect ratio</label>
-                  <select id="concept-ratio" value={concept.ratio} disabled={concept.locked} onChange={(e) => guarded({ ratio: e.target.value as Ratio })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="c024fa0f3f">
+                  <select id="concept-ratio" value={concept.ratio} onChange={(e) => guarded({ ratio: e.target.value as Ratio })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="c024fa0f3f">
                     {RATIOS.map((r) => <option key={r.id} value={r.id} data-oid="15d9be0f9d" data-oid-shared="true" data-oid-instance-targetable="true">{r.label}</option>)}
                   </select>
                 </div>
@@ -119,7 +119,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
               {CHIP_GROUPS.map((g) => (
                 <div key={g.key} className="flex flex-col gap-ds-sm" data-oid="9e6599a556" data-oid-shared="true" data-oid-instance-targetable="true">
                   <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="566d5f2006" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:f2e290982d4d|text|expression:79873de251f8">{g.label} · {concept[g.key]}</h4>
-                  <ChipPicker terms={g.terms} selected={[concept[g.key]]} onToggle={(n) => guarded({ [g.key]: n } as Partial<ImageConcept>)} idPrefix={`img-${g.key}`} groupLabel={g.label} disabled={concept.locked} />
+                  <ChipPicker terms={g.terms} selected={[concept[g.key]]} onToggle={(n) => guarded({ [g.key]: n } as Partial<ImageConcept>)} idPrefix={`img-${g.key}`} groupLabel={g.label} />
                 </div>
               ))}
             </div>

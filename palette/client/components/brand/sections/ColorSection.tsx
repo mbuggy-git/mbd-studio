@@ -43,7 +43,6 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
       return { ...s, colorDirection: direction === undefined ? s.colorDirection : direction, palette: generatePalette(dir, s.palette, r) };
     });
 
-  const lockedCount = brand.palette.filter((p) => p.locked).length;
   const paletteText = brand.palette.map((p, i) => `${PALETTE_ROLES[i]}: ${p.hex.toUpperCase()}`).join("\n");
 
   return (
@@ -53,7 +52,7 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
       blurb="Five colors with roles. Pick by hand or choose a direction and regenerate."
       actions={
         <>
-          <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => regenerate()} disabled={lockedCount === 5} data-oid="bbdcc1c28e">
+          <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => regenerate()} data-oid="bbdcc1c28e">
             <RefreshCw className="h-4 w-4" data-oid="15a1b3ea54" />
             {brand.colorDirection ? "Regenerate colors" : "Generate colors"}
           </button>

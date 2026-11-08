@@ -30,7 +30,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
         title="Tagline options"
         hint="Choose one for the Brand Board."
         actions={
-          <button type="button" className={softButton} onClick={regenTaglines} disabled={brand.taglines.every((t) => t.locked)} data-oid="5571fc8a28" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
+          <button type="button" className={softButton} onClick={regenTaglines} data-oid="5571fc8a28" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
             <RefreshCw className="h-4 w-4" data-oid="a6c03627ff" />
             {brand.taglines.length ? "Regenerate taglines" : "Generate taglines"}
           </button>
@@ -88,7 +88,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
         title="Brand voice keywords"
         hint="Three words that guide how the brand sounds."
         actions={
-          <button type="button" className={softButton} disabled={brand.voice.every((v) => v.locked)} onClick={() => commit((s) => ({ ...s, voice: generateVoice(s.traits, newSeed(), s.voice) }))} data-oid="5382513a7f" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
+          <button type="button" className={softButton} onClick={() => commit((s) => ({ ...s, voice: generateVoice(s.traits, newSeed(), s.voice) }))} data-oid="5382513a7f" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
             <RefreshCw className="h-4 w-4" data-oid="c9d795ece1" />
             {brand.voice.length ? "Regenerate voice" : "Generate voice"}
           </button>

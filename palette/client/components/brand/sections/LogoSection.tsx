@@ -41,7 +41,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       title="Explore the mark"
       blurb="Choose directions and a graphic vocabulary, then compare three exploratory concepts. Previews are typographic sketches drawn in code — not finished or AI-rendered logos."
       actions={
-        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} disabled={brand.logoConcepts.every((c) => c.locked)} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
+        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="c75801596d" />
           {ready ? "Regenerate concepts" : "Generate concepts"}
         </button>
@@ -111,7 +111,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <Pencil className="h-4 w-4" data-oid="ca20990995" data-oid-shared="true" data-oid-instance-targetable="true" />
                     {editing === lc.id ? "Done" : "Edit"}
                   </button>
-                  <button type="button" className={softButton} disabled={lc.locked} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, pinsOf(c)) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
+                  <button type="button" className={softButton} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, pinsOf(c)) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
                     <RefreshCw className="h-4 w-4" data-oid="2133b058bf" data-oid-shared="true" data-oid-instance-targetable="true" />
                   </button>
                   <LockButton compact locked={lc.locked} onToggle={() => patchConcept(lc.id, { locked: !lc.locked })} label={`concept ${i + 1}`} />

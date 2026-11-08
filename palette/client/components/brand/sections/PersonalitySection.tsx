@@ -31,11 +31,11 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
       blurb="Say what the business is, then pick as many words as feel right. They steer name ideas, palette suggestions, font recommendations, copy voice and every prompt."
       actions={
         <>
-          <button type="button" className={softButton} disabled={brand.traitsLocked} onClick={() => commit((s) => ({ ...s, traits: surpriseTraits(newSeed()) }))} data-oid="2006198479" data-oid-classname-dynamic="true">
+          <button type="button" className={softButton} onClick={() => commit((s) => ({ ...s, traits: surpriseTraits(newSeed()) }))} data-oid="2006198479" data-oid-classname-dynamic="true">
             <Dices className="h-4 w-4" data-oid="b12b018290" />
             Surprise combination
           </button>
-          <button type="button" className={softButton} disabled={brand.traitsLocked || !brand.traits.length} onClick={() => commit((s) => ({ ...s, traits: [] }))} data-oid="a2c844bfa7" data-oid-classname-dynamic="true">
+          <button type="button" className={softButton} disabled={!brand.traits.length} onClick={() => commit((s) => ({ ...s, traits: [] }))} data-oid="a2c844bfa7" data-oid-classname-dynamic="true">
             <Eraser className="h-4 w-4" data-oid="2f48250976" />
             Clear
           </button>
@@ -55,7 +55,7 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
               <button
                 type="button"
                 className={softButton}
-                disabled={brand.traitsLocked}
+               
                 onClick={() => {
                   const pick = coherentPick(group, brand.traits);
                   if (pick) commit((s) => ({ ...s, traits: [...s.traits, pick] }));
@@ -67,7 +67,7 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
               </button>
             }
           >
-            <ChipPicker terms={group.terms} selected={brand.traits} onToggle={toggle} idPrefix={`p-${group.id}`} groupLabel={group.label} disabled={brand.traitsLocked} />
+            <ChipPicker terms={group.terms} selected={brand.traits} onToggle={toggle} idPrefix={`p-${group.id}`} groupLabel={group.label} />
           </SubPanel>
         );
       })}
