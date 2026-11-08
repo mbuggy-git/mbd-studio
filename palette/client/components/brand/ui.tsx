@@ -104,16 +104,9 @@ export function ChipPicker({
   onToggle,
   idPrefix,
   groupLabel,
-  disabled
-
-
-
-
-
-
-
-
-}: {terms: ChipTerm[];selected: string[];onToggle: (name: string) => void;idPrefix: string;groupLabel: string;disabled?: boolean;}) {
+  disabled,
+  tips = true
+}: {terms: ChipTerm[];selected: string[];onToggle: (name: string) => void;idPrefix: string;groupLabel: string;disabled?: boolean;tips?: boolean;}) {
   const [alignRight, setAlignRight] = useState<Record<string, boolean>>({});
   const measure = (name: string, el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
@@ -137,13 +130,14 @@ export function ChipPicker({
                 type="button"
                 aria-pressed={isOn}
                 disabled={disabled}
-                aria-describedby={`${idPrefix}-tip-${i}`}
+                aria-describedby={tips ? `${idPrefix}-tip-${i}` : undefined}
                 onClick={() => onToggle(term.name)}
                 className="inline-flex items-center gap-ds-sm rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] py-ds-xs pl-ds-xs pr-ds-md font-label text-label font-medium text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-all duration-150 hover:-translate-y-px hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="ca54bc638f" data-oid-shared="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:68a3773897b1">
                 
                 <span className="h-6 w-6 shrink-0 rounded-full ring-1 ring-black/10" style={{ background: term.swatch }} aria-hidden="true" data-oid="2b433f4a11" data-oid-shared="true" data-oid-style-dynamic="background" />
                 {term.name}
               </button>
+              {tips &&
               <div
                 id={`${idPrefix}-tip-${i}`}
                 role="tooltip"
@@ -160,6 +154,7 @@ export function ChipPicker({
                   <p className="mt-ds-xs border-t border-border pt-ds-sm font-caption text-caption text-muted-foreground" data-oid="c9b15cab15" data-oid-shared="true" data-oid-text-editable="false" data-oid-text-source="text|expression:e4d7d4d19e08">In your brand: {term.influence}</p>
                 </div>
               </div>
+              }
             </li>);
 
         })}

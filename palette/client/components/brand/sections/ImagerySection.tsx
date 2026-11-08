@@ -17,7 +17,6 @@ const CHIP_GROUPS = [
 
 export function ImagerySection({ brand, set, commit }: SectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [allRatio, setAllRatio] = useState<Ratio>("4:5");
   const idx = Math.min(activeIdx, brand.imageConcepts.length - 1);
   const concept = brand.imageConcepts[idx];
 
@@ -31,7 +30,6 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
       while (list.length < n) list.push(generateImageConcept(s, list.length, newSeed()));
       return { ...s, imageConcepts: list };
     });
-  const canShrinkTo = (n: number) => brand.imageConcepts.slice(n).every((c) => !c.locked);
 
   return (
     <SectionShell
@@ -40,46 +38,32 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
       blurb="Plan up to three image concepts, each with its own ratio and art direction. Prompts are ready for any image generator — no images are generated here."
     >
       <SubPanel title="Imagery mix" hint="New concepts cycle through the types you pick.">
-        <ChipPicker terms={IMAGE_KINDS} selected={brand.imageKinds} onToggle={(n) => set((s) => ({ ...s, imageKinds: s.imageKinds.includes(n) ? s.imageKinds.filter((k) => k !== n) : [...s.imageKinds, n] }))} idPrefix="img-kind" groupLabel="Imagery type" />
+        <ChipPicker terms={IMAGE_KINDS} selected={brand.imageKinds} onToggle={(n) => set((s) => ({ ...s, imageKinds: s.imageKinds.includes(n) ? s.imageKinds.filter((k) => k !== n) : [...s.imageKinds, n] }))} idPrefix="img-kind" groupLabel="Imagery type" tips={false} />
       </SubPanel>
 
-      <div className="flex flex-wrap items-end justify-between gap-ds-md" data-oid="0ba3422aad">
-        <div className="flex flex-col gap-ds-xs" data-oid="7098457082">
-          <span className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="94243717ec">How many concepts?</span>
-          <div className="ds-radio-group flex gap-ds-xs rounded-lg bg-[#d9c9f2] p-ds-xs" role="radiogroup" aria-label="Number of image concepts" data-oid="52a13f8f72">
+      {/* One row: how many concepts, then which one you're editing. */}
+      <div className="flex flex-wrap items-center gap-ds-md">
+        <div className="flex items-center gap-ds-sm">
+          <span className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]">Concepts</span>
+          <div className="ds-radio-group flex gap-ds-xs rounded-lg bg-[#d9c9f2] p-ds-xs" role="radiogroup" aria-label="Number of image concepts">
             {[1, 2, 3].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={brand.imageConcepts.length === n} disabled={!canShrinkTo(n)} onClick={() => setCount(n)} className="ds-radio rounded-md px-ds-lg py-ds-sm font-label text-label text-[#5f5f7a] disabled:opacity-40 aria-checked:bg-foreground aria-checked:text-background" data-oid="632a2496fa" data-oid-shared="true" data-oid-instance-targetable="true">
+              <button key={n} type="button" role="radio" aria-checked={brand.imageConcepts.length === n} onClick={() => setCount(n)} className="ds-radio rounded-md px-ds-md py-ds-xs font-label text-label text-[#5f5f7a]">
                 {n}
               </button>
             ))}
           </div>
         </div>
-        <div className="flex flex-wrap items-end gap-ds-sm" data-oid="d7cfaf4c78">
-          <div className="ds-field flex flex-col gap-ds-xs" data-oid="341ee2dae9">
-            <label htmlFor="ratio-all" className="ds-field-label font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="3d04e6fd53">Aspect ratio for all</label>
-            <select id="ratio-all" value={allRatio} onChange={(e) => setAllRatio(e.target.value as Ratio)} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="4f91f7a1c2">
-              {RATIOS.map((r) => <option key={r.id} value={r.id} data-oid="2b2df93c12" data-oid-shared="true" data-oid-instance-targetable="true">{r.label}</option>)}
-            </select>
-          </div>
-          <button type="button" className={softButton} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c) => (c.locked ? c : { ...c, ratio: allRatio })) }))} data-oid="75a25d13c8" data-oid-classname-dynamic="true">
-            Apply to all
-          </button>
+        <div role="tablist" aria-label="Image concepts" className="flex flex-wrap gap-ds-xs">
+          {brand.imageConcepts.map((c, i) => {
+            const kind = IMAGE_KINDS.find((k) => k.name === c.kind);
+            return (
+              <button key={c.id} type="button" role="tab" aria-selected={i === idx} onClick={() => setActiveIdx(i)} className="inline-flex items-center gap-ds-sm rounded-full border border-border bg-white py-ds-xs pl-ds-xs pr-ds-md text-left font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-selected:border-foreground aria-selected:bg-foreground aria-selected:text-background">
+                <span className="h-6 w-6 shrink-0 rounded-full ring-1 ring-black/10" style={{ background: kind?.swatch }} aria-hidden="true" />
+                Concept {i + 1} <span className="opacity-70">· {c.kind} · {c.ratio}</span>
+              </button>
+            );
+          })}
         </div>
-      </div>
-
-      <div role="tablist" aria-label="Image concepts" className="grid gap-ds-sm" style={{ gridTemplateColumns: `repeat(${brand.imageConcepts.length}, minmax(0, 1fr))` }} data-oid="5f63493784" data-oid-style-dynamic="gridTemplateColumns">
-        {brand.imageConcepts.map((c, i) => {
-          const ratio = RATIOS.find((r) => r.id === c.ratio) ?? RATIOS[0];
-          return (
-            <button key={c.id} type="button" role="tab" aria-selected={i === idx} onClick={() => setActiveIdx(i)} className="flex items-center gap-ds-md rounded-xl border border-border bg-[#d9c9f2] p-ds-sm text-left hover:border-foreground aria-selected:border-foreground aria-selected:bg-foreground aria-selected:text-background" data-oid="efa27fc20d" data-oid-shared="true" data-oid-instance-targetable="true">
-              <span className="block h-14 shrink-0 rounded-md" style={{ aspectRatio: `${ratio.w} / ${ratio.h}`, background: `linear-gradient(140deg, ${brand.palette[i % 3].hex}, ${brand.palette[3].hex})` }} aria-hidden="true" data-oid="2ec9a8b130" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="aspectRatio,background" />
-              <span className="flex min-w-0 flex-col" data-oid="be3d1e5ed5" data-oid-shared="true" data-oid-instance-targetable="true">
-                <span className="font-label text-label font-medium" data-oid="e60581255c" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="text|expression:80ab2b274cc6|expression:122633d194ce">Concept {i + 1}{c.locked ? " · locked" : ""}</span>
-                <span className="truncate font-caption text-caption opacity-75" data-oid="3803bb1746" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:a9fadb4951af|text|expression:479dc588ae7c|text|expression:6781115b919f">{c.kind} · {c.ratio} · {c.lighting}</span>
-              </span>
-            </button>
-          );
-        })}
       </div>
 
       {concept && (
