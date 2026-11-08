@@ -251,7 +251,9 @@ export function clearLocks(s: BrandState): BrandState {
     palette: s.palette.map(live),
     display: live(s.display),
     body: live(s.body),
-    logoConcepts: s.logoConcepts.map(live),
+    // A direction that no longer exists (Hand-lettered) becomes a wordmark.
+    logoConcepts: s.logoConcepts.map((lc) => live(LOGO_DIRECTIONS.some((d) => d.name === lc.direction) ? lc : { ...lc, direction: "Wordmark", pinDirection: lc.pinDirection ? "Wordmark" : undefined })),
+    logoDirections: s.logoDirections.filter((d) => LOGO_DIRECTIONS.some((x) => x.name === d)),
     taglines: s.taglines.map(live),
     voice: s.voice.map(live),
     description: live(s.description),

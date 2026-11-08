@@ -199,7 +199,6 @@ const TITLES: Record<string, string[]> = {
   "Combination Mark": ["Symbol + Name", "The Lockup", "Paired Mark"],
   Emblem: ["The Badge", "Heritage Emblem", "Round Seal"],
   Symbol: ["The Icon", "Abstract Mark", "Standalone Symbol"],
-  "Hand-lettered": ["Brush Signature", "Hand-drawn Script", "Inked Lettering"],
   Typographic: ["Stacked Type", "Split Composition", "Cropped Letterform"],
 };
 
@@ -235,10 +234,6 @@ export function describeLogo(direction: string, graphic: string, name: string, m
     Symbol: [
       `An abstract ${motif} reduced to ${g} forms — memorable at favicon size and ownable without words.`,
       `A single ${g} mark that abstracts a ${motif} into a confident, iconic shape.`,
-    ],
-    "Hand-lettered": [
-      `Loose, hand-drawn lettering with a swash beneath the name and a slightly irregular baseline — ${g} and personal.`,
-      `Brush-lettered name with a small ${motif} flourish tucked into the final letter.`,
     ],
     Typographic: [
       `The name stacked across two lines with one letter cropped into a pattern; ${g} rules separate the parts.`,

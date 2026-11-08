@@ -66,7 +66,6 @@ export const LOGO_DIRECTIONS: ChipTerm[] = [
   c("Combination Mark", "linear-gradient(90deg,#614a8a 0 30%,#f3eee4 30%)", "A symbol paired with the wordmark.", "Flexible: the symbol can later stand alone once recognized."),
   c("Emblem", "radial-gradient(circle,#f3eee4 0 40%,#2b2730 41% 50%,#f3eee4 51%)", "Name enclosed in a badge, seal or crest.", "Traditional, crafted or collegiate; great on packaging and merch."),
   c("Symbol", "conic-gradient(from 45deg,#e8432e 0 25%,#111 25% 50%,#e8432e 50% 75%,#111 75%)", "An abstract or pictorial icon.", "Iconic and language-free — needs a strong idea behind it."),
-  c("Hand-lettered", "repeating-linear-gradient(100deg,#d8c3a5 0 3px,#c4ab88 3px 5px)", "Custom lettering drawn by hand.", "Personal, artisanal and warm; one-of-a-kind character."),
   c("Typographic", "repeating-linear-gradient(180deg,#111 0 6px,#eee 6px 12px)", "Type arranged as a graphic composition.", "Stacked, cropped or split letters that become a pattern."),
 ];
 
