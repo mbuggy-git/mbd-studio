@@ -53,7 +53,6 @@ export function SectionNav({ active, onChange, meta }: Props) {
             )}
           </span>
           <span data-done={active !== s.id} className="whitespace-nowrap font-body text-[15px] font-semibold leading-tight data-[done=true]:text-[#432e4b]" data-oid="7b4ec1b569" data-oid-shared="true" data-oid-instance-targetable="true">{s.short}</span>
-          <span className="w-full truncate font-caption text-caption opacity-75" data-oid="251c382442" data-oid-shared="true" data-oid-instance-targetable="true">{meta[s.id].done ? "Done" : meta[s.id].count}</span>
           {meta[s.id].done && active !== s.id && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-[#432e4b]" data-oid="6efd144c9b" data-oid-shared="true" />}
         </button>
       ))}
