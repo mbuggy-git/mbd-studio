@@ -104,7 +104,7 @@ export function createBlankBrand(): BrandState {
   };
   // Concept slots stay available (built from neutral defaults) so Regenerate still works after clearing.
   base.logoConcepts = [0, 1, 2].map((i) => generateLogoConcept(base, i, newSeed() + i));
-  base.imageConcepts = [0, 1].map((i) => generateImageConcept(base, i, newSeed() + i));
+  base.imageConcepts = []; // one appears per imagery type the user picks
   return base;
 }
 
