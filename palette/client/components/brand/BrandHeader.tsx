@@ -17,7 +17,7 @@ type Props = {
 
 export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSaved, onShowLibrary, aiLabel }: Props) {
   return (
-    <header className="grid grid-cols-1 items-end gap-ds-xl border-b border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pb-ds-2xl lg:grid-cols-[1.35fr_1fr]" data-oid="7ce93247cd" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
+    <header className="grid grid-cols-1 items-start gap-ds-xl border-b border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pb-ds-2xl lg:grid-cols-[1.35fr_1fr]" data-oid="7ce93247cd" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
       <div className="flex flex-col gap-ds-md" data-oid="a0c606ab66">
         <div className="flex flex-wrap items-center gap-ds-md" data-oid="3676500e7c">
           <p className="font-caption text-caption font-medium uppercase tracking-[0.24em] text-[#cfcfe6]" data-oid="70d7d56161">An interactive brand identity playground · Brought to you by <a href="https://mbd.studio" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-[#f3eefa]" data-oid="009016a46a">MBD.studio</a></p>
