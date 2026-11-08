@@ -63,14 +63,22 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                 <LogoPreview direction={lc.direction} name={brand.name} colors={colors} fontStack={font.stack} variant={i} seed={lc.seed} />
               </div>
               <div className="flex flex-1 flex-col gap-ds-sm p-ds-md" data-oid="cfcd15dfff" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:p|expression:ec08feb84e85|element:div">
-                <div className="flex flex-wrap items-center gap-ds-xs">
+                <div className="flex flex-col gap-ds-sm">
                   <span className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Concept {i + 1}</span>
-                  <select aria-label={`Direction for concept ${i + 1}`} value={lc.direction} onChange={(e) => repin(i, { direction: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
-                    {LOGO_DIRECTIONS.map((d) => <option key={d.name} value={d.name} title={d.meaning}>{d.name}</option>)}
-                  </select>
-                  <select aria-label={`Graphic language for concept ${i + 1}`} value={lc.graphic} onChange={(e) => repin(i, { graphic: e.target.value })} className="ds-input h-8 rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
-                    {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name} title={g.meaning}>{g.name}</option>)}
-                  </select>
+                  <div className="grid grid-cols-2 gap-ds-sm">
+                    <div className="ds-field flex flex-col gap-ds-xs">
+                      <label htmlFor={`dir-${lc.id}`} className="ds-field-label font-caption text-caption text-[#5f5f7a]">Logo direction</label>
+                      <select id={`dir-${lc.id}`} value={lc.direction} onChange={(e) => repin(i, { direction: e.target.value })} className="ds-input h-9 w-full rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
+                        {LOGO_DIRECTIONS.map((d) => <option key={d.name} value={d.name} title={d.meaning}>{d.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="ds-field flex flex-col gap-ds-xs">
+                      <label htmlFor={`gfx-${lc.id}`} className="ds-field-label font-caption text-caption text-[#5f5f7a]">Graphic language</label>
+                      <select id={`gfx-${lc.id}`} value={lc.graphic} onChange={(e) => repin(i, { graphic: e.target.value })} className="ds-input h-9 w-full rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
+                        {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name} title={g.meaning}>{g.name}</option>)}
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 {editing === lc.id ? (
                   <>
