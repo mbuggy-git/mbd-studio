@@ -199,19 +199,7 @@ export function VocabularyBoard({
                           alignRight[term.name] ? "right-0" : "left-0"
                         )} data-oid="b12f76962c" data-oid-shared="true" data-oid-classname-dynamic="true">
                         
-                          <div className="relative h-40 w-full overflow-hidden rounded-lg" style={term.swatch} data-oid="63fb37026f" data-oid-shared="true" data-oid-style-dynamic="*">
-                            {term.image &&
-                          <img
-                            src={term.image}
-                            alt={`Example of ${term.name}`}
-                            loading="lazy"
-                            className="h-full w-full object-cover"
-                            onError={(event) => {
-                              event.currentTarget.hidden = true;
-                            }} data-oid="0832ca721b" data-oid-shared="true" />
-
-                          }
-                          </div>
+                          <div className="h-2 w-full rounded-full" style={term.swatch} aria-hidden="true" />
                           <div className="flex flex-col gap-ds-xs px-ds-sm pb-ds-sm pt-ds-md" data-oid="0d3b4f9f55" data-oid-shared="true">
                             <span className="font-caption text-caption font-medium uppercase tracking-[0.2em] text-muted-foreground" data-oid="56a5519e85" data-oid-shared="true">{category.label}</span>
                             <span className="font-display text-[28px] font-semibold leading-none text-popover-foreground" data-oid="8a4aee1b0c" data-oid-shared="true">{term.name}</span>

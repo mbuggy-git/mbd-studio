@@ -174,19 +174,7 @@ export function ChipPicker({
                   alignRight[term.name] ? "right-0" : "left-0"
                 )} data-oid="0c1d593e2d" data-oid-shared="true" data-oid-classname-dynamic="true">
                 
-                <div className="relative h-32 w-full overflow-hidden rounded-lg" style={{ background: term.swatch }} data-oid="422fb2af7b" data-oid-shared="true" data-oid-style-dynamic="background">
-                  {term.image &&
-                  <img
-                    src={term.image}
-                    alt={`Example of ${term.name}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                    onError={(event) => {
-                      event.currentTarget.hidden = true;
-                    }} data-oid="c264bf036a" data-oid-shared="true" />
-
-                  }
-                </div>
+                <div className="h-2 w-full rounded-full" style={{ background: term.swatch }} aria-hidden="true" />
                 <div className="flex flex-col gap-ds-xs px-ds-sm pb-ds-sm pt-ds-md" data-oid="3928f8fc7e" data-oid-shared="true">
                   <span className="font-caption text-caption uppercase tracking-[0.2em] text-muted-foreground" data-oid="5ce8ae8c32" data-oid-shared="true">{groupLabel}</span>
                   <span className="font-display text-[26px] font-semibold leading-none text-popover-foreground" data-oid="6c3d0574e7" data-oid-shared="true">{term.name}</span>
