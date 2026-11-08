@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import titleImage from "figma:asset/928688118246c11022dd32ad61b41c1dc858b9d5.png";
 import aiHandbookCover from "../../assets/AI-handbook-cover.png";
 import claudeBookCover from "../../assets/claude-book-cover.png";
+import appsBrand from "../../assets/apps-brand.webp";
 import { Navigation } from "./Navigation";
 
 interface Product {
@@ -67,7 +68,7 @@ export function GetTheGoods() {
                   <img
                     src={product.image}
                     alt={product.imageAlt}
-                    className="w-full aspect-[4/3] object-contain"
+                    className={product.slug === "brand-palette-remix" ? "w-full aspect-[4/3] object-cover object-top" : "w-full aspect-[4/3] object-contain"}
                   />
                   <span className="absolute top-3 right-3 inline-flex items-center rounded-full bg-[#5816dd] px-3 py-1 text-sm font-bold text-white shadow-[0px_4px_6px_0px_rgba(0,0,0,0.25)]">
                     {product.price}

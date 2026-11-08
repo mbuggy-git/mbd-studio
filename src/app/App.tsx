@@ -16,6 +16,7 @@ import { DownloadsPage } from "./pages/DownloadsPage";
 import { ClientLoginPage } from "./pages/ClientLoginPage";
 import { ClientPortalPage } from "./pages/ClientPortalPage";
 import { KitAccessPage } from "./pages/KitAccessPage";
+import { BrandPaletteRemixPage } from "./pages/BrandPaletteRemixPage";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect } from "react";
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/client" element={<ClientPortalPage />} />
         <Route path="/client/login" element={<ClientLoginPage />} />
+        <Route path="/get-the-goods/brand-palette-remix" element={<BrandPaletteRemixPage />} />
         <Route path="/kit" element={<KitAccessPage />} />
         <Route path="/kit/:token" element={<KitAccessPage />} />
         <Route path="/video-database" element={<Navigate to="/app" replace />} />

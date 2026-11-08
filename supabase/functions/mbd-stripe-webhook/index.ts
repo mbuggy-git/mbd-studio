@@ -196,7 +196,7 @@ serve(async (req) => {
             </tr></table>
             <p style="margin: 0 0 6px; font-weight: bold;">Also from MBD Studio: Brand Palette &amp; Creative Remix Applications — $10</p>
             <p style="margin: 0 0 12px; color: #444; font-size: 14px;">Two prompting apps for designers. Brand Palette builds a brand from concept to prompt-ready briefs; Creative Remix combines style, influence and mood into concepts you wouldn't have reached on your own. Browser-based, no account, no AI credits.</p>
-            <a href="${SITE_URL}/palette/brand" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
+            <a href="${SITE_URL}/get-the-goods/brand-palette-remix" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
           </div>
           `}
           <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">

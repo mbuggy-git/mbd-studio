@@ -64,9 +64,9 @@ function AppsBox() {
           {loading ? "Loading…" : "Get both apps →"}
         </button>
         <span className="text-white text-xl font-bold">$10 USD</span>
-        <a href="/palette/brand" className="text-white/90 underline underline-offset-4 hover:text-white">
+        <Link to="/get-the-goods/brand-palette-remix" className="text-white/90 underline underline-offset-4 hover:text-white">
           See them first
-        </a>
+        </Link>
       </div>
     </div>
   );
