@@ -61,25 +61,6 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
         </>
       }
     >
-      <div className="grid grid-cols-1 gap-ds-sm sm:grid-cols-5" data-oid="2b52087e8f">
-        {brand.palette.map((sw, i) => (
-          <div key={i} className="flex flex-col overflow-hidden rounded-xl border border-border bg-[#d9c9f2]" data-oid="4b4a0aed8b" data-oid-shared="true" data-oid-instance-targetable="true">
-            <label className="relative block h-44 cursor-pointer" style={{ background: sw.hex }} title="Click to open the color picker" data-oid="5326dcb1b2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="background">
-              <input type="color" value={sw.hex} onChange={(e) => updateSwatch(i, { hex: e.target.value })} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label={`${PALETTE_ROLES[i]} color picker`} data-oid="cde57e91ed" data-oid-shared="true" data-oid-instance-targetable="true" />
-              <span className="pointer-events-none absolute left-ds-sm top-ds-sm font-caption text-caption" style={{ color: inkOn(sw.hex) }} data-oid="218daa56e0" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="color">{PALETTE_ROLES[i]}</span>
-              <span className="pointer-events-none absolute bottom-ds-sm left-ds-sm font-caption text-caption capitalize" style={{ color: inkOn(sw.hex) }} data-oid="56c16d8b8e" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="color">{colorName(sw.hex)}</span>
-            </label>
-            <div className="flex flex-col gap-ds-sm p-ds-sm" data-oid="531c93e0be" data-oid-shared="true" data-oid-instance-targetable="true">
-              <HexField value={sw.hex} onCommit={(hex) => updateSwatch(i, { hex })} label={`${PALETTE_ROLES[i]} hex value`} />
-              <div className="flex items-center gap-ds-xs" data-oid="8d35b7d26f" data-oid-shared="true" data-oid-instance-targetable="true">
-                <LockButton compact locked={sw.locked} onToggle={() => updateSwatch(i, { locked: !sw.locked })} label={`${PALETTE_ROLES[i]} color`} />
-                <CopyButton text={sw.hex.toUpperCase()} label="Hex" className="flex-1 px-ds-sm" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       <SubPanel
         title="Starting color direction"
         hint={brand.colorDirection ? `Current: ${brand.colorDirection}. Choosing a direction regenerates the palette.` : "No direction chosen — regeneration follows your personality words."}
@@ -99,6 +80,25 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
           groupLabel="Color direction"
         />
       </SubPanel>
+
+      <div className="grid grid-cols-1 gap-ds-sm sm:grid-cols-5" data-oid="2b52087e8f">
+        {brand.palette.map((sw, i) => (
+          <div key={i} className="flex flex-col overflow-hidden rounded-xl border border-border bg-[#d9c9f2]" data-oid="4b4a0aed8b" data-oid-shared="true" data-oid-instance-targetable="true">
+            <label className="relative block h-44 cursor-pointer" style={{ background: sw.hex }} title="Click to open the color picker" data-oid="5326dcb1b2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="background">
+              <input type="color" value={sw.hex} onChange={(e) => updateSwatch(i, { hex: e.target.value })} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label={`${PALETTE_ROLES[i]} color picker`} data-oid="cde57e91ed" data-oid-shared="true" data-oid-instance-targetable="true" />
+              <span className="pointer-events-none absolute left-ds-sm top-ds-sm font-caption text-caption" style={{ color: inkOn(sw.hex) }} data-oid="218daa56e0" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="color">{PALETTE_ROLES[i]}</span>
+              <span className="pointer-events-none absolute bottom-ds-sm left-ds-sm font-caption text-caption capitalize" style={{ color: inkOn(sw.hex) }} data-oid="56c16d8b8e" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="color">{colorName(sw.hex)}</span>
+            </label>
+            <div className="flex flex-col gap-ds-sm p-ds-sm" data-oid="531c93e0be" data-oid-shared="true" data-oid-instance-targetable="true">
+              <HexField value={sw.hex} onCommit={(hex) => updateSwatch(i, { hex })} label={`${PALETTE_ROLES[i]} hex value`} />
+              <div className="flex items-center gap-ds-xs" data-oid="8d35b7d26f" data-oid-shared="true" data-oid-instance-targetable="true">
+                <LockButton compact locked={sw.locked} onToggle={() => updateSwatch(i, { locked: !sw.locked })} label={`${PALETTE_ROLES[i]} color`} />
+                <CopyButton text={sw.hex.toUpperCase()} label="Hex" className="flex-1 px-ds-sm" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[1.4fr_1fr]" data-oid="28b3545187">
         <div className="flex h-40 overflow-hidden rounded-xl" aria-label="Palette in use proportions" data-oid="38e4337c2b">
