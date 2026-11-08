@@ -2,6 +2,8 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { captureTokenFromUrl, checkAccess, resendLink, startCheckout } from "../lib/access";
 import { APPS_PRODUCT, SITE_URL } from "../lib/config";
+import shotBrand from "../assets/shot-brand.webp";
+import shotRemix from "../assets/shot-remix.webp";
 
 type State = "checking" | "ok" | "locked";
 
@@ -60,19 +62,25 @@ function Locked() {
         </h1>
 
         <div className="mt-ds-2xl grid gap-ds-xl lg:grid-cols-2">
-          <section className="rounded-xl border border-border bg-[#ccb7ed] p-ds-xl">
+          <section className="overflow-hidden rounded-xl border border-border bg-[#ccb7ed]">
+            <img src={shotBrand} alt="Brand Palette — business, personality and a live brand board" className="block aspect-[16/10] w-full object-cover object-top" loading="lazy" />
+            <div className="p-ds-xl">
             <h2 className="font-heading text-[24px] font-semibold text-[#2b2140]">Brand Palette</h2>
             <p className="mt-ds-sm text-body text-[#3d3354]">
               Build a brand from concept to prompt-ready briefs: personality, color, type, logo
               direction, imagery, with a live brand board you can export.
             </p>
+            </div>
           </section>
-          <section className="rounded-xl border border-border bg-[#ccb7ed] p-ds-xl">
+          <section className="overflow-hidden rounded-xl border border-border bg-[#ccb7ed]">
+            <img src={shotRemix} alt="Creative Remix — style, influence and mood combined into a concept and prompt" className="block aspect-[16/10] w-full object-cover object-top" loading="lazy" />
+            <div className="p-ds-xl">
             <h2 className="font-heading text-[24px] font-semibold text-[#2b2140]">Creative Remix</h2>
             <p className="mt-ds-sm text-body text-[#3d3354]">
               Combine style, influence and mood into concepts you wouldn't have reached on your
               own, then turn the combination into a prompt.
             </p>
+            </div>
           </section>
         </div>
 

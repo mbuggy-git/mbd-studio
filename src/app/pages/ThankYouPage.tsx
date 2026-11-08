@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
+import appsBrand from "../../assets/apps-brand.webp";
+import appsRemix from "../../assets/apps-remix.webp";
 
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || `https://${projectId}.supabase.co`;
@@ -44,6 +46,10 @@ function AppsBox() {
 
   return (
     <div className="mt-16 bg-white/10 rounded-2xl p-6 sm:p-8 text-left">
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <img src={appsBrand} alt="Brand Palette" className="block w-full aspect-[16/10] object-cover object-top rounded-xl" loading="lazy" />
+        <img src={appsRemix} alt="Creative Remix" className="block w-full aspect-[16/10] object-cover object-top rounded-xl" loading="lazy" />
+      </div>
       <p className="text-white/80 text-sm font-bold uppercase tracking-wider">Also from MBD Studio</p>
       <h2 className="mt-2 text-white text-2xl sm:text-3xl font-bold">
         Brand Palette &amp; Creative Remix Applications

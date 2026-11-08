@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { APPS_PRODUCT } from "../lib/config";
-import preview from "../assets/apps-preview.webp";
+import preview from "../assets/shot-brand.webp";
 
 /** Sits above "Your direction" on the free Palette: the two paid apps, one button. */
 export function AppsCard() {
   return (
     <aside className="flex flex-col gap-ds-md overflow-hidden rounded-xl border border-border shadow-[0_24px_60px_-30px_rgba(0,0,0,0.25)]" style={{ backgroundColor: "#ccb7ed" }}>
       <Link to="/brand" aria-label={APPS_PRODUCT.name} className="block">
-        <img src={preview} alt="Brand Palette and Creative Remix" className="block h-auto w-full" loading="lazy" />
+        <img src={preview} alt="Brand Palette and Creative Remix" className="block aspect-[16/10] w-full object-cover object-top" loading="lazy" />
       </Link>
       <div className="flex flex-col gap-ds-sm px-ds-xl pb-ds-xl">
         <p className="font-caption text-caption font-medium uppercase tracking-[0.24em]" style={{ color: "#5f5f7a" }}>Also from MBD Studio</p>

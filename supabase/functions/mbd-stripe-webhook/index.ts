@@ -190,6 +190,10 @@ serve(async (req) => {
           </p>
           <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
           <div style="margin: 40px 0 0; padding: 20px 24px; border: 1px solid #e5e5e5; border-radius: 12px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 0 14px;"><tr>
+              <td style="width: 50%; padding-right: 6px;"><img src="${SITE_URL}/apps/brand-palette.jpg" alt="Brand Palette" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
+              <td style="width: 50%; padding-left: 6px;"><img src="${SITE_URL}/apps/creative-remix.jpg" alt="Creative Remix" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
+            </tr></table>
             <p style="margin: 0 0 6px; font-weight: bold;">Also from MBD Studio: Brand Palette &amp; Creative Remix Applications — $10</p>
             <p style="margin: 0 0 12px; color: #444; font-size: 14px;">Two prompting apps for designers. Brand Palette builds a brand from concept to prompt-ready briefs; Creative Remix combines style, influence and mood into concepts you wouldn't have reached on your own. Browser-based, no account, no AI credits.</p>
             <a href="${SITE_URL}/palette/brand" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
