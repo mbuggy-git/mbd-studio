@@ -49,6 +49,13 @@ export function luminance(hex: string) {
   return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
 }
 
+/** WCAG contrast ratio between two hex colors (1–21). */
+export function contrastRatio(a: string, b: string): number {
+  const la = luminance(a), lb = luminance(b);
+  const [hi, lo] = la > lb ? [la, lb] : [lb, la];
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 /** Readable text color on top of a swatch. */
 export const inkOn = (hex: string) => (luminance(hex) > 0.36 ? "#24182f" : "#fbf8ff");
 
