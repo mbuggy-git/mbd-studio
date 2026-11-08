@@ -22,7 +22,7 @@ export async function copyText(text: string) {
 
 // Same white as the header's Library button, whatever panel it sits on.
 export const softButton =
-"ds-button rounded-lg border border-border bg-white text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-colors hover:border-foreground hover:bg-[#f3eefa] disabled:cursor-not-allowed disabled:opacity-50";
+"ds-button rounded-lg border border-border bg-white text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-colors hover:border-foreground hover:bg-[#f3eefa] disabled:cursor-not-allowed disabled:text-[#9f8cc4] disabled:hover:border-border disabled:hover:bg-white";
 
 export function CopyButton({ text, label = "Copy", className }: {text: string;label?: string;className?: string;}) {
   const [done, setDone] = useState(false);
