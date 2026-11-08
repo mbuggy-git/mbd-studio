@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import titleImage from "figma:asset/928688118246c11022dd32ad61b41c1dc858b9d5.png";
 import aiHandbookCover from "../../assets/AI-handbook-cover.png";
 import claudeBookCover from "../../assets/claude-book-cover.png";
-import appsBrand from "../../assets/apps-brand.webp";
+import appsBrand from "../../assets/apps-brand.jpg";
 import { Navigation } from "./Navigation";
 
 interface Product {

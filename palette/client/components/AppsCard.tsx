@@ -1,5 +1,5 @@
 import { APPS_PRODUCT } from "../lib/config";
-import preview from "../assets/shot-brand.webp";
+import preview from "../assets/shot-brand.jpg";
 
 /** Sits above "Your direction" on the free Palette: the two paid apps, one button. */
 export function AppsCard() {

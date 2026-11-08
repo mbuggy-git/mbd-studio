@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import appsBrand from "../../assets/apps-brand.webp";
-import appsRemix from "../../assets/apps-remix.webp";
+import appsBrand from "../../assets/apps-brand.jpg";
+import appsRemix from "../../assets/apps-remix.jpg";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { projectId, publicAnonKey } from "../utils/supabase/info";

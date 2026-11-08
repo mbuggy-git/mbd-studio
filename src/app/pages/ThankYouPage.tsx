@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
-import appsBrand from "../../assets/apps-brand.webp";
-import appsRemix from "../../assets/apps-remix.webp";
+import appsBrand from "../../assets/apps-brand.jpg";
+import appsRemix from "../../assets/apps-remix.jpg";
 
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || `https://${projectId}.supabase.co`;

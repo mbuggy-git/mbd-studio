@@ -2,8 +2,8 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { captureTokenFromUrl, checkAccess, resendLink, startCheckout } from "../lib/access";
 import { APPS_PRODUCT, SITE_URL } from "../lib/config";
-import shotBrand from "../assets/shot-brand.webp";
-import shotRemix from "../assets/shot-remix.webp";
+import shotBrand from "../assets/shot-brand.jpg";
+import shotRemix from "../assets/shot-remix.jpg";
 
 type State = "checking" | "ok" | "locked";
 
