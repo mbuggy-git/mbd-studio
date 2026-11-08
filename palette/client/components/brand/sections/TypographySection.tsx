@@ -51,15 +51,15 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
         <div className="grid grid-cols-1 gap-ds-lg xl:grid-cols-3" data-oid="d0501eb2d9">
           <div className="flex flex-col gap-ds-sm" data-oid="7c83e6405b">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="d631459042">Classification</h4>
-            <ChipPicker terms={TYPE_CLASSIFICATIONS} selected={[slot.classification]} onToggle={(n) => patch({ classification: n, font: null })} idPrefix={`${role}-cls`} groupLabel="Classification" disabled={slot.locked} showNotes={false} />
+            <ChipPicker terms={TYPE_CLASSIFICATIONS} selected={[slot.classification]} onToggle={(n) => patch({ classification: n, font: null })} idPrefix={`${role}-cls`} groupLabel="Classification" disabled={slot.locked} />
           </div>
           <div className="flex flex-col gap-ds-sm" data-oid="0f89c18b04">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="7605c7336e">Personality</h4>
-            <ChipPicker terms={TYPE_PERSONALITY} selected={slot.personality} onToggle={(n) => toggleIn("personality", n)} idPrefix={`${role}-per`} groupLabel="Type personality" disabled={slot.locked} showNotes={false} />
+            <ChipPicker terms={TYPE_PERSONALITY} selected={slot.personality} onToggle={(n) => toggleIn("personality", n)} idPrefix={`${role}-per`} groupLabel="Type personality" disabled={slot.locked} />
           </div>
           <div className="flex flex-col gap-ds-sm" data-oid="aefcce815a">
             <h4 className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="e04f9a4b57">Weight & shape</h4>
-            <ChipPicker terms={TYPE_SHAPE} selected={slot.shape} onToggle={(n) => toggleIn("shape", n)} idPrefix={`${role}-shape`} groupLabel="Weight and shape" disabled={slot.locked} showNotes={false} />
+            <ChipPicker terms={TYPE_SHAPE} selected={slot.shape} onToggle={(n) => toggleIn("shape", n)} idPrefix={`${role}-shape`} groupLabel="Weight and shape" disabled={slot.locked} />
           </div>
         </div>
 

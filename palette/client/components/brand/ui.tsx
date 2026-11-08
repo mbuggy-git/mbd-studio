@@ -117,8 +117,7 @@ export function ChipPicker({
   onToggle,
   idPrefix,
   groupLabel,
-  disabled,
-  showNotes = true
+  disabled
 
 
 
@@ -127,15 +126,13 @@ export function ChipPicker({
 
 
 
-}: {terms: ChipTerm[];selected: string[];onToggle: (name: string) => void;idPrefix: string;groupLabel: string;disabled?: boolean;showNotes?: boolean;}) {
+}: {terms: ChipTerm[];selected: string[];onToggle: (name: string) => void;idPrefix: string;groupLabel: string;disabled?: boolean;}) {
   const [alignRight, setAlignRight] = useState<Record<string, boolean>>({});
-  const [focus, setFocus] = useState<string | null>(null);
   const measure = (name: string, el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
     const right = rect.left + TOOLTIP_WIDTH > window.innerWidth - 16;
     setAlignRight((prev) => prev[name] === right ? prev : { ...prev, [name]: right });
   };
-  const note = terms.find((t) => t.name === focus);
 
   return (
     <div className="flex flex-col gap-ds-md" data-oid="e9d6da185b" data-oid-component-root="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-text-source="element:ul|expression:b795732da9f3">
@@ -147,20 +144,14 @@ export function ChipPicker({
               key={term.name}
               className="group relative"
               onPointerEnter={(e) => measure(term.name, e.currentTarget)}
-              onFocus={(e) => {
-                measure(term.name, e.currentTarget);
-                setFocus(term.name);
-              }} data-oid="b82caf15ee" data-oid-shared="true">
+              onFocus={(e) => measure(term.name, e.currentTarget)} data-oid="b82caf15ee" data-oid-shared="true">
               
               <button
                 type="button"
                 aria-pressed={isOn}
                 disabled={disabled}
                 aria-describedby={`${idPrefix}-tip-${i}`}
-                onClick={() => {
-                  setFocus(term.name);
-                  onToggle(term.name);
-                }}
+                onClick={() => onToggle(term.name)}
                 className="inline-flex items-center gap-ds-sm rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] py-ds-xs pl-ds-xs pr-ds-md font-label text-label font-medium text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-all duration-150 hover:-translate-y-px hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="ca54bc638f" data-oid-shared="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:68a3773897b1">
                 
                 <span className="h-6 w-6 shrink-0 rounded-full ring-1 ring-black/10" style={{ background: term.swatch }} aria-hidden="true" data-oid="2b433f4a11" data-oid-shared="true" data-oid-style-dynamic="background" />
@@ -186,22 +177,7 @@ export function ChipPicker({
 
         })}
       </ul>
-      {showNotes &&
-      <div className="flex min-h-[52px] items-center gap-ds-md rounded-lg border border-dashed border-[color-mix(in_srgb,var(--primary)_30%,var(--border))] px-ds-md py-ds-sm" aria-live="polite" data-oid="6a45101b01" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">
-          {note ?
-        <>
-              <span className="h-8 w-8 shrink-0 overflow-hidden rounded-md ring-1 ring-black/10" style={{ background: note.swatch }} aria-hidden="true" data-oid="176cee2cab" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-style-dynamic="background">
-                {note.image && <img src={note.image} alt="" className="h-full w-full object-cover" onError={(e) => {e.currentTarget.hidden = true;}} data-oid="1ff7481d8e" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" />}
-              </span>
-              <p className="font-caption text-caption text-[#5f5f7a]" data-oid="6375f21391" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-text-source="element:strong|text|expression:e3ee884460db|expression:fd50351a37a5">
-                <strong className="font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="a8318c7255" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">{note.name}</strong> — {note.meaning} {note.influence}
-              </p>
-            </> :
 
-        <p className="font-caption text-caption text-[#5f5f7a]" data-oid="c067de4e66" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">Hover, focus or tap a word to see what it means for your brand.</p>
-        }
-        </div>
-      }
     </div>);
 
 }

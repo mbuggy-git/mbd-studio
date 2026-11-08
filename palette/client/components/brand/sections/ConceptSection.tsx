@@ -125,6 +125,9 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
                 {brand.nameSuggestions.length === 0 &&
               <li className="rounded-lg border border-dashed border-border p-ds-md font-label text-label text-[#5f5f7a]" data-oid="3cc95aeeaa">Type your business above and press Generate brand names to see five ideas here.</li>
               }
+                {brand.nameSuggestions.length > 0 && brand.traits.length === 0 &&
+              <li className="font-caption text-caption text-[#5f5f7a]">These use a neutral voice. Pick personality words in step 02, then come back and regenerate for names in that voice.</li>
+              }
                 {brand.nameSuggestions.map((n, i) => {
                 const current = n === brand.name;
                 return (
