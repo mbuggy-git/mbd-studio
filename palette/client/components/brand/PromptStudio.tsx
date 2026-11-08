@@ -4,6 +4,7 @@ import type { SectionProps } from "./sections/types";
 import { DELIVERABLES } from "../../lib/brand/artVocab";
 import { composeBuilderPrompt, composeDNA, composeFullBrief, composeMiniPrompt } from "../../lib/brand/prompts";
 import { newSeed } from "../../lib/brand/random";
+import { SHOW_FIREFLY_BUILDER } from "../../lib/config";
 import type { BrandState, LiveText } from "../../lib/brand/types";
 
 type LiveKey = "dna" | "fullBrief" | "miniPrompt";
@@ -121,6 +122,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
         )}
       </div>
 
+      {SHOW_FIREFLY_BUILDER && (
       <SubPanel
         title="Firefly Builder design system"
         hint="Paste as Builder's design-system prompt; every page it generates then carries this brand. Rewrites itself as the brand changes."
@@ -128,6 +130,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
       >
         <textarea readOnly rows={6} value={composeBuilderPrompt(brand)} className="ds-input w-full resize-y rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-caption text-caption" />
       </SubPanel>
+      )}
     </section>
   );
 }

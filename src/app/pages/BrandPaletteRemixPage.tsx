@@ -19,7 +19,7 @@ const PRICE = "$10 USD";
 const includes = [
   "Brand Palette — business, personality, name, color, type, logo, copy, imagery",
   "Live brand board with print and PNG export",
-  "Prompt Studio: brand board prompt, asset prompts, Firefly Builder design system",
+  "Prompt Studio: a brand board prompt and asset prompts for any AI design tool",
   "Creative Remix — style × influence × mood, with a remix prompt",
   "Runs in the browser, no account, no AI credits",
   "Personal link by email, yours to keep",
@@ -110,9 +110,8 @@ export function BrandPaletteRemixPage() {
                 imagery, with a live brand board you can print or export.
               </p>
               <p>
-                The Prompt Studio turns all of it into a brand board prompt, asset prompts, and a
-                one-paragraph design system you paste into Firefly Builder so every page it
-                generates is on-brand.
+                The Prompt Studio turns all of it into a brand board prompt and asset prompts,
+                ready for any AI design tool.
               </p>
             </div>
           </div>
