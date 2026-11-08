@@ -85,11 +85,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
             }
           >
             <div className="flex flex-col gap-ds-lg" data-oid="345cd2fced" data-oid-text-editable="false" data-oid-text-source="element:div|expression:63ab67f50b7a">
-              <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[2fr_1fr]" data-oid="5edf774a46">
-                <div className="ds-field flex flex-col gap-ds-xs" data-oid="7e7a232f3f">
-                  <label htmlFor="concept-subject" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="7b66a7d5ea">Subject</label>
-                  <input id="concept-subject" value={concept.subject} onChange={(e) => guarded({ subject: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="938d1e31cd" />
-                </div>
+              <div className="grid grid-cols-1 gap-ds-md md:max-w-xs" data-oid="5edf774a46">
                 <div className="ds-field flex flex-col gap-ds-xs" data-oid="9c4162f85b">
                   <label htmlFor="concept-ratio" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="05dafebe27">Aspect ratio</label>
                   <select id="concept-ratio" value={concept.ratio} onChange={(e) => guarded({ ratio: e.target.value as Ratio })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="c024fa0f3f">
