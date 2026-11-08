@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Sparkles } from "lucide-react";
 import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { COLOR_DIRECTIONS } from "../../../lib/brand/artVocab";
 import { colorName, generatePalette, inkOn, normalizeHex, PALETTE_ROLES, primaryOnDark } from "../../../lib/brand/color";
-import { newSeed, rng } from "../../../lib/brand/random";
+import { newSeed, pickR, rng } from "../../../lib/brand/random";
 import { directionFromTraits } from "../../../lib/brand/state";
 import type { Swatch } from "../../../lib/brand/types";
 
@@ -69,6 +69,10 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
           <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => regenerate()} data-oid="bbdcc1c28e">
             <RefreshCw className="h-4 w-4" data-oid="15a1b3ea54" />
             {brand.colorDirection ? "Regenerate colors" : "Generate colors"}
+          </button>
+          <button type="button" className={softButton} style={{ backgroundColor: "#b267c7", color: "#ffffff" }} title="A random direction and a fresh palette" onClick={() => regenerate(pickR(Math.random, COLOR_DIRECTIONS.map((d) => d.name).filter((n) => n !== brand.colorDirection)))}>
+            <Sparkles className="h-4 w-4" />
+            Surprise me
           </button>
           <CopyButton text={paletteText} label="Copy palette" />
         </>
