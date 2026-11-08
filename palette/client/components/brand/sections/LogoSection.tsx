@@ -11,6 +11,7 @@ import type { LogoConcept } from "../../../lib/brand/types";
 import { LogoPreview } from "../LogoPreview";
 
 export function LogoSection({ brand, set, commit }: SectionProps) {
+  const ready = brand.logoConceptsReady !== false && brand.logoConcepts.length > 0;
   const [editing, setEditing] = useState<string | null>(null);
   const font = resolveFont(brand.display, brand.traits, "display");
   const colors = brand.palette.map((p) => p.hex);
@@ -25,12 +26,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       const adding = !s[key].includes(name);
       const next = { ...s, [key]: adding ? [...s[key], name] : s[key].filter((x) => x !== name) };
       const logoConcepts = s.logoConcepts.map((lc, i) => (lc.locked ? lc : generateLogoConcept(next, i, Number.isFinite(lc.seed) ? lc.seed : newSeed(), lc.id)));
-      let selectedLogo = s.selectedLogo;
-      if (key === "logoDirections" && adding) {
-        const hit = logoConcepts.findIndex((lc) => lc.direction === name);
-        if (hit >= 0) selectedLogo = hit;
-      }
-      return { ...next, logoConcepts, selectedLogo };
+      return { ...next, logoConcepts, logoConceptsReady: s.logoConceptsReady || (key === "logoDirections" && adding) };
     });
 
   return (
@@ -39,9 +35,9 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       title="Explore the mark"
       blurb="Choose directions and a graphic vocabulary, then compare three exploratory concepts. Previews are typographic sketches drawn in code — not finished or AI-rendered logos."
       actions={
-        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()) }))} disabled={brand.logoConcepts.every((c) => c.locked)} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
+        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} disabled={brand.logoConcepts.every((c) => c.locked)} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="c75801596d" />
-          Regenerate concepts
+          {ready ? "Regenerate concepts" : "Generate concepts"}
         </button>
       }
     >
@@ -55,7 +51,23 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-ds-md xl:grid-cols-3" data-oid="d3b644e0cf">
-        {brand.logoConcepts.map((lc, i) => {
+        {!ready && [0, 1, 2].map((i) => (
+          <article key={`empty-${i}`} className="flex flex-col overflow-hidden rounded-xl border border-dashed border-[color-mix(in_srgb,var(--primary)_35%,var(--border))] bg-[#d9c9f2]">
+            <div className="flex h-52 items-center justify-center bg-[color-mix(in_srgb,var(--primary)_10%,var(--background))]">
+              <span className="h-16 w-16 rounded-xl border-2 border-dashed border-[#9f8cc4]" aria-hidden="true" />
+            </div>
+            <div className="flex flex-1 flex-col gap-ds-sm p-ds-md">
+              <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Concept {i + 1}</p>
+              <h3 className="font-heading text-heading text-[#9f8cc4]">Concept title</h3>
+              <p className="font-label text-label text-[#9f8cc4]">Pick logo directions above, or press Generate concepts, and three sketches appear here.</p>
+            </div>
+            <div className="flex flex-col gap-ds-xs border-t border-[color-mix(in_srgb,var(--primary)_22%,var(--border))] p-ds-md">
+              <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]">Generation prompt</p>
+              <textarea readOnly rows={4} placeholder="The prompt for this concept is written here once it exists." className="ds-input w-full resize-none rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-caption text-caption" />
+            </div>
+          </article>
+        ))}
+        {ready && brand.logoConcepts.map((lc, i) => {
           const selected = brand.selectedLogo === i;
           const prompt = lc.promptOverride ?? logoPrompt(brand, lc);
           return (

@@ -17,7 +17,7 @@ export function brandFacts(s: BrandState) {
   const aesthetics = lower(inGroup(s.traits, AESTHETICS));
   const values = lower(inGroup(s.traits, CHARACTERISTICS));
   const colors = s.palette.map((sw, i) => ({ hex: sw.hex.toUpperCase(), name: colorName(sw.hex), role: PALETTE_ROLES[i] }));
-  const logo = s.logoConcepts[s.selectedLogo] ?? s.logoConcepts[0];
+  const logo = s.selectedLogo >= 0 ? s.logoConcepts[s.selectedLogo] : undefined;
   const tagline = s.taglines[s.selectedTagline]?.text ?? s.taglines[0]?.text ?? "";
   const name = s.name.trim() || "Untitled brand";
   const industry = s.industry.trim() || "brand";

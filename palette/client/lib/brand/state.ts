@@ -57,6 +57,7 @@ export function createSampleBrand(): BrandState {
   };
   base.nameSuggestions = ["Ember & Oat", ...generateNames(base.industry, base.traits, 7, ["Ember & Oat"]).slice(0, 4)];
   base.logoConcepts = [0, 1, 2].map((i) => generateLogoConcept(base, i, 41 + i));
+  base.logoConceptsReady = true;
   base.imageConcepts = [0, 1].map((i) => generateImageConcept(base, i, 13 + i));
   return refreshCopy(base, 3);
 }
@@ -84,7 +85,8 @@ export function createBlankBrand(): BrandState {
     logoDirections: [],
     graphicLanguage: [],
     logoConcepts: [],
-    selectedLogo: 0,
+    selectedLogo: -1,
+    logoConceptsReady: false,
     taglines: [],
     selectedTagline: 0,
     description: { text: "", locked: false },
@@ -212,6 +214,8 @@ export function surpriseBrand(s: BrandState): BrandState {
     next.graphicLanguage = sampleR(r, GRAPHIC_LANGUAGE, 2).map((x) => x.name);
   }
   next.logoConcepts = regenerateLogos(next, seed + 3);
+  next.logoConceptsReady = true;
+  if (next.selectedLogo < 0) next.selectedLogo = 0;
   next.imageConcepts = s.imageConcepts.map((c, i) => (c.locked ? c : generateImageConcept(next, i, seed + 9 + i, c)));
   next = refreshCopy(next, seed + 5);
   next.dna = s.dna.locked ? s.dna : { ...s.dna, seed: seed + 6 };

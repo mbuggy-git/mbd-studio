@@ -69,7 +69,9 @@ export type BrandState = {
   logoDirections: string[];
   graphicLanguage: string[];
   logoConcepts: LogoConcept[];
-  selectedLogo: number;
+  selectedLogo: number; // -1 = none chosen yet
+  /** False until the user asks for concepts (or picks a direction); cards show hints until then. */
+  logoConceptsReady?: boolean;
   taglines: LockedText[];
   selectedTagline: number;
   description: LockedText;
