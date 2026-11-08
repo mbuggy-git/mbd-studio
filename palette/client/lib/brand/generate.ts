@@ -214,30 +214,31 @@ function motifFor(state: Pick<BrandState, "industry" | "traits">, r: Rand) {
 export function describeLogo(direction: string, graphic: string, name: string, motif: string, r: Rand): string {
   const initials = name.split(/[\s&]+/).filter(Boolean).map((w) => w[0]?.toUpperCase()).slice(0, 2).join("") || "B";
   const g = graphic.toLowerCase();
+  // Plain descriptions a designer would brief with: what the mark is, how it's built, where it works.
   const map: Record<string, string[]> = {
     Wordmark: [
-      `The full name set with custom spacing; a single ${motif} detail replaces one counter. ${cap(g)} restraint keeps it legible at every size.`,
-      `A confident wordmark with one bespoke ligature and slightly opened letter-spacing — ${g} in feel, warm in rhythm.`,
+      `The full name set as a single wordmark, letter-spacing tuned by hand. A small ${motif} detail can live in one letterform. ${cap(g)} in feel; must stay legible at small sizes.`,
+      `A confident wordmark with one custom ligature joining two letters. ${cap(g)} styling, generous spacing, no symbol — the lettering is the brand.`,
     ],
     Monogram: [
-      `The initials “${initials}” interlock inside a ${g} frame, cut so the negative space suggests a ${motif}.`,
-      `A compact “${initials}” monogram built for stamps and favicons, its strokes shaped with ${g} precision.`,
+      `The initials “${initials}” drawn as one interlocking monogram with ${g} construction. Works alone on stamps, favicons and corners of packaging.`,
+      `A compact “${initials}” monogram inside a simple frame, strokes matched to the brand typeface. Built to sit small and read instantly.`,
     ],
     "Combination Mark": [
-      `A ${g} ${motif} symbol sits beside the name, sharing its stroke weight so the two lock up as one.`,
-      `The name paired with a small ${motif} glyph above — the symbol can later stand alone on packaging.`,
+      `A simple ${motif} symbol beside the name, both sharing one stroke weight so they lock up as a unit. The symbol must also work on its own.`,
+      `The name with a small ${motif} glyph above it. ${cap(g)} shapes, no detail that disappears below 24 px; the glyph becomes the app icon.`,
     ],
     Emblem: [
-      `The name wraps a central ${motif} inside a fine double ring, with a founding line at the base — ${g} in detail.`,
-      `A badge-like emblem with the name arched over a ${motif}, built for seals, labels and merchandise.`,
+      `The name set around a central ${motif} inside a ring, with a short line underneath for a place or founding year. ${cap(g)} detailing; made for labels, seals and merchandise.`,
+      `A badge: the name arched over a ${motif}, contained in a clean circular or shield outline. Reads as a mark of origin.`,
     ],
     Symbol: [
-      `An abstract ${motif} reduced to ${g} forms — memorable at favicon size and ownable without words.`,
-      `A single ${g} mark that abstracts a ${motif} into a confident, iconic shape.`,
+      `An abstract ${motif} reduced to a few ${g} shapes. No letters; it has to be memorable at favicon size and ownable in one color.`,
+      `A single iconic mark drawn from a ${motif}, simplified until it works as a silhouette. Pairs with the wordmark but stands alone.`,
     ],
     Typographic: [
-      `The name stacked across two lines with one letter cropped into a pattern; ${g} rules separate the parts.`,
-      `A split typographic composition where the name breaks around a ${motif}-shaped gap.`,
+      `The name set as a typographic composition across two lines, in the brand display face, with a ${g} rule or bar separating the lines. Pure type, no symbol.`,
+      `A type-only lockup: the name in the brand display face with one deliberate typographic move, such as a shifted baseline or an oversized initial. ${cap(g)} and restrained.`,
     ],
   };
   return pickR(r, map[direction] ?? map.Wordmark);

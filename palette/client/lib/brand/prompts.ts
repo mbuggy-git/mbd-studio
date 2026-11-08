@@ -61,7 +61,7 @@ export function logoPrompt(s: BrandState, lc: LogoConcept): string {
     `Logo design for “${f.name}”, ${article(f.industry)} ${f.industry}.`,
     `Direction: ${lc.direction.toLowerCase()} — ${lc.description}`,
     `Graphic language: ${lc.graphic.toLowerCase()}${f.personality.length ? `; personality: ${listJoin(f.personality.slice(0, 3))}` : ""}.`,
-    `Typography reference: ${f.display.name} (${s.display.classification.toLowerCase()}${slotWords(s.display).length ? `, ${slotWords(s.display).slice(0, 3).join(", ")}` : ""}).`,
+    `Typography reference: ${f.display.name}${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).length ? ` (${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).join(", ")})` : ""}.`,
     `Colors: ${f.colors.slice(0, 3).map((c) => `${c.name} ${c.hex}`).join(", ")} on ${f.colors[3].name} ${f.colors[3].hex}.`,
     `Flat, vector-style artwork centered on a plain background; no mockups, no extra words beyond the brand name. ${stage}`,
   ].join(" ");
