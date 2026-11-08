@@ -22,7 +22,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
       actions={
         <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => refreshCopy(s, newSeed()))} data-oid="7ec9704e4b" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="dc5080ebdf" />
-          Regenerate all copy
+          {brand.taglines.length ? "Regenerate all copy" : "Generate all copy"}
         </button>
       }
     >
@@ -32,7 +32,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
         actions={
           <button type="button" className={softButton} onClick={regenTaglines} disabled={brand.taglines.every((t) => t.locked)} data-oid="5571fc8a28" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
             <RefreshCw className="h-4 w-4" data-oid="a6c03627ff" />
-            Regenerate taglines
+            {brand.taglines.length ? "Regenerate taglines" : "Generate taglines"}
           </button>
         }
       >
@@ -69,6 +69,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
           onChange={(text) => set((s) => ({ ...s, description: { text, locked: false } }))}
           onToggleLock={() => set((s) => ({ ...s, description: { ...s.description, locked: !s.description.locked } }))}
           onRegenerate={() => commit((s) => ({ ...s, description: { text: generateDescription(ctx, newSeed()), locked: false } }))}
+          regenerateLabel={brand.description.text.trim() ? "Regenerate" : "Generate"}
         />
         <TextCard
           title="Marketing paragraph"
@@ -79,6 +80,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
           onChange={(text) => set((s) => ({ ...s, marketing: { text, locked: false } }))}
           onToggleLock={() => set((s) => ({ ...s, marketing: { ...s.marketing, locked: !s.marketing.locked } }))}
           onRegenerate={() => commit((s) => ({ ...s, marketing: { text: generateMarketing(ctx, newSeed()), locked: false } }))}
+          regenerateLabel={brand.marketing.text.trim() ? "Regenerate" : "Generate"}
         />
       </div>
 
@@ -88,7 +90,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
         actions={
           <button type="button" className={softButton} disabled={brand.voice.every((v) => v.locked)} onClick={() => commit((s) => ({ ...s, voice: generateVoice(s.traits, newSeed(), s.voice) }))} data-oid="5382513a7f" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
             <RefreshCw className="h-4 w-4" data-oid="c9d795ece1" />
-            Regenerate voice
+            {brand.voice.length ? "Regenerate voice" : "Generate voice"}
           </button>
         }
       >

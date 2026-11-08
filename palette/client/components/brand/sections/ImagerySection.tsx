@@ -91,7 +91,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
               <>
                 <button type="button" className={softButton} disabled={concept.locked} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c, k) => (k === idx ? generateImageConcept(s, idx, newSeed(), c) : c)) }))} data-oid="17f09b74b6" data-oid-classname-dynamic="true">
                   <RefreshCw className="h-4 w-4" data-oid="3e709e9dcf" />
-                  Regenerate concept
+                  {brand.imageKinds.length ? "Regenerate concept" : "Generate concept"}
                 </button>
                 <LockButton locked={concept.locked} onToggle={() => patch(concept.id, { locked: !concept.locked })} label={`concept ${idx + 1}`} />
               </>

@@ -55,7 +55,7 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
         <>
           <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => regenerate()} disabled={lockedCount === 5} data-oid="bbdcc1c28e">
             <RefreshCw className="h-4 w-4" data-oid="15a1b3ea54" />
-            Regenerate colors
+            {brand.colorDirection ? "Regenerate colors" : "Generate colors"}
           </button>
           <CopyButton text={paletteText} label="Copy palette" />
         </>
