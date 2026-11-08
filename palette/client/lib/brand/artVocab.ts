@@ -82,11 +82,11 @@ export const GRAPHIC_LANGUAGE: ChipTerm[] = [
 
 // ——— Imagery ———
 export const IMAGE_KINDS: ChipTerm[] = [
-  c("Product", "linear-gradient(#efe9df,#efe9df)", "The product as hero.", "Materials, form and detail shot with intention.", "product photography"),
-  c("Portrait", "linear-gradient(#e7dcef,#e7dcef)", "People as the face of the brand.", "Character, styling and expression carry the personality.", "portrait photography"),
-  c("Lifestyle", "linear-gradient(#f6e3cf,#f6e3cf)", "The brand inside real moments.", "Shows who it's for and how it feels to use.", "lifestyle photography"),
-  c("Illustration", "radial-gradient(circle at 30% 40%,#ffb37a 0 18%,transparent 19%),radial-gradient(circle at 70% 60%,#7ee0d4 0 22%,transparent 23%),#fff6d6", "Drawn rather than photographed.", "Ownable worlds and characters, free of photographic constraints.", "illustration"),
-  c("Mixed", "linear-gradient(135deg,#efe9df 0 50%,#ccb7ed 50%)", "Photography combined with graphics or collage.", "Layered, editorial storytelling that blends real and drawn.", "mixed-media imagery"),
+  c("Product", "radial-gradient(circle at 50% 42%,#3b2f2a 0 26%,transparent 27%),linear-gradient(#efe9df 0 64%,#d9d0c2 64%)", "The product itself is the picture: packshots, hero angles and close-ups of material and detail, usually on a clean or seamless background.", "Best when what you sell is the proof — texture, form and finish do the talking. Use it for shop pages, packaging and launch hero images.", "product photography"),
+  c("Portrait", "radial-gradient(circle at 50% 38%,#c9a085 0 20%,transparent 21%),radial-gradient(ellipse at 50% 92%,#7b5a8f 0 42%,transparent 43%),#e7dcef", "People as the face of the brand: founders, makers, customers, models. Expression, styling and gaze set the tone before any copy is read.", "Best for brands built on trust, craft or community. Use it for About pages, campaigns and social where a human face carries the personality.", "portrait photography"),
+  c("Lifestyle", "linear-gradient(180deg,#f3e1c6 0 55%,#c98d5e 55% 78%,#6e4b36 78%)", "The brand inside a real moment — in use, in a room, in a hand, in daylight. The product is present but the scene is the subject.", "Best for showing who it's for and how it feels to live with. Use it for homepage heroes, social and editorial spreads.", "lifestyle photography"),
+  c("Illustration", "radial-gradient(circle at 30% 40%,#ffb37a 0 18%,transparent 19%),radial-gradient(circle at 70% 60%,#7ee0d4 0 22%,transparent 23%),#fff6d6", "Drawn rather than photographed: flat, textured, painterly or vector. Characters, scenes and symbols you fully own.", "Best when photography can't show the idea (services, software, abstract benefits) or when a distinct drawn world is the brand. Use it for onboarding, packaging and spot art.", "illustration"),
+  c("Mixed", "linear-gradient(135deg,#efe9df 0 50%,transparent 50%),radial-gradient(circle at 72% 30%,#ffb37a 0 14%,transparent 15%),linear-gradient(135deg,transparent 0 50%,#ccb7ed 50%)", "Photography combined with graphics, type or collage: cut-outs, drawn marks over photos, layered textures.", "Best for editorial, energetic brands that want range without losing a signature. Use it for campaigns, zines and social series.", "mixed-media imagery"),
 ];
 
 export const LIGHTING: ChipTerm[] = [

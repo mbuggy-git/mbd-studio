@@ -35,13 +35,13 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
     <SectionShell
       index="07 · Imagery & art direction"
       title="Direct the imagery"
-      blurb="Plan up to three image concepts, each with its own ratio and art direction. Prompts are ready for any image generator — no images are generated here."
+      blurb="Plan one or two image concepts, each with its own ratio and art direction. Prompts are ready for any image generator — no images are generated here."
     >
       <SubPanel title="Imagery mix" hint="New concepts cycle through the types you pick.">
         <ChipPicker terms={IMAGE_KINDS} selected={brand.imageKinds} onToggle={(n) => commit((s) => {
           const next = { ...s, imageKinds: s.imageKinds.includes(n) ? s.imageKinds.filter((k) => k !== n) : [...s.imageKinds, n] };
           return { ...next, imageConcepts: next.imageConcepts.map((c, i) => generateImageConcept(next, i, c.seed, c)) };
-        })} idPrefix="img-kind" groupLabel="Imagery type" tips={false} />
+        })} idPrefix="img-kind" groupLabel="Imagery type" />
       </SubPanel>
 
       {/* One row: how many concepts, then which one you're editing. */}
@@ -49,7 +49,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
         <div className="flex items-center gap-ds-sm">
           <span className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]">Concepts</span>
           <div className="ds-radio-group flex gap-ds-xs rounded-lg bg-[#d9c9f2] p-ds-xs" role="radiogroup" aria-label="Number of image concepts">
-            {[1, 2, 3].map((n) => (
+            {[1, 2].map((n) => (
               <button key={n} type="button" role="radio" aria-checked={brand.imageConcepts.length === n} onClick={() => setCount(n)} className="ds-radio rounded-md px-ds-md py-ds-xs font-label text-label text-[#5f5f7a]">
                 {n}
               </button>
