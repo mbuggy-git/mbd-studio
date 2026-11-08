@@ -10,6 +10,9 @@ const PRODUCTS: Record<string, {
   title: string;
   emailSubject: string;
   ctaLabel: string;
+  // Kit-style products: the buyer also gets a personal, non-expiring access
+  // link (https://mbd.studio/kit/<token>) that opens the apps.
+  accessLink?: boolean;
 }> = {
   "ai-workflows": {
     pdfPath: "MBD-studio-AI-Workflow-Handbook.pdf",
@@ -23,7 +26,23 @@ const PRODUCTS: Record<string, {
     emailSubject: "Your Claude & Me guide is ready",
     ctaLabel: "Download your guide →",
   },
+  "kit": {
+    pdfPath: "MBD-studio-AI-Workflow-Handbook.pdf",
+    title: "The Art Direction Kit",
+    emailSubject: "Your Art Direction Kit is ready",
+    ctaLabel: "Download the handbook →",
+    accessLink: true,
+  },
 };
+
+const SITE_URL = "https://www.mbd.studio";
+
+// 32 random bytes, base64url — unguessable, fits in a URL.
+function makeAccessToken(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
 
 const DEFAULT_SLUG = "ai-workflows";
 
@@ -124,6 +143,8 @@ serve(async (req) => {
     }
 
     const downloadUrl = signedUrlData.signedUrl;
+    const accessToken = product.accessLink ? makeAccessToken() : null;
+    const accessUrl = accessToken ? `${SITE_URL}/kit/${accessToken}` : null;
 
     // Log the purchase
     const { error: insertError } = await supabase
@@ -135,6 +156,7 @@ serve(async (req) => {
         amount_paid: amountPaid,
         currency: currency,
         marketing_opt_in: marketingOptIn,
+        access_token: accessToken,
       });
 
     if (insertError) {
@@ -148,6 +170,19 @@ serve(async (req) => {
       <html>
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
           <h1 style="color: #1a1a1a;">Thanks for your purchase!</h1>
+          ${accessUrl ? `
+          <p><strong>${product.title}</strong> is ready. This is your personal link to the apps — keep this email, the link doesn't expire:</p>
+          <p style="margin: 32px 0;">
+            <a href="${accessUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
+              Open the kit →
+            </a>
+          </p>
+          <p>Your handbook is included:</p>
+          <p style="margin: 16px 0 32px;">
+            <a href="${downloadUrl}" style="color: #6d28d9; font-weight: bold;">${product.ctaLabel}</a>
+          </p>
+          <p style="color: #666; font-size: 14px;">The handbook download is valid for 7 days; a fresh copy is always available from your kit link. If you lose this email, enter your purchase email at ${SITE_URL}/kit and the link will be re-sent.</p>
+          ` : `
           <p>Your copy of <strong>${product.title}</strong> is ready to download.</p>
           <p style="margin: 32px 0;">
             <a href="${downloadUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
@@ -155,6 +190,7 @@ serve(async (req) => {
             </a>
           </p>
           <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
+          `}
           <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">
           <p style="color: #666; font-size: 14px;">
             Thank you for supporting MBD Studio.<br>

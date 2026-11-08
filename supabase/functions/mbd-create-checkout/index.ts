@@ -12,6 +12,7 @@ const corsHeaders = {
 const PRICE_ENV_BY_SLUG: Record<string, string> = {
   "ai-workflows": "MBD_STRIPE_PRICE_ID",
   "figma-to-claude": "MBD_STRIPE_PRICE_ID_CLAUDE",
+  "kit": "MBD_STRIPE_PRICE_ID_KIT",
 };
 
 // Used when the request has no body — keeps the older AI Workflows page working.

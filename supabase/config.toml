@@ -433,3 +433,9 @@ entrypoint = "./functions/mbd-stripe-webhook/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/mbd-stripe-webhook/*.html" ]
+
+[functions.mbd-kit-access]
+enabled = true
+verify_jwt = false
+import_map = "./functions/mbd-kit-access/deno.json"
+entrypoint = "./functions/mbd-kit-access/index.ts"

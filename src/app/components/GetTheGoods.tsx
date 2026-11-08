@@ -35,6 +35,17 @@ const products: Product[] = [
     description:
       "Learn how to switch from Figma Make to Claude Code and never look back. See how Claude.ai and Claude Code can become your strategist and builder while you stay focused on what you do best: design.",
   },
+  {
+    slug: "kit",
+    // TODO: replace with the kit cover once the screenshot is in (src/assets/kit-cover.png)
+    image: aiHandbookCover,
+    imageAlt: "[[Kit name]]",
+    price: "$19 USD",
+    title: "[[Kit name]]",
+    subtitle: "[[One-line subtitle]]",
+    description:
+      "[[Card description — Brand Palette + Creative Remix apps, plus the New AI Workflows handbook.]]",
+  },
 ];
 
 export function GetTheGoods() {
