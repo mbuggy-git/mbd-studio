@@ -76,6 +76,9 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
             <Sparkles className="h-4 w-4" />
             Surprise me
           </button>
+          <button type="button" className={softButton} title="Drop the direction and generate a palette from your personality words" onClick={() => regenerate(null)}>
+            Follow personality
+          </button>
           <button type="button" className={softButton} title="Back to neutral greys, no direction (Undo brings the palette back)" onClick={() => commit((s) => ({ ...s, colorDirection: null, palette: NEUTRAL_PALETTE.map((hex) => ({ hex, locked: false })) }))}>
             <Eraser className="h-4 w-4" />
             Clear
@@ -87,13 +90,6 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
       <SubPanel
         title="Starting color direction"
         hint={brand.colorDirection ? `Current: ${brand.colorDirection}. Choosing a direction regenerates the palette.` : "No direction chosen — regeneration follows your personality words."}
-        actions={
-          brand.colorDirection ? (
-            <button type="button" className={softButton} onClick={() => set((s) => ({ ...s, colorDirection: null }))} data-oid="47e335113b" data-oid-classname-dynamic="true">
-              Follow personality instead
-            </button>
-          ) : undefined
-        }
       >
         <ChipPicker
           terms={COLOR_DIRECTIONS}
