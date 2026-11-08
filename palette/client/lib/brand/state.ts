@@ -222,8 +222,8 @@ export type SectionMeta = { count: string; done: boolean };
 
 export function sectionMeta(s: BrandState, savedCount: number): Record<SectionId, SectionMeta> {
   return {
-    concept: { count: `${[s.industry.trim(), s.name.trim()].filter(Boolean).length}/2`, done: !!(s.industry.trim() && s.name.trim()) },
-    personality: { count: String(s.traits.length), done: s.traits.length >= 3 },
+    concept: { count: s.name.trim() ? "1" : "0", done: !!s.name.trim() },
+    personality: { count: String(s.traits.length), done: !!s.industry.trim() && s.traits.length >= 3 },
     color: { count: s.colorDirection ? "1" : "0", done: s.colorDirection !== null },
     type: { count: `${[s.display.font, s.body.font].filter(Boolean).length}/2`, done: !!(s.display.font || s.body.font) },
     logo: { count: `${s.logoConcepts.length} concepts`, done: s.logoDirections.length > 0 && s.logoConcepts.length > 0 },

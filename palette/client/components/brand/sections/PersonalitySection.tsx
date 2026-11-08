@@ -4,6 +4,7 @@ import type { SectionProps } from "./types";
 import { BRAND_GROUPS, findTerm, type TermGroup } from "../../../lib/brand/vocab";
 import { listJoin, pickR } from "../../../lib/brand/random";
 import { surpriseTraits } from "../../../lib/brand/state";
+import { IndustryPanel } from "./IndustryPanel";
 import { newSeed } from "../../../lib/brand/random";
 
 /** Pairings that keep a surprise coherent: a term from the group that shares a color or font hint with existing picks. */
@@ -25,9 +26,9 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
 
   return (
     <SectionShell
-      index="01 · Personality & visual direction"
+      index="01 · Business & personality"
       title="Find its character"
-      blurb="Pick as many words as feel right. They steer name ideas, palette suggestions, font recommendations, copy voice and every prompt."
+      blurb="Say what the business is, then pick as many words as feel right. They steer name ideas, palette suggestions, font recommendations, copy voice and every prompt."
       actions={
         <>
           <button type="button" className={softButton} disabled={brand.traitsLocked} onClick={() => commit((s) => ({ ...s, traits: surpriseTraits(newSeed()) }))} data-oid="2006198479" data-oid-classname-dynamic="true">
@@ -42,6 +43,7 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
         </>
       }
     >
+      <IndustryPanel brand={brand} set={set} commit={commit} />
       {BRAND_GROUPS.map((group) => {
         const count = group.terms.filter((t) => brand.traits.includes(t.name)).length;
         return (

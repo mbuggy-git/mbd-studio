@@ -27,7 +27,7 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
         </h1>
       </div>
       <div className="flex flex-col gap-ds-lg" data-oid="a67e6a17a2">
-        <p className="w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with the brand's personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}
+        <p className="w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the business is and its personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}
 
 
         </p>

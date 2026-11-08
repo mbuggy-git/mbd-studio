@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Check, Dices, RefreshCw, Sparkles } from "lucide-react";
+import { Check, RefreshCw, Sparkles } from "lucide-react";
 import { LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
-import { INDUSTRY_IDEAS, generateNames } from "../../../lib/brand/generate";
+import { generateNames } from "../../../lib/brand/generate";
 import { requestNames } from "../../../lib/brand/ai";
-import { newSeed, pickR } from "../../../lib/brand/random";
-import { applyIndustry, surpriseTraits } from "../../../lib/brand/state";
+import { newSeed } from "../../../lib/brand/random";
+import { surpriseTraits } from "../../../lib/brand/state";
 
 export function ConceptSection({ brand, set, commit }: SectionProps) {
   const [mode, setMode] = useState<"own" | "generate">("generate");
@@ -44,51 +44,13 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
 
   return (
     <SectionShell
-      index="02 · Brand concept & naming"
+      index="02 · Naming"
       title="Name the brand"
-      blurb="Describe what the brand makes, then write your own name or generate options.">
+      blurb="Write your own name, or generate options from the business and personality you chose.">
       
-      <SubPanel title="What kind of business is it?" hint="A type of business, product or industry.">
-        <div className="flex flex-col gap-ds-md" data-oid="f4f81a87e2">
-          <form
-            className="flex flex-wrap gap-ds-sm"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (brand.industry.trim()) regenerate();
-            }} data-oid="331e0b0595">
-            
-            <input
-              value={brand.industry}
-              onChange={(e) => set((s) => applyIndustry(s, e.target.value))}
-              placeholder="e.g. specialty coffee company"
-              aria-label="Business, product or industry"
-              className="ds-input min-w-[260px] flex-1 rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body" data-oid="a6ec5fdf76" />
-            
-            <button type="submit" disabled={!brand.industry.trim() || busy} className="ds-button ds-button-primary rounded-lg disabled:cursor-not-allowed disabled:opacity-50" title="Press Enter or click to generate five name ideas" data-oid="3c15a77a99">
-              <Sparkles className="h-4 w-4" data-oid="911489526c" />
-              Generate brand names
-            </button>
-            <button type="button" className={softButton} onClick={() => commit((s) => applyIndustry(s, pickR(Math.random, INDUSTRY_IDEAS.filter((x) => x !== s.industry))))} data-oid="2f0676abdd" data-oid-classname-dynamic="true">
-              <Dices className="h-4 w-4" data-oid="0b15c73171" />
-              Surprise industry
-            </button>
-          </form>
-          <ul className="flex flex-wrap gap-ds-xs" aria-label="Example industries" data-oid="788c7f3776">
-            {INDUSTRY_IDEAS.slice(0, 8).map((idea) =>
-            <li key={idea} data-oid="9e46ed30d6" data-oid-shared="true" data-oid-instance-targetable="true">
-                <button
-                type="button"
-                aria-pressed={brand.industry === idea}
-                onClick={() => commit((s) => applyIndustry(s, idea))}
-                className="rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md py-ds-xs font-caption text-caption text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="41fdccda11" data-oid-shared="true" data-oid-instance-targetable="true">
-                
-                  {idea}
-                </button>
-              </li>
-            )}
-          </ul>
-        </div>
-      </SubPanel>
+      {!brand.industry.trim() &&
+      <p className="rounded-lg border border-dashed border-border p-ds-md font-label text-label text-[#5f5f7a]">Say what kind of business it is in step 01 first — name ideas are built from it and from your personality words.</p>
+      }
 
       <div className="ds-tabs flex flex-col gap-ds-md" data-oid="617f5d5308">
         <div role="tabpanel" className="ds-tab-panel" data-oid="6bf657577f">
@@ -111,7 +73,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
             hint="Generate name ideas or add your own."
             actions={namingSwitch}>
               <div className="mb-ds-md flex flex-wrap items-center gap-ds-sm" data-oid="d15c49dbc3">
-                  <button type="button" className={softButton} onClick={regenerate} disabled={busy} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
+                  <button type="button" className={softButton} onClick={regenerate} disabled={busy || !brand.industry.trim()} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
                     <RefreshCw className="h-4 w-4" data-oid="fc1302bbb4" />
                     {hasGenerated ? "Regenerate names" : "Generate names"}
                   </button>
@@ -123,7 +85,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
               </div>
               <ol className="flex flex-col gap-ds-sm" data-oid="945eb67acc" data-oid-text-editable="false" data-oid-text-source="expression:af19ad232bad|expression:317e703cb560">
                 {brand.nameSuggestions.length === 0 &&
-              <li className="rounded-lg border border-dashed border-border p-ds-md font-label text-label text-[#5f5f7a]" data-oid="3cc95aeeaa">Type your business above and press Generate brand names to see five ideas here.</li>
+              <li className="rounded-lg border border-dashed border-border p-ds-md font-label text-label text-[#5f5f7a]" data-oid="3cc95aeeaa">Press Generate names to see five ideas here.</li>
               }
                 {brand.nameSuggestions.length > 0 && brand.traits.length === 0 &&
               <li className="font-caption text-caption text-[#5f5f7a]">These use a neutral voice. Pick personality words in step 01, then regenerate for names in that voice.</li>
