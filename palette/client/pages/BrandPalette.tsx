@@ -49,7 +49,7 @@ export default function BrandPalette() {
           onUndo={store.undo}
           onClear={() => {
             commit(() => createBlankBrand());
-            setSection("concept");
+            setSection("personality");
             setPanel("board");
           }}
           canUndo={store.canUndo}

@@ -226,10 +226,11 @@ export function sectionMeta(s: BrandState, savedCount: number): Record<SectionId
     personality: { count: String(s.traits.length), done: !!s.industry.trim() && s.traits.length >= 3 },
     color: { count: s.colorDirection ? "1" : "0", done: s.colorDirection !== null },
     type: { count: `${[s.display.font, s.body.font].filter(Boolean).length}/2`, done: !!(s.display.font || s.body.font) },
-    logo: { count: `${s.logoConcepts.length} concepts`, done: s.logoDirections.length > 0 && s.logoConcepts.length > 0 },
+    // Pills count choices the user has made, never generated placeholders.
+    logo: { count: String(s.logoDirections.length), done: s.logoDirections.length > 0 },
     copy: { count: `${s.taglines.length} lines`, done: s.taglines.length > 0 },
-    imagery: { count: `${s.imageConcepts.length}`, done: s.imageKinds.length > 0 && s.imageConcepts.length > 0 },
-    briefs: { count: "3", done: [s.dna, s.fullBrief, s.miniPrompt].some((l) => l.override !== null) },
+    imagery: { count: String(s.imageKinds.length), done: s.imageKinds.length > 0 },
+    briefs: { count: String([s.dna, s.fullBrief, s.miniPrompt].filter((l) => l.override !== null).length), done: [s.dna, s.fullBrief, s.miniPrompt].some((l) => l.override !== null) },
     library: { count: String(savedCount), done: savedCount > 0 },
   };
 }
