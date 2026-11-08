@@ -12,7 +12,6 @@ export const SECTIONS: { id: SectionId; label: string; short: string }[] = [
   { id: "logo", label: "Logo & Graphic Language", short: "Logo" },
   { id: "copy", label: "Taglines & Brand Copy", short: "Copy" },
   { id: "imagery", label: "Imagery & Art Direction", short: "Imagery" },
-  { id: "briefs", label: "Creative Briefs & Prompts", short: "Briefs" },
   // Saved brands are reached from the header's Library button, so they don't need a tab here.
 ];
 

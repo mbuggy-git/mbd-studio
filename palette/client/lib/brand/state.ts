@@ -230,7 +230,6 @@ export function sectionMeta(s: BrandState, savedCount: number): Record<SectionId
     logo: { count: String(s.logoDirections.length), done: s.logoDirections.length > 0 },
     copy: { count: `${s.taglines.length} lines`, done: s.taglines.length > 0 },
     imagery: { count: String(s.imageKinds.length), done: s.imageKinds.length > 0 },
-    briefs: { count: String([s.dna, s.fullBrief, s.miniPrompt].filter((l) => l.override !== null).length), done: [s.dna, s.fullBrief, s.miniPrompt].some((l) => l.override !== null) },
     library: { count: String(savedCount), done: savedCount > 0 },
   };
 }

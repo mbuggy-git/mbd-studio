@@ -22,9 +22,9 @@ export function LibrarySection({ brand, library, savedId, onSave, onOpen, onDupl
 
   return (
     <SectionShell
-      index="09 · Saved brands"
+      index="08 · Saved brands"
       title="Your brand library"
-      blurb="Save fictional brands to return to for future design work and demos. Everything — words, colors, type, imagery, locks and briefs — is stored."
+      blurb="Save fictional brands to return to for future design work and demos. Everything — words, colors, type, imagery and prompts — is stored."
       actions={
         <>
           <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={onSave} data-oid="94fba66d06" data-oid-text-editable="false">

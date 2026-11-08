@@ -6,7 +6,6 @@ export type SectionId =
   | "logo"
   | "copy"
   | "imagery"
-  | "briefs"
   | "library";
 
 /** A generated or user-written block of text. Unlocked text may be regenerated; locked text is never touched. */

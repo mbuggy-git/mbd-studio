@@ -11,7 +11,6 @@ import { TypographySection } from "../components/brand/sections/TypographySectio
 import { LogoSection } from "../components/brand/sections/LogoSection";
 import { CopySection } from "../components/brand/sections/CopySection";
 import { ImagerySection } from "../components/brand/sections/ImagerySection";
-import { BriefsSection } from "../components/brand/sections/BriefsSection";
 import { LibrarySection } from "../components/brand/sections/LibrarySection";
 import { useBrandStore } from "../lib/brand/useBrandStore";
 import { applyIndustry, createBlankBrand, CONTENT_SYNC_VERSION, sectionMeta, surpriseBrand } from "../lib/brand/state";
@@ -72,7 +71,6 @@ export default function BrandPalette() {
               {section === "logo" && <LogoSection {...props} />}
               {section === "copy" && <CopySection {...props} />}
               {section === "imagery" && <ImagerySection {...props} />}
-              {section === "briefs" && <BriefsSection {...props} />}
               {section === "library" &&
               <LibrarySection
                 brand={brand}
