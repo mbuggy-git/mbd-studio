@@ -22,7 +22,7 @@ import type { SectionId } from "../lib/brand/types";
 export default function BrandPalette() {
   const store = useBrandStore();
   const { brand, set, commit } = store;
-  const [section, setSection] = useState<SectionId>("concept");
+  const [section, setSection] = useState<SectionId>("personality");
   const [panel, setPanel] = useState<"board" | "prompts">("board");
   const meta = useMemo(() => sectionMeta(brand, store.library.length), [brand, store.library.length]);
   const props = { brand, set, commit };
@@ -126,7 +126,7 @@ export default function BrandPalette() {
         </div>
 
         <footer className="mt-ds-3xl flex flex-wrap items-center justify-between gap-ds-md border-t border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pt-ds-lg" data-oid="2481959373">
-          <p className="font-caption text-caption text-[#cfcfe6]" data-oid="ce48ef3bc8">Brand Palette — a sister app to Art Direction Palette. Invent, lock, remix, brief.</p>
+          <p className="font-caption text-caption text-[#cfcfe6]" data-oid="ce48ef3bc8">Brand Palette — a sister app to Art Direction Palette. Invent, remix, brief.</p>
           <p className="font-caption text-caption text-[#cfcfe6]" data-oid="4af3841b45">Saved brands live in this browser only · no AI service connected</p>
         </footer>
       </div>

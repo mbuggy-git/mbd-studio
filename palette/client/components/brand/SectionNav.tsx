@@ -4,8 +4,9 @@ import type { SectionId } from "../../lib/brand/types";
 import type { SectionMeta } from "../../lib/brand/state";
 
 export const SECTIONS: { id: SectionId; label: string; short: string }[] = [
-  { id: "concept", label: "Brand Concept & Naming", short: "Concept" },
+  // Personality first: the name generator and the copy draw on these words.
   { id: "personality", label: "Personality & Visual Direction", short: "Personality" },
+  { id: "concept", label: "Brand Concept & Naming", short: "Concept" },
   { id: "color", label: "Color Palette", short: "Color" },
   { id: "type", label: "Typography", short: "Type" },
   { id: "logo", label: "Logo & Graphic Language", short: "Logo" },

@@ -48,7 +48,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
           <span className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="94243717ec">How many concepts?</span>
           <div className="ds-radio-group flex gap-ds-xs rounded-lg bg-[#d9c9f2] p-ds-xs" role="radiogroup" aria-label="Number of image concepts" data-oid="52a13f8f72">
             {[1, 2, 3].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={brand.imageConcepts.length === n} disabled={!canShrinkTo(n)} title={!canShrinkTo(n) ? "Unlock the concepts that would be removed" : undefined} onClick={() => setCount(n)} className="ds-radio rounded-md px-ds-lg py-ds-sm font-label text-label text-[#5f5f7a] disabled:opacity-40 aria-checked:bg-foreground aria-checked:text-background" data-oid="632a2496fa" data-oid-shared="true" data-oid-instance-targetable="true">
+              <button key={n} type="button" role="radio" aria-checked={brand.imageConcepts.length === n} disabled={!canShrinkTo(n)} onClick={() => setCount(n)} className="ds-radio rounded-md px-ds-lg py-ds-sm font-label text-label text-[#5f5f7a] disabled:opacity-40 aria-checked:bg-foreground aria-checked:text-background" data-oid="632a2496fa" data-oid-shared="true" data-oid-instance-targetable="true">
                 {n}
               </button>
             ))}
@@ -86,7 +86,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
         <div role="tabpanel" className="flex flex-col gap-ds-md" data-oid="1b806d09a6">
           <SubPanel
             title={`Concept ${idx + 1}`}
-            hint={concept.locked ? "Locked — regeneration and Surprise Me keep this concept." : "Art direction for this image only."}
+            hint="Art direction for this image only."
             actions={
               <>
                 <button type="button" className={softButton} disabled={concept.locked} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c, k) => (k === idx ? generateImageConcept(s, idx, newSeed(), c) : c)) }))} data-oid="17f09b74b6" data-oid-classname-dynamic="true">

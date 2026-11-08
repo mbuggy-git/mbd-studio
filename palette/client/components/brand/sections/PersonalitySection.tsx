@@ -25,7 +25,7 @@ export function PersonalitySection({ brand, set, commit }: SectionProps) {
 
   return (
     <SectionShell
-      index="02 · Personality & visual direction"
+      index="01 · Personality & visual direction"
       title="Find its character"
       blurb="Pick as many words as feel right. They steer name ideas, palette suggestions, font recommendations, copy voice and every prompt."
       actions={

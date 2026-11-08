@@ -23,11 +23,11 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
     value: valueOf(key),
     locked: brand[key].locked,
     edited: brand[key].override !== null,
-    onChange: (text: string) => patchLive(key, { override: text, locked: true }),
+    onChange: (text: string) => patchLive(key, { override: text, locked: false }),
     onToggleLock: () =>
       brand[key].locked
         ? commit((s) => ({ ...s, [key]: { ...s[key], locked: false, override: null } }) as BrandState)
-        : patchLive(key, { locked: true, override: valueOf(key) }),
+        : patchLive(key, { locked: false, override: valueOf(key) }),
     onRegenerate: () => commit((s) => ({ ...s, [key]: { override: null, locked: false, seed: newSeed() } }) as BrandState),
     onReset: () => commit((s) => ({ ...s, [key]: { ...s[key], override: null, locked: false } }) as BrandState),
   });
@@ -100,7 +100,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
         {...handlers("fullBrief")}
         rows={18}
         mono
-        hint={brand.fullBrief.locked ? "Locked — your edits are preserved." : "An art-director-style brief for the deliverable and stage above. Editing locks it."} />
+        hint="An art-director-style brief for the deliverable and stage above." />
 
       <div className="flex flex-col gap-ds-sm" data-oid="88517be30e">
         <div className="ds-field flex flex-col gap-ds-xs" data-oid="c2061048aa">
@@ -117,9 +117,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
           {...handlers("miniPrompt")}
           rows={7}
           hint={
-            brand.miniPrompt.locked
-              ? "Locked — unlock to follow your asset request again."
-              : brand.assetRequest?.trim()
+            brand.assetRequest?.trim()
                 ? "Your request, combined with only the brand details this asset needs."
                 : "Describe an asset above, or it follows the deliverable you picked."
           } />

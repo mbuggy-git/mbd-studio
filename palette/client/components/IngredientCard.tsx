@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown, Lock, LockOpen, Search, Shuffle } from "lucide-react"
+import { ChevronDown, Search, Shuffle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { REMIX_VOCAB, findTerm, type IngredientKey } from "../lib/remix"
 
@@ -10,8 +10,6 @@ type Props = {
   label: string
   hint: string
   value: string
-  locked: boolean
-  onToggleLock: () => void
   onShuffle: () => void
   onChoose: (name: string) => void
   accentClass: string
@@ -30,8 +28,6 @@ export function IngredientCard({
   label,
   hint,
   value,
-  locked,
-  onToggleLock,
   onShuffle,
   onChoose,
   accentClass,
@@ -62,8 +58,7 @@ export function IngredientCard({
   return (
     <div
       ref={rootRef}
-      data-locked={locked}
-      className="group relative flex min-h-[340px] flex-col rounded-xl border border-border bg-[color-mix(in_srgb,var(--primary)_8%,var(--background))] p-ds-xl shadow-[0_24px_60px_-34px_rgba(0,0,0,0.3)] transition-[border-color,box-shadow] duration-300 data-[locked=true]:border-foreground" data-oid="73fb436cb5" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-text-source="element:div|element:div|element:button|expression:ad58c3ea6fb0"
+      className="group relative flex min-h-[340px] flex-col rounded-xl border border-border bg-[color-mix(in_srgb,var(--primary)_8%,var(--background))] p-ds-xl shadow-[0_24px_60px_-34px_rgba(0,0,0,0.3)] transition-[border-color,box-shadow] duration-300" data-oid="73fb436cb5" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-text-source="element:div|element:div|element:button|expression:ad58c3ea6fb0"
     >
       <div className={cn("pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-40 blur-3xl", glowClass)} data-oid="5da145ff84" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-classname-dynamic="true" />
 
@@ -77,22 +72,11 @@ export function IngredientCard({
           <button
             type="button"
             onClick={onShuffle}
-            disabled={locked}
             aria-label={`Shuffle ${label}`}
             title="Shuffle this ingredient"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition hover:rotate-180 hover:border-foreground disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:rotate-0" data-oid="a538d11995" data-oid-callsite-deletable="true" data-oid-callsite-editable="true"
           >
             <Shuffle className="h-4 w-4" data-oid="1325065d8d" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" />
-          </button>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            aria-pressed={locked}
-            aria-label={locked ? `Unlock ${label}` : `Lock ${label}`}
-            title={locked ? "Unlock" : "Lock — keep this when remixing"}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))] transition hover:border-foreground hover:text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="965bdc7a18" data-oid-callsite-deletable="true" data-oid-callsite-editable="true"
-          >
-            {locked ? <Lock className="h-4 w-4" data-oid="86f3a8d660" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" /> : <LockOpen className="h-4 w-4" data-oid="7d27a51f8b" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" />}
           </button>
         </div>
       </div>

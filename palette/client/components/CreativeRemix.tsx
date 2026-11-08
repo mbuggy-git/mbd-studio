@@ -33,9 +33,10 @@ function loadFavorites(): Favorite[] {
   }
 }
 
+const NONE_LOCKED: Record<IngredientKey, boolean> = { style: false, influence: false, treatment: false };
+
 export function CreativeRemix() {
   const [combo, setCombo] = useState<Combo>(initialCombo);
-  const [locked, setLocked] = useState<Record<IngredientKey, boolean>>({ style: false, influence: false, treatment: false });
   const [subject, setSubject] = useState("");
   const [prompt, setPrompt] = useState("");
   const [seed, setSeed] = useState(0);
@@ -47,18 +48,16 @@ export function CreativeRemix() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
   }, [favorites]);
 
-  const allLocked = locked.style && locked.influence && locked.treatment;
   const concept = buildConcept(combo, subject);
   const contrasting = isContrasting(combo);
   const isSaved = favorites.some((f) => f.style === combo.style && f.influence === combo.influence && f.treatment === combo.treatment);
 
   const mix = (wild = false) => {
-    setCombo((c) => remix(c, locked, wild));
+    setCombo((c) => remix(c, NONE_LOCKED, wild));
     setMixCount((n) => n + 1);
   };
   const shuffleOne = (key: IngredientKey) => setCombo((c) => ({ ...c, [key]: randomTerm(key, c[key]) }));
   const choose = (key: IngredientKey, name: string) => setCombo((c) => ({ ...c, [key]: name }));
-  const toggleLock = (key: IngredientKey) => setLocked((l) => ({ ...l, [key]: !l[key] }));
 
   const generate = () => {
     const next = seed + 1;
@@ -102,7 +101,7 @@ export function CreativeRemix() {
               Creative <em className="text-accent" data-oid="edbc23e766">Remix</em>
             </h2>
             <p className="max-w-xl text-body text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]" data-oid="5e9db15555">
-              Three ingredients, one unexpected direction. Lock what you love, shuffle what you don’t, and let a
+              Three ingredients, one unexpected direction. Shuffle one card or all three, and let a
               style collide with an influence and a mood you’d never have paired yourself.
             </p>
           </div>
@@ -112,7 +111,6 @@ export function CreativeRemix() {
             <button
               type="button"
               onClick={() => mix(false)}
-              disabled={allLocked}
               className="ds-button ds-button-primary h-14 rounded-lg px-ds-xl text-body" data-oid="38a019bcda">
               
               <Beaker className="h-5 w-5" data-oid="1f3c5447d5" />
@@ -121,7 +119,6 @@ export function CreativeRemix() {
             <button
               type="button"
               onClick={() => mix(true)}
-              disabled={allLocked}
               className="ds-button h-14 rounded-lg border border-foreground bg-foreground px-ds-xl text-body text-background hover:opacity-90" data-oid="0adbb091cc">
               
               <Zap className="h-5 w-5" data-oid="7ff6d93112" />
@@ -138,8 +135,6 @@ export function CreativeRemix() {
             label="Style"
             hint="Art movements, illustration styles, design aesthetics"
             value={combo.style}
-            locked={locked.style}
-            onToggleLock={() => toggleLock("style")}
             onShuffle={() => shuffleOne("style")}
             onChoose={(n) => choose("style", n)}
             accentClass="text-primary"
@@ -151,8 +146,6 @@ export function CreativeRemix() {
             label="Influence"
             hint="Unexpected subjects, eras, or visual concepts"
             value={combo.influence}
-            locked={locked.influence}
-            onToggleLock={() => toggleLock("influence")}
             onShuffle={() => shuffleOne("influence")}
             onChoose={(n) => choose("influence", n)}
             accentClass="text-accent"
@@ -164,8 +157,6 @@ export function CreativeRemix() {
             label="Mood & Treatment"
             hint="Lighting, color, texture, and atmosphere"
             value={combo.treatment}
-            locked={locked.treatment}
-            onToggleLock={() => toggleLock("treatment")}
             onShuffle={() => shuffleOne("treatment")}
             onChoose={(n) => choose("treatment", n)}
             accentClass="text-warning"

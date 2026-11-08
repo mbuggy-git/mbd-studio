@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { BrandState, SavedBrand } from "./types";
-import { createBlankBrand } from "./state";
+import { clearLocks, createBlankBrand } from "./state";
 import { loadDraft, loadLibrary, saveDraft, saveLibrary } from "./storage";
 import { uid } from "./random";
 
@@ -10,7 +10,7 @@ const HISTORY_LIMIT = 40;
 
 /** Central brand state with an undo stack and browser-local library persistence. */
 export function useBrandStore() {
-  const [brand, setBrand] = useState<BrandState>(() => loadDraft() ?? createBlankBrand());
+  const [brand, setBrand] = useState<BrandState>(() => { const d = loadDraft(); return d ? clearLocks(d) : createBlankBrand(); });
   const [history, setHistory] = useState<BrandState[]>([]);
   const [library, setLibrary] = useState<SavedBrand[]>(() => loadLibrary());
   const brandRef = useRef(brand);
@@ -53,7 +53,7 @@ export function useBrandStore() {
 
   const openBrand = useCallback((id: string) => {
     const entry = library.find((b) => b.id === id);
-    if (entry) commit(() => entry.state);
+    if (entry) commit(() => clearLocks(entry.state));
   }, [library, commit]);
 
   const duplicateBrand = useCallback((id: string) => {

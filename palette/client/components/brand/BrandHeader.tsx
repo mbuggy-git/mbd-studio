@@ -27,7 +27,7 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
         </h1>
       </div>
       <div className="flex flex-col gap-ds-lg" data-oid="a67e6a17a2">
-        <p className="w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the brand does. Name the brand, then style it yourself or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}
+        <p className="w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with the brand's personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}
 
 
         </p>
@@ -36,7 +36,7 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
             <FolderOpen className="h-4 w-4" data-oid="1ace29006d" />
             Library
           </button>
-          <button type="button" onClick={onSurprise} title="Invent a new brand direction — locked elements stay" className="ds-button ds-button-primary h-[42px] rounded-lg px-ds-lg" data-oid="215e18e7a5">
+          <button type="button" onClick={onSurprise} title="Invent a new brand direction" className="ds-button ds-button-primary h-[42px] rounded-lg px-ds-lg" data-oid="215e18e7a5">
             <Sparkles className="h-4 w-4" data-oid="77a182ef80" />
             Surprise Me
           </button>

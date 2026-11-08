@@ -31,7 +31,7 @@ function SlotEditor({ role, brand, set, commit }: SectionProps & { role: "displa
   return (
     <SubPanel
       title={title}
-      hint={slot.locked ? "Locked — Surprise Me and remixes keep this typography." : "Recommendations update as you change characteristics and personality words."}
+      hint="Recommendations update as you change characteristics and personality words."
       actions={
         <>
           <button type="button" className={softButton} onClick={remix} disabled={slot.locked} data-oid="ba006f7195" data-oid-classname-dynamic="true">

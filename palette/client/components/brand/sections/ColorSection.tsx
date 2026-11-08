@@ -50,12 +50,12 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
     <SectionShell
       index="03 · Color palette"
       title="Build the palette"
-      blurb="Five colors with roles. Pick by hand, lock what you love, then regenerate only the unlocked swatches around them."
+      blurb="Five colors with roles. Pick by hand or choose a direction and regenerate."
       actions={
         <>
           <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => regenerate()} disabled={lockedCount === 5} data-oid="bbdcc1c28e">
             <RefreshCw className="h-4 w-4" data-oid="15a1b3ea54" />
-            Regenerate unlocked
+            Regenerate colors
           </button>
           <CopyButton text={paletteText} label="Copy palette" />
         </>
@@ -82,7 +82,7 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
 
       <SubPanel
         title="Starting color direction"
-        hint={brand.colorDirection ? `Current: ${brand.colorDirection}. Choosing a direction regenerates unlocked swatches only.` : "No direction chosen — regeneration follows your personality words."}
+        hint={brand.colorDirection ? `Current: ${brand.colorDirection}. Choosing a direction regenerates the palette.` : "No direction chosen — regeneration follows your personality words."}
         actions={
           brand.colorDirection ? (
             <button type="button" className={softButton} onClick={() => set((s) => ({ ...s, colorDirection: null }))} data-oid="47e335113b" data-oid-classname-dynamic="true">

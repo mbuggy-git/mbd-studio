@@ -41,7 +41,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       actions={
         <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()) }))} disabled={brand.logoConcepts.every((c) => c.locked)} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="c75801596d" />
-          Regenerate unlocked concepts
+          Regenerate concepts
         </button>
       }
     >
@@ -67,8 +67,8 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                 <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]" data-oid="594202dbe8" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="text|expression:80ab2b274cc6|text|expression:0c1756682228|text|expression:d16767eb18b1">Concept {i + 1} · {lc.direction} · {lc.graphic}</p>
                 {editing === lc.id ? (
                   <>
-                    <input value={lc.title} onChange={(e) => patchConcept(lc.id, { title: e.target.value, locked: true })} aria-label="Concept title" className="ds-input rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-heading text-heading" data-oid="026070bd2b" data-oid-shared="true" />
-                    <textarea value={lc.description} rows={4} onChange={(e) => patchConcept(lc.id, { description: e.target.value, locked: true })} aria-label="Concept description" className="ds-input rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-label text-label" data-oid="55f90ef382" data-oid-shared="true" />
+                    <input value={lc.title} onChange={(e) => patchConcept(lc.id, { title: e.target.value, locked: false })} aria-label="Concept title" className="ds-input rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-heading text-heading" data-oid="026070bd2b" data-oid-shared="true" />
+                    <textarea value={lc.description} rows={4} onChange={(e) => patchConcept(lc.id, { description: e.target.value, locked: false })} aria-label="Concept description" className="ds-input rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-label text-label" data-oid="55f90ef382" data-oid-shared="true" />
                   </>
                 ) : (
                   <>
@@ -85,7 +85,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <Pencil className="h-4 w-4" data-oid="ca20990995" data-oid-shared="true" data-oid-instance-targetable="true" />
                     {editing === lc.id ? "Done" : "Edit"}
                   </button>
-                  <button type="button" className={softButton} disabled={lc.locked} title={lc.locked ? "Unlock to regenerate" : "Regenerate this concept"} aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
+                  <button type="button" className={softButton} disabled={lc.locked} title="Regenerate this concept" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => ({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id) : c)) }))} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
                     <RefreshCw className="h-4 w-4" data-oid="2133b058bf" data-oid-shared="true" data-oid-instance-targetable="true" />
                   </button>
                   <LockButton compact locked={lc.locked} onToggle={() => patchConcept(lc.id, { locked: !lc.locked })} label={`concept ${i + 1}`} />

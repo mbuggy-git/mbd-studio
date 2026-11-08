@@ -17,11 +17,11 @@ export function BriefsSection({ brand, set, commit }: SectionProps) {
     value: valueOf(key),
     locked: brand[key].locked,
     edited: brand[key].override !== null,
-    onChange: (text: string) => patchLive(key, { override: text, locked: true }),
+    onChange: (text: string) => patchLive(key, { override: text, locked: false }),
     onToggleLock: () =>
       brand[key].locked
         ? commit((s) => ({ ...s, [key]: { ...s[key], locked: false, override: null } }) as BrandState)
-        : patchLive(key, { locked: true, override: valueOf(key) }),
+        : patchLive(key, { locked: false, override: valueOf(key) }),
     onRegenerate: () => commit((s) => ({ ...s, [key]: { override: null, locked: false, seed: newSeed() } }) as BrandState),
     onReset: () => commit((s) => ({ ...s, [key]: { ...s[key], override: null, locked: false } }) as BrandState),
   });
@@ -76,7 +76,7 @@ export function BriefsSection({ brand, set, commit }: SectionProps) {
         ))}
       </div>
 
-      <TextCard title="A · Brand DNA" {...handlers("dna")} rows={6} hint={brand.dna.locked ? "Locked — your edited text is preserved. Unlocking returns it to the live version (Undo restores it)." : "Live — rewrites itself as colors, type, words and logo change. Editing locks it."} />
+      <TextCard title="A · Brand DNA" {...handlers("dna")} rows={6} hint="Live — rewrites itself as colors, type, words and logo change." />
       <TextCard title="B · Full creative brief" {...handlers("fullBrief")} rows={18} mono />
       <TextCard title="C · Mini asset prompt" {...handlers("miniPrompt")} rows={6} hint="A focused prompt that only carries the brand details relevant to this asset." />
     </SectionShell>

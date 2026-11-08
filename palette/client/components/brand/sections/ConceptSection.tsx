@@ -44,11 +44,11 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
 
   return (
     <SectionShell
-      index="01 · Brand concept & naming"
+      index="02 · Brand concept & naming"
       title="Name the brand"
       blurb="Describe what the brand makes, then write your own name or generate options.">
       
-      <SubPanel title="What kind of business is it?" hint="A type of business, product or industry. Changing it never resets your other choices.">
+      <SubPanel title="What kind of business is it?" hint="A type of business, product or industry.">
         <div className="flex flex-col gap-ds-md" data-oid="f4f81a87e2">
           <form
             className="flex flex-wrap gap-ds-sm"
@@ -93,13 +93,13 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
       <div className="ds-tabs flex flex-col gap-ds-md" data-oid="617f5d5308">
         <div role="tabpanel" className="ds-tab-panel" data-oid="6bf657577f">
           {mode === "own" ?
-          <SubPanel title="Brand name" hint="Typing a name locks it so Surprise Me won't replace it. Unlock any time." actions={namingSwitch}>
+          <SubPanel title="Brand name" hint="Write your own, or pick one of the generated names below." actions={namingSwitch}>
               <div className="mb-ds-md flex justify-end" data-oid="dff4097275">
                 <LockButton locked={brand.nameLocked} onToggle={() => set((s) => ({ ...s, nameLocked: !s.nameLocked }))} label="brand name" />
               </div>
               <input
               value={brand.name}
-              onChange={(e) => set((s) => ({ ...s, name: e.target.value, nameLocked: true }))}
+              onChange={(e) => set((s) => ({ ...s, name: e.target.value, nameLocked: false }))}
               placeholder="Your brand name"
               aria-label="Brand name"
               className="ds-input w-full rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] py-ds-md font-display text-[32px] font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="bc0d766ac5" />
@@ -126,7 +126,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
               <li className="rounded-lg border border-dashed border-border p-ds-md font-label text-label text-[#5f5f7a]" data-oid="3cc95aeeaa">Type your business above and press Generate brand names to see five ideas here.</li>
               }
                 {brand.nameSuggestions.length > 0 && brand.traits.length === 0 &&
-              <li className="font-caption text-caption text-[#5f5f7a]">These use a neutral voice. Pick personality words in step 02, then come back and regenerate for names in that voice.</li>
+              <li className="font-caption text-caption text-[#5f5f7a]">These use a neutral voice. Pick personality words in step 01, then regenerate for names in that voice.</li>
               }
                 {brand.nameSuggestions.map((n, i) => {
                 const current = n === brand.name;
@@ -148,9 +148,8 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
                       <button
                       type="button"
                       aria-pressed={current}
-                      disabled={brand.nameLocked && !current}
-                      title={brand.nameLocked && !current ? "Unlock the name to switch" : undefined}
-                      onClick={() => commit((s) => ({ ...s, name: n }))}
+                      disabled={false}
+                                            onClick={() => commit((s) => ({ ...s, name: n }))}
                       className="inline-flex items-center gap-ds-xs rounded-md border border-border px-ds-md py-ds-sm font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground disabled:cursor-not-allowed disabled:opacity-40 aria-pressed:bg-foreground aria-pressed:text-background" data-oid="5de9b4d495" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:4248f8c90b53|expression:a3adfa550ec6">
                       
                         {current && <Check className="h-4 w-4" data-oid="28226b109b" data-oid-shared="true" />}

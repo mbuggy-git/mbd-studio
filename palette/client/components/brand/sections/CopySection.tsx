@@ -18,17 +18,17 @@ export function CopySection({ brand, set, commit }: SectionProps) {
     <SectionShell
       index="06 · Taglines & brand copy"
       title="Give it words"
-      blurb="Copy follows the personality you chose. Edit anything — edited text locks automatically so regeneration never overwrites it."
+      blurb="Copy follows the personality you chose. Edit anything; regenerate when you want fresh options."
       actions={
         <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => refreshCopy(s, newSeed()))} data-oid="7ec9704e4b" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="dc5080ebdf" />
-          Regenerate all unlocked copy
+          Regenerate all copy
         </button>
       }
     >
       <SubPanel
         title="Tagline options"
-        hint="Choose one for the Brand Board. Locked lines survive regeneration."
+        hint="Choose one for the Brand Board."
         actions={
           <button type="button" className={softButton} onClick={regenTaglines} disabled={brand.taglines.every((t) => t.locked)} data-oid="5571fc8a28" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" data-oid-classname-dynamic="true">
             <RefreshCw className="h-4 w-4" data-oid="a6c03627ff" />
@@ -43,7 +43,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
               <li key={i} data-selected={inUse} className="flex items-center gap-ds-sm rounded-lg border border-transparent bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] p-ds-xs pl-ds-md data-[selected=true]:border-foreground" data-oid="424e29ebac" data-oid-shared="true" data-oid-instance-targetable="true">
                 <input
                   value={t.text}
-                  onChange={(e) => set((s) => ({ ...s, taglines: s.taglines.map((x, k) => (k === i ? { text: e.target.value, locked: true } : x)) }))}
+                  onChange={(e) => set((s) => ({ ...s, taglines: s.taglines.map((x, k) => (k === i ? { text: e.target.value, locked: false } : x)) }))}
                   aria-label={`Tagline ${i + 1}`}
                   className="min-w-0 flex-1 bg-transparent py-ds-sm font-heading text-[20px] italic text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] outline-none" data-oid="c43ac06d73" data-oid-shared="true" data-oid-instance-targetable="true"
                 />
@@ -62,21 +62,21 @@ export function CopySection({ brand, set, commit }: SectionProps) {
       <div className="grid grid-cols-1 gap-ds-md 2xl:grid-cols-2" data-oid="bd16dce564">
         <TextCard
           title="Brand description"
-          hint={brand.description.locked ? "Locked — your text is preserved." : "A short description for the board and briefs."}
+          hint="A short description for the board and briefs."
           value={brand.description.text}
           locked={brand.description.locked}
           rows={4}
-          onChange={(text) => set((s) => ({ ...s, description: { text, locked: true } }))}
+          onChange={(text) => set((s) => ({ ...s, description: { text, locked: false } }))}
           onToggleLock={() => set((s) => ({ ...s, description: { ...s.description, locked: !s.description.locked } }))}
           onRegenerate={() => commit((s) => ({ ...s, description: { text: generateDescription(ctx, newSeed()), locked: false } }))}
         />
         <TextCard
           title="Marketing paragraph"
-          hint={brand.marketing.locked ? "Locked — your text is preserved." : "A short paragraph for web, packaging or launch copy."}
+          hint="A short paragraph for web, packaging or launch copy."
           value={brand.marketing.text}
           locked={brand.marketing.locked}
           rows={5}
-          onChange={(text) => set((s) => ({ ...s, marketing: { text, locked: true } }))}
+          onChange={(text) => set((s) => ({ ...s, marketing: { text, locked: false } }))}
           onToggleLock={() => set((s) => ({ ...s, marketing: { ...s.marketing, locked: !s.marketing.locked } }))}
           onRegenerate={() => commit((s) => ({ ...s, marketing: { text: generateMarketing(ctx, newSeed()), locked: false } }))}
         />
@@ -97,7 +97,7 @@ export function CopySection({ brand, set, commit }: SectionProps) {
             <div key={i} className="flex items-center gap-ds-xs rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] p-ds-xs pl-ds-md" data-oid="c78b933dd1" data-oid-shared="true" data-oid-instance-targetable="true">
               <input
                 value={v.text}
-                onChange={(e) => set((s) => ({ ...s, voice: s.voice.map((x, k) => (k === i ? { text: e.target.value, locked: true } : x)) }))}
+                onChange={(e) => set((s) => ({ ...s, voice: s.voice.map((x, k) => (k === i ? { text: e.target.value, locked: false } : x)) }))}
                 aria-label={`Voice keyword ${i + 1}`}
                 className="min-w-0 flex-1 bg-transparent py-ds-sm font-display text-[26px] font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] outline-none" data-oid="2c631abc21" data-oid-shared="true" data-oid-instance-targetable="true"
               />

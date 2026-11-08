@@ -224,12 +224,34 @@ export function sectionMeta(s: BrandState, savedCount: number): Record<SectionId
   return {
     concept: { count: `${[s.industry.trim(), s.name.trim()].filter(Boolean).length}/2`, done: !!(s.industry.trim() && s.name.trim()) },
     personality: { count: String(s.traits.length), done: s.traits.length >= 3 },
-    color: { count: `${s.palette.filter((p) => p.locked).length} locked`, done: s.colorDirection !== null || s.palette.some((p) => p.locked) },
-    type: { count: `${[s.display.locked, s.body.locked].filter(Boolean).length}/2 locked`, done: !!(s.display.font || s.body.font || s.display.locked || s.body.locked) },
+    color: { count: s.colorDirection ? "1" : "0", done: s.colorDirection !== null },
+    type: { count: `${[s.display.font, s.body.font].filter(Boolean).length}/2`, done: !!(s.display.font || s.body.font) },
     logo: { count: `${s.logoConcepts.length} concepts`, done: s.logoDirections.length > 0 && s.logoConcepts.length > 0 },
     copy: { count: `${s.taglines.length} lines`, done: s.taglines.length > 0 },
     imagery: { count: `${s.imageConcepts.length}`, done: s.imageKinds.length > 0 && s.imageConcepts.length > 0 },
-    briefs: { count: "3", done: [s.dna, s.fullBrief, s.miniPrompt].some((l) => l.locked || l.override !== null) },
+    briefs: { count: "3", done: [s.dna, s.fullBrief, s.miniPrompt].some((l) => l.override !== null) },
     library: { count: String(savedCount), done: savedCount > 0 },
+  };
+}
+
+/** Locks were removed from the UI; drafts saved earlier may still carry them. */
+export function clearLocks(s: BrandState): BrandState {
+  const live = <T extends { locked: boolean }>(x: T): T => ({ ...x, locked: false });
+  return {
+    ...s,
+    nameLocked: false,
+    traitsLocked: false,
+    palette: s.palette.map(live),
+    display: live(s.display),
+    body: live(s.body),
+    logoConcepts: s.logoConcepts.map(live),
+    taglines: s.taglines.map(live),
+    voice: s.voice.map(live),
+    description: live(s.description),
+    marketing: live(s.marketing),
+    imageConcepts: s.imageConcepts.map(live),
+    dna: live(s.dna),
+    fullBrief: live(s.fullBrief),
+    miniPrompt: live(s.miniPrompt),
   };
 }

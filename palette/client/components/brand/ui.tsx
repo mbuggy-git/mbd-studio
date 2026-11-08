@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Check, Copy, Lock, LockOpen, RefreshCw, RotateCcw } from "lucide-react";
+import { Check, Copy, RefreshCw, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChipTerm } from "../../lib/brand/artVocab";
 
@@ -43,23 +43,9 @@ export function CopyButton({ text, label = "Copy", className }: {text: string;la
 
 }
 
-export function LockButton({ locked, onToggle, label, compact }: {locked: boolean;onToggle: () => void;label: string;compact?: boolean;}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={locked}
-      onClick={onToggle}
-      title={locked ? `Unlock ${label}` : `Lock ${label} — regeneration will keep it`}
-      aria-label={locked ? `Unlock ${label}` : `Lock ${label}`}
-      className={cn(
-        "inline-flex items-center gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-colors hover:border-foreground aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background",
-        compact ? "p-ds-sm" : "px-ds-md py-ds-sm"
-      )} data-oid="55dc5e3cf0" data-oid-component-root="true" data-oid-text-editable="false" data-oid-text-source="expression:8e39ba37b7b6|expression:e39481ab6dd4" data-oid-classname-dynamic="true" data-oid-callsite-editable="true">
-      
-      {locked ? <Lock className="h-4 w-4" data-oid="4b53cedd55" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" /> : <LockOpen className="h-4 w-4" data-oid="06e5b2e47a" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" />}
-      {!compact && (locked ? "Locked" : "Lock")}
-    </button>);
-
+/** Locks were removed (Nov 2026): everything shuffles; keeping a direction means saving the brand. */
+export function LockButton(_: {locked: boolean;onToggle: () => void;label: string;compact?: boolean;}) {
+  return null;
 }
 
 export function SectionShell({
@@ -182,7 +168,7 @@ export function ChipPicker({
 
 }
 
-/** Editable generated text with lock / regenerate / reset / copy controls. */
+/** Editable generated text with regenerate / reset / copy controls. */
 export function TextCard({
   title,
   hint,
@@ -213,12 +199,12 @@ export function TextCard({
   return (
     <SubPanel
       title={title}
-      hint={hint ?? (locked ? "Locked — your text is preserved." : "Live — updates as the brand changes. Editing locks it.")}
+      hint={hint ?? "Live — updates as the brand changes. Edit it freely; Reset returns the live text."}
       actions={
       <>
           <LockButton locked={locked} onToggle={onToggleLock} label={title} />
           {onRegenerate &&
-        <button type="button" className={softButton} onClick={onRegenerate} disabled={locked} title={locked ? "Unlock to regenerate" : undefined} data-oid="5cf1b0bd53" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-classname-dynamic="true">
+        <button type="button" className={softButton} onClick={onRegenerate} data-oid="5cf1b0bd53" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" data-oid-text-editable="false" data-oid-classname-dynamic="true">
               <RefreshCw className="h-4 w-4" data-oid="5fa247305e" data-oid-callsite-deletable="true" data-oid-callsite-editable="true" />
               {regenerateLabel}
             </button>
