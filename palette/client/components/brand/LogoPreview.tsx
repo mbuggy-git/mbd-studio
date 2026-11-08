@@ -60,8 +60,8 @@ export function LogoPreview({ direction, name, colors, fontStack, size = "md" }:
     <div className="relative flex h-full w-full flex-col items-center justify-center" style={{ background: light }} aria-label={`${direction} placeholder for ${label}`}>
       <div className={sm ? "px-2" : "px-6"}>{body}</div>
       {!sm && (
-        <span className="absolute bottom-2 right-3 font-caption text-[10px] uppercase tracking-[0.18em]" style={{ color: deep, opacity: 0.45 }}>
-          Sketch · the prompt generates the mark
+        <span className="absolute bottom-2 left-3 right-3 truncate font-caption text-[10px] uppercase tracking-[0.18em]" style={{ color: deep, opacity: 0.45 }}>
+          Sketch · not the final mark
         </span>
       )}
     </div>
