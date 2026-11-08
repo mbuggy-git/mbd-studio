@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { AppSwitcher } from "../components/AppSwitcher";
+import { AppsPitch } from "../components/AppsPitch";
 import { AppHeader } from "../components/AppHeader";
 import { DirectionPanel } from "../components/DirectionPanel";
 import { VocabularyBoard } from "../components/VocabularyBoard";
@@ -76,7 +76,7 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
     <main className="min-h-screen bg-[color-mix(in_srgb,var(--primary)_16%,var(--background))]" data-oid="0dd563991d" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" style={{ backgroundColor: "#614a8a" }}>
       <div className="mx-auto max-w-[1720px] px-ds-xl py-ds-2xl xl:px-ds-3xl" data-oid="64cc3d8886" data-oid-text-editable="false" data-oid-text-source="expression:5165575bbbf9|expression:cec0ea56eb49|element:footer">
         {view === "vocabulary" && <>
-        <AppSwitcher current={view} />
+        <AppsPitch />
         <AppHeader
           query={query}
           onQueryChange={setQuery}

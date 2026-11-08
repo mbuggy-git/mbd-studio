@@ -2,12 +2,10 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Kit access.
-//   GET  ?token=<access_token>  → { ok, appUrl, handbookUrl } for a kit purchase
+//   GET  ?token=<access_token>  → { ok } for an apps purchase
 //   POST { email }              → re-sends the access email; always 200 so the
 //                                 form can't be used to check who has bought.
-// Env: MBD_KIT_APP_URL (where the apps live — the Firefly Builder preview
-// until the kit is hosted on mbd.studio), MBD_SUPABASE_SERVICE_ROLE_KEY,
-// MBD_RESEND_API_KEY.
+// Env: MBD_SUPABASE_SERVICE_ROLE_KEY, MBD_RESEND_API_KEY.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,8 +13,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const KIT_SLUG = "kit";
-const HANDBOOK_PDF = "MBD-studio-AI-Workflow-Handbook.pdf";
+const KIT_SLUG = "kit"; // Brand Palette & Creative Remix Applications
 const SITE_URL = "https://www.mbd.studio";
 
 function json(body: unknown, status = 200) {
@@ -47,15 +44,7 @@ serve(async (req) => {
         .maybeSingle();
       if (!purchase) return json({ ok: false }, 401);
 
-      const appUrl = Deno.env.get("MBD_KIT_APP_URL") || "";
-
-      // Fresh 7-day handbook link on every visit, so the PDF never "expires"
-      // for a kit buyer.
-      const { data: signed } = await supabase.storage
-        .from("mbd-products")
-        .createSignedUrl(HANDBOOK_PDF, 60 * 60 * 24 * 7);
-
-      return json({ ok: true, appUrl, handbookUrl: signed?.signedUrl || null });
+      return json({ ok: true });
     }
 
     if (req.method === "POST") {
@@ -88,16 +77,16 @@ serve(async (req) => {
           body: JSON.stringify({
             from: "MBD Studio <hello@mbd.studio>",
             to: email,
-            subject: "Your Art Direction Kit link",
+            subject: "Your Brand Palette & Creative Remix link",
             html: `
               <!DOCTYPE html>
               <html>
                 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
-                  <h1 style="color: #1a1a1a;">Here's your kit link</h1>
-                  <p>This is your personal link to the apps. It doesn't expire, and your handbook is available from the same page.</p>
+                  <h1 style="color: #1a1a1a;">Here's your link</h1>
+                  <p>This is your personal link to Brand Palette &amp; Creative Remix. It doesn't expire.</p>
                   <p style="margin: 32px 0;">
                     <a href="${accessUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
-                      Open the kit →
+                      Open the apps →
                     </a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">

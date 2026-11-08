@@ -67,7 +67,7 @@ serve(async (req) => {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}&product=${slug}`,
       cancel_url: `${origin}/get-the-goods/${slug}`,
       // Collect customer email so we can send the download link
       customer_email: undefined, // Stripe will prompt for it

@@ -15,7 +15,6 @@ import { HelpersPage } from "./pages/HelpersPage";
 import { DownloadsPage } from "./pages/DownloadsPage";
 import { ClientLoginPage } from "./pages/ClientLoginPage";
 import { ClientPortalPage } from "./pages/ClientPortalPage";
-import { KitPage } from "./pages/KitPage";
 import { KitAccessPage } from "./pages/KitAccessPage";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
@@ -47,7 +46,6 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/client" element={<ClientPortalPage />} />
         <Route path="/client/login" element={<ClientLoginPage />} />
-        <Route path="/get-the-goods/kit" element={<KitPage />} />
         <Route path="/kit" element={<KitAccessPage />} />
         <Route path="/kit/:token" element={<KitAccessPage />} />
         <Route path="/video-database" element={<Navigate to="/app" replace />} />

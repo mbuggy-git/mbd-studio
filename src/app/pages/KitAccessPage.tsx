@@ -4,7 +4,8 @@ import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 
-// /kit/<token> — the buyer's personal page: opens the apps, fresh handbook link.
+// /kit/<token> — the buyer's personal page: opens the hosted apps (/palette/brand,
+// /palette/remix) with their token.
 // /kit          — no token: "lost your link" form that re-sends the email.
 
 const SUPABASE_URL =
@@ -25,7 +26,7 @@ const button =
 type Access =
   | { state: "loading" }
   | { state: "denied" }
-  | { state: "ok"; appUrl: string; handbookUrl: string | null };
+  | { state: "ok" };
 
 function Shell({ children }: { children: ReactNode }) {
   return (
@@ -94,7 +95,7 @@ export function KitAccessPage() {
       .then(async (r) => {
         const data = r.ok ? await r.json() : null;
         if (cancelled) return;
-        if (data?.ok) setAccess({ state: "ok", appUrl: data.appUrl, handbookUrl: data.handbookUrl });
+        if (data?.ok) setAccess({ state: "ok" });
         else setAccess({ state: "denied" });
       })
       .catch(() => !cancelled && setAccess({ state: "denied" }));
@@ -115,27 +116,22 @@ export function KitAccessPage() {
     return (
       <Shell>
         <h1 className="text-white text-[40px] sm:text-[52px] lg:text-[64px] font-bold leading-[1.05]">
-          Your kit
+          Your apps
         </h1>
         <p className="mt-4 text-white/95 text-xl sm:text-2xl font-medium">
-          Bookmark this page — it's yours and it doesn't expire.
+          Bookmark this page — it's yours and it doesn't expire. Opening an app once on a
+          device remembers you there.
         </p>
         <div className="mt-12 flex flex-col items-center gap-6">
-          {access.appUrl ? (
-            <a href={access.appUrl} className={button}>
-              Open Brand Palette &amp; Creative Remix →
-            </a>
-          ) : (
-            <p className="text-white/95 text-lg">The apps are being set up — check back shortly.</p>
-          )}
-          {access.handbookUrl && (
-            <a
-              href={access.handbookUrl}
-              className="text-white font-bold underline underline-offset-4 hover:text-white/90 text-lg"
-            >
-              Download the New AI Workflows handbook (PDF)
-            </a>
-          )}
+          <a href={`/palette/brand?t=${encodeURIComponent(token!)}`} className={button}>
+            Open Brand Palette →
+          </a>
+          <a
+            href={`/palette/remix?t=${encodeURIComponent(token!)}`}
+            className="text-white font-bold underline underline-offset-4 hover:text-white/90 text-lg"
+          >
+            Open Creative Remix
+          </a>
           <Link to="/palette" className="text-white/80 underline underline-offset-4 hover:text-white">
             Art Direction Palette (free)
           </Link>
@@ -147,16 +143,16 @@ export function KitAccessPage() {
   return (
     <Shell>
       <h1 className="text-white text-[40px] sm:text-[52px] lg:text-[64px] font-bold leading-[1.05]">
-        {token ? "That link didn't work" : "Open your kit"}
+        {token ? "That link didn't work" : "Open your apps"}
       </h1>
       <p className="mt-4 mb-10 text-white/95 text-xl sm:text-2xl font-medium">
         Enter the email you bought with and we'll send your personal link again.
       </p>
       <ResendForm />
       <p className="mt-12 text-white/80">
-        Don't have the kit yet?{" "}
-        <Link to="/get-the-goods/kit" className="font-bold underline underline-offset-4 hover:text-white">
-          See what's in it
+        Don't have the apps yet?{" "}
+        <Link to="/palette/brand" reloadDocument className="font-bold underline underline-offset-4 hover:text-white">
+          See Brand Palette &amp; Creative Remix
         </Link>
       </p>
     </Shell>

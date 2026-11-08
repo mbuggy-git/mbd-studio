@@ -6,7 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 // Adding a product: drop a new entry here and upload the matching PDF
 // to the mbd-products Storage bucket.
 const PRODUCTS: Record<string, {
-  pdfPath: string;
+  pdfPath?: string;
   title: string;
   emailSubject: string;
   ctaLabel: string;
@@ -26,11 +26,12 @@ const PRODUCTS: Record<string, {
     emailSubject: "Your Claude & Me guide is ready",
     ctaLabel: "Download your guide →",
   },
+  // Brand Palette + Creative Remix (hosted at mbd.studio/palette). No file:
+  // the buyer gets a personal, non-expiring access link instead.
   "kit": {
-    pdfPath: "MBD-studio-AI-Workflow-Handbook.pdf",
-    title: "The Art Direction Kit",
-    emailSubject: "Your Art Direction Kit is ready",
-    ctaLabel: "Download the handbook →",
+    title: "Brand Palette & Creative Remix Applications",
+    emailSubject: "Your Brand Palette & Creative Remix link",
+    ctaLabel: "Open the apps →",
     accessLink: true,
   },
 };
@@ -132,17 +133,19 @@ serve(async (req) => {
     // also enforces an allowlist).
     const product = PRODUCTS[productSlug] || PRODUCTS[DEFAULT_SLUG];
 
-    // Generate a signed download URL valid for 7 days
-    const { data: signedUrlData, error: signedUrlError } = await supabase
-      .storage
-      .from("mbd-products")
-      .createSignedUrl(product.pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
+    // Signed download URL valid for 7 days (file products only)
+    let downloadUrl: string | null = null;
+    if (product.pdfPath) {
+      const { data: signedUrlData, error: signedUrlError } = await supabase
+        .storage
+        .from("mbd-products")
+        .createSignedUrl(product.pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
 
-    if (signedUrlError || !signedUrlData?.signedUrl) {
-      throw new Error(`Failed to create signed URL: ${signedUrlError?.message}`);
+      if (signedUrlError || !signedUrlData?.signedUrl) {
+        throw new Error(`Failed to create signed URL: ${signedUrlError?.message}`);
+      }
+      downloadUrl = signedUrlData.signedUrl;
     }
-
-    const downloadUrl = signedUrlData.signedUrl;
     const accessToken = product.accessLink ? makeAccessToken() : null;
     const accessUrl = accessToken ? `${SITE_URL}/kit/${accessToken}` : null;
 
@@ -171,17 +174,13 @@ serve(async (req) => {
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
           <h1 style="color: #1a1a1a;">Thanks for your purchase!</h1>
           ${accessUrl ? `
-          <p><strong>${product.title}</strong> is ready. This is your personal link to the apps — keep this email, the link doesn't expire:</p>
+          <p><strong>${product.title}</strong> are ready. This is your personal link — keep this email, the link doesn't expire:</p>
           <p style="margin: 32px 0;">
             <a href="${accessUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
-              Open the kit →
+              ${product.ctaLabel}
             </a>
           </p>
-          <p>Your handbook is included:</p>
-          <p style="margin: 16px 0 32px;">
-            <a href="${downloadUrl}" style="color: #6d28d9; font-weight: bold;">${product.ctaLabel}</a>
-          </p>
-          <p style="color: #666; font-size: 14px;">The handbook download is valid for 7 days; a fresh copy is always available from your kit link. If you lose this email, enter your purchase email at ${SITE_URL}/kit and the link will be re-sent.</p>
+          <p style="color: #666; font-size: 14px;">Opening an app once on a device remembers you there. If you lose this email, enter your purchase email at ${SITE_URL}/kit and the link will be re-sent.</p>
           ` : `
           <p>Your copy of <strong>${product.title}</strong> is ready to download.</p>
           <p style="margin: 32px 0;">
@@ -190,6 +189,11 @@ serve(async (req) => {
             </a>
           </p>
           <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
+          <div style="margin: 40px 0 0; padding: 20px 24px; border: 1px solid #e5e5e5; border-radius: 12px;">
+            <p style="margin: 0 0 6px; font-weight: bold;">Also from MBD Studio: Brand Palette &amp; Creative Remix Applications — $10</p>
+            <p style="margin: 0 0 12px; color: #444; font-size: 14px;">Two prompting apps for designers. Brand Palette builds a brand from concept to prompt-ready briefs; Creative Remix combines style, influence and mood into concepts you wouldn't have reached on your own. Browser-based, no account, no AI credits.</p>
+            <a href="${SITE_URL}/palette/brand" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
+          </div>
           `}
           <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">
           <p style="color: #666; font-size: 14px;">
