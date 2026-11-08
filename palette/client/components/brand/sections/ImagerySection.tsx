@@ -38,7 +38,10 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
       blurb="Plan up to three image concepts, each with its own ratio and art direction. Prompts are ready for any image generator — no images are generated here."
     >
       <SubPanel title="Imagery mix" hint="New concepts cycle through the types you pick.">
-        <ChipPicker terms={IMAGE_KINDS} selected={brand.imageKinds} onToggle={(n) => set((s) => ({ ...s, imageKinds: s.imageKinds.includes(n) ? s.imageKinds.filter((k) => k !== n) : [...s.imageKinds, n] }))} idPrefix="img-kind" groupLabel="Imagery type" tips={false} />
+        <ChipPicker terms={IMAGE_KINDS} selected={brand.imageKinds} onToggle={(n) => commit((s) => {
+          const next = { ...s, imageKinds: s.imageKinds.includes(n) ? s.imageKinds.filter((k) => k !== n) : [...s.imageKinds, n] };
+          return { ...next, imageConcepts: next.imageConcepts.map((c, i) => generateImageConcept(next, i, c.seed, c)) };
+        })} idPrefix="img-kind" groupLabel="Imagery type" tips={false} />
       </SubPanel>
 
       {/* One row: how many concepts, then which one you're editing. */}
@@ -70,7 +73,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
         <div role="tabpanel" className="flex flex-col gap-ds-md" data-oid="1b806d09a6">
           <SubPanel
             title={`Concept ${idx + 1}`}
-            hint="Art direction for this image only."
+            hint={`${concept.kind} · art direction for this image only.`}
             actions={
               <>
                 <button type="button" className={softButton} onClick={() => commit((s) => ({ ...s, imageConcepts: s.imageConcepts.map((c, k) => (k === idx ? generateImageConcept(s, idx, newSeed(), c) : c)) }))} data-oid="17f09b74b6" data-oid-classname-dynamic="true">
@@ -82,13 +85,7 @@ export function ImagerySection({ brand, set, commit }: SectionProps) {
             }
           >
             <div className="flex flex-col gap-ds-lg" data-oid="345cd2fced" data-oid-text-editable="false" data-oid-text-source="element:div|expression:63ab67f50b7a">
-              <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[1fr_2fr_1fr]" data-oid="5edf774a46">
-                <div className="ds-field flex flex-col gap-ds-xs" data-oid="156d9406a3">
-                  <label htmlFor="concept-kind" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="ec0df5ea88">Imagery type</label>
-                  <select id="concept-kind" value={concept.kind} onChange={(e) => guarded({ kind: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="a74415e330">
-                    {IMAGE_KINDS.map((k) => <option key={k.name} value={k.name} data-oid="9707aee513" data-oid-shared="true" data-oid-instance-targetable="true">{k.name}</option>)}
-                  </select>
-                </div>
+              <div className="grid grid-cols-1 gap-ds-md md:grid-cols-[2fr_1fr]" data-oid="5edf774a46">
                 <div className="ds-field flex flex-col gap-ds-xs" data-oid="7e7a232f3f">
                   <label htmlFor="concept-subject" className="ds-field-label font-caption text-caption text-[#5f5f7a]" data-oid="7b66a7d5ea">Subject</label>
                   <input id="concept-subject" value={concept.subject} onChange={(e) => guarded({ subject: e.target.value })} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))]" data-oid="938d1e31cd" />
