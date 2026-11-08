@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, RefreshCw, Sparkles } from "lucide-react";
 import { LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
@@ -14,14 +14,26 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
   const [generatedFor, setGeneratedFor] = useState<string | null>(null);
   const hasGenerated = generatedFor !== null && generatedFor === brand.industry.trim() && brand.nameSuggestions.length > 0;
 
-  const regenerate = async () => {
+  const regenerate = async (pickFirst = true) => {
     setBusy(true);
     setMode("generate");
     const { names } = await requestNames({ industry: brand.industry, traits: brand.traits, exclude: brand.nameSuggestions }, newSeed());
-    commit((s) => ({ ...s, nameSuggestions: names, name: s.nameLocked ? s.name : names[0] ?? s.name }));
+    commit((s) => ({ ...s, nameSuggestions: names, name: pickFirst && !s.nameLocked ? names[0] ?? s.name : s.name }));
     setGeneratedFor(brand.industry.trim());
     setBusy(false);
   };
+
+  // Arriving with a business and personality already set: show five ideas straight away,
+  // without choosing one — the name stays the user's call.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current) return;
+    if (brand.industry.trim() && brand.traits.length > 0 && brand.nameSuggestions.length === 0 && !brand.name.trim()) {
+      autoRan.current = true;
+      regenerate(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const surpriseNames = () => {
     const seed = newSeed();
@@ -73,7 +85,7 @@ export function ConceptSection({ brand, set, commit }: SectionProps) {
             hint="Generate name ideas or add your own."
             actions={namingSwitch}>
               <div className="mb-ds-md flex flex-wrap items-center gap-ds-sm" data-oid="d15c49dbc3">
-                  <button type="button" className={softButton} onClick={regenerate} disabled={busy || !brand.industry.trim()} title={!brand.industry.trim() ? "Say what kind of business it is in step 01 first" : undefined} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
+                  <button type="button" className={softButton} onClick={() => regenerate()} disabled={busy || !brand.industry.trim()} title={!brand.industry.trim() ? "Say what kind of business it is in step 01 first" : undefined} data-oid="fce2c7ec8e" data-oid-classname-dynamic="true" data-oid-text-editable="false">
                     <RefreshCw className="h-4 w-4" data-oid="fc1302bbb4" />
                     {hasGenerated ? "Regenerate names" : "Generate names"}
                   </button>
