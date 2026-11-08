@@ -78,9 +78,9 @@ export function createBlankBrand(): BrandState {
     traitsLocked: false,
     colorDirection: null,
     palette: ["#2b2b2b", "#6b6b6b", "#a3a3a3", "#efefef", "#141414"].map((hex) => ({ hex, locked: false })),
-    // Untitled brands default to DM Sans for both headlines and body text.
-    display: { ...slot("Sans serif", [], []), font: "DM Sans" },
-    body: { ...slot("Sans serif", [], []), font: "DM Sans" },
+    // Nothing chosen: the board previews the top recommendation until the user picks.
+    display: slot("", [], []),
+    body: slot("", [], []),
     logoDirections: [],
     graphicLanguage: [],
     logoConcepts: [],
