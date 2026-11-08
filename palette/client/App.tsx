@@ -8,7 +8,7 @@ import { RequireAccess } from "./components/RequireAccess"
 export default function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
         <Routes>
           {/* Art Direction Palette is the free tool and the front door. */}
           <Route path="/" element={<Index view="vocabulary" />} />
