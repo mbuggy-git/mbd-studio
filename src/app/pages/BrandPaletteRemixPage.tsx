@@ -101,7 +101,7 @@ export function BrandPaletteRemixPage() {
 
           {/* 4. Brand Palette */}
           <div className="grid grid-cols-1 md:grid-cols-[55fr_45fr] gap-8 md:gap-10 lg:gap-14 items-center mb-20 lg:mb-28">
-            <img src={appsBrandColor} alt="Brand Palette — the color step with a live brand board" className="block w-full h-auto rounded-2xl" />
+            <img src={appsBrandColor} alt="Brand Palette — the color step with a live brand board" className="block w-full h-auto rounded-2xl shadow-[0px_20px_25px_0px_rgba(0,0,0,0.15)]" />
             <div className="space-y-5 text-white/95 text-[20px] [font-weight:400]! leading-relaxed text-left">
               <p className="font-bold">Brand Palette</p>
               <p>
@@ -127,7 +127,7 @@ export function BrandPaletteRemixPage() {
                 the combinations worth keeping.
               </p>
             </div>
-            <img src={appsRemix} alt="Creative Remix" className="block w-full h-auto rounded-2xl md:order-2" />
+            <img src={appsRemix} alt="Creative Remix" className="block w-full h-auto rounded-2xl md:order-2 shadow-[0px_20px_25px_0px_rgba(0,0,0,0.15)]" />
           </div>
 
           {/* 6. Includes + CTA */}
