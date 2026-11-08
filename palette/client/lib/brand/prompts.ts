@@ -60,7 +60,7 @@ export function logoPrompt(s: BrandState, lc: LogoConcept): string {
   return [
     `Logo design for “${f.name}”, ${article(f.industry)} ${f.industry}.`,
     `Direction: ${lc.direction.toLowerCase()} — ${lc.description}`,
-    `Graphic language: ${lc.graphic.toLowerCase()}${f.personality.length ? `; personality: ${listJoin(f.personality.slice(0, 3))}` : ""}.`,
+    [lc.graphic ? `Graphic language: ${lc.graphic.toLowerCase()}` : "", f.personality.length ? `personality: ${listJoin(f.personality.slice(0, 3))}` : ""].filter(Boolean).join("; ") + ".",
     `Typography reference: ${f.display.name}${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).length ? ` (${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).join(", ")})` : ""}.`,
     `Colors: ${f.colors.slice(0, 3).map((c) => `${c.name} ${c.hex}`).join(", ")} on ${f.colors[3].name} ${f.colors[3].hex}.`,
     `Flat, vector-style artwork centered on a plain background; no mockups, no extra words beyond the brand name. ${stage}`,
@@ -264,7 +264,7 @@ function includesFor(s: BrandState, kind: DeliverableKind): string[] {
   const dWords = slotWords(s.display);
   const bWords = slotWords(s.body);
   const typeLine = `Typography exploration based on ${f.display.name} for headlines (${s.display.classification.toLowerCase()}${dWords.length ? `, ${dWords.slice(0, 3).join(", ")}` : ""}) and ${f.body.name} for supporting text (${s.body.classification.toLowerCase()}${bWords.length ? `, ${bWords.slice(0, 2).join(", ")}` : ""})`;
-  const graphic = s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : f.logo?.graphic.toLowerCase() ?? "ownable";
+  const graphic = s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : f.logo?.graphic?.toLowerCase() || "ownable";
   const logoLine = f.logo
     ? `Logo or graphic language concepts building on ${article(f.logo.direction)} ${f.logo.direction.toLowerCase()} — ${f.logo.description.replace(/\.$/, "")} — with ${graphic} graphic elements`
     : `Logo or graphic language concepts using ${graphic} graphic elements`;

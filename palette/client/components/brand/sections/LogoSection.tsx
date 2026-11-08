@@ -75,6 +75,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <div className="ds-field flex flex-col gap-ds-xs">
                       <label htmlFor={`gfx-${lc.id}`} className="ds-field-label font-caption text-caption text-[#5f5f7a]">Graphic language</label>
                       <select id={`gfx-${lc.id}`} value={lc.graphic} onChange={(e) => repin(i, { graphic: e.target.value })} className="ds-input h-9 w-full rounded-md bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption">
+                        <option value="">None</option>
                         {GRAPHIC_LANGUAGE.map((g) => <option key={g.name} value={g.name} title={g.meaning}>{g.name}</option>)}
                       </select>
                     </div>
@@ -92,7 +93,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                   </>
                 )}
                 <div className="mt-auto flex flex-wrap gap-ds-xs pt-ds-sm" data-oid="219fd17585" data-oid-shared="true" data-oid-instance-targetable="true">
-                  <button type="button" aria-pressed={selected} onClick={() => set((s) => ({ ...s, selectedLogo: i, logoDirections: [lc.direction], graphicLanguage: [lc.graphic] }))} className="inline-flex items-center gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md py-ds-sm font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="7dee0ff61b" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:2ef296e6a963|expression:21b6694e3e0f">
+                  <button type="button" aria-pressed={selected} onClick={() => set((s) => ({ ...s, selectedLogo: i, logoDirections: [lc.direction], graphicLanguage: lc.graphic ? [lc.graphic] : [] }))} className="inline-flex items-center gap-ds-xs rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md py-ds-sm font-label text-label text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground aria-pressed:bg-foreground aria-pressed:text-background" data-oid="7dee0ff61b" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:2ef296e6a963|expression:21b6694e3e0f">
                     {selected && <Check className="h-4 w-4" data-oid="76a2149b0c" data-oid-shared="true" />}
                     {selected ? "Selected" : "Select"}
                   </button>

@@ -218,7 +218,7 @@ export function surpriseBrand(s: BrandState): BrandState {
   next.selectedLogo = next.selectedLogo >= 0 ? next.selectedLogo : 0;
   const chosen = next.logoConcepts[next.selectedLogo] ?? next.logoConcepts[0];
   next.logoDirections = [chosen.direction];
-  next.graphicLanguage = [chosen.graphic];
+  next.graphicLanguage = chosen.graphic ? [chosen.graphic] : [];
   next.imageConcepts = s.imageConcepts.map((c, i) => (c.locked ? c : generateImageConcept(next, i, seed + 9 + i, c)));
   next = refreshCopy(next, seed + 5);
   next.dna = s.dna.locked ? s.dna : { ...s.dna, seed: seed + 6 };
