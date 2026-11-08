@@ -65,23 +65,23 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
       </div>
 
       <div className="flex flex-col gap-ds-md">
-        <div role="tablist" aria-label="Brief or asset prompt" data-mode={mode} className="group relative grid w-fit grid-cols-2 rounded-full border border-[#c4b0e6] bg-white p-1 shadow-[inset_0_1px_3px_rgba(60,40,100,0.18)]">
+        <div role="tablist" aria-label="Brand board or asset prompt" data-mode={mode} className="group relative grid w-fit grid-cols-2 rounded-full border border-[#c4b0e6] bg-white p-1 shadow-[inset_0_1px_3px_rgba(60,40,100,0.18)]">
           <span aria-hidden="true" className="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-4px)] rounded-full bg-foreground shadow-[0_2px_6px_rgba(30,10,50,0.35)] transition-transform duration-300 ease-out group-data-[mode=asset]:translate-x-full" />
           <button type="button" role="tab" aria-selected={mode === "brief"} onClick={() => setMode("brief")} className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label text-[#5f5f7a] transition-colors duration-300 aria-selected:text-background">
-            Full brief
+            Brand Board Prompt
           </button>
           <button type="button" role="tab" aria-selected={mode === "asset"} onClick={() => setMode("asset")} className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label text-[#5f5f7a] transition-colors duration-300 aria-selected:text-background">
-            Asset prompt
+            Asset Prompt
           </button>
         </div>
 
         {mode === "brief" ? (
           <TextCard
-            title="Full Creative Brief"
+            title="Brand Board Prompt"
             {...handlers("fullBrief")}
             rows={18}
             mono
-            hint="An art-director-style brief for a brand board, built from everything above."
+            hint="An art-director-style prompt for a brand board, built from everything above."
             before={
               <div className="ds-field flex flex-col gap-ds-xs">
                 <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Board</label>
