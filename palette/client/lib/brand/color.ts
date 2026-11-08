@@ -119,5 +119,41 @@ export function generatePalette(direction: string, current: Swatch[], r: Rand): 
   const fresh = recipe(base).map(([h, s, l]) =>
     hslToHex(h + (r() * 14 - 7), s + (r() * 12 - 6), l + (r() * 8 - 4))
   );
-  return current.map((sw, i) => (sw.locked ? sw : { hex: fresh[i], locked: false }));
+  return ensureReadable(current.map((sw, i) => (sw.locked ? sw : { hex: fresh[i], locked: false })));
+}
+
+const TEXT_AA = 4.5;
+
+/** Nudge a color's lightness until it reads against `surface` at `target`, keeping hue and saturation. */
+function fitContrast(hex: string, surface: string, target: number, darken: boolean): string {
+  let [h, s, l] = hexToHsl(hex);
+  let out = hex;
+  for (let i = 0; i < 40 && contrastRatio(out, surface) < target; i++) {
+    l += darken ? -2 : 2;
+    if (l < 0 || l > 100) break;
+    out = hslToHex(h, s, l);
+  }
+  return out;
+}
+
+/**
+ * Every generated palette is usable as text: the light neutral is kept light and the deep
+ * neutral deep, and primary / secondary / accent are darkened until each reads on the light
+ * neutral at 4.5:1. Locked swatches are left exactly as the user set them.
+ */
+export function ensureReadable(palette: Swatch[]): Swatch[] {
+  const out = palette.map((sw) => ({ ...sw }));
+  const [light, deep] = [out[3], out[4]];
+  if (!light.locked) {
+    const [h, s] = hexToHsl(light.hex);
+    if (luminance(light.hex) < 0.8) light.hex = hslToHex(h, Math.min(s, 30), 94);
+  }
+  if (!deep.locked) {
+    const [h, s] = hexToHsl(deep.hex);
+    if (luminance(deep.hex) > 0.03) deep.hex = hslToHex(h, Math.min(s, 40), 9);
+  }
+  for (const i of [0, 1, 2]) {
+    if (!out[i].locked) out[i].hex = fitContrast(out[i].hex, light.hex, TEXT_AA, true);
+  }
+  return out;
 }

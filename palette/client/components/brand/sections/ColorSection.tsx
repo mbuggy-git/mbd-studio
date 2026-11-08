@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
-import { ContrastBadge, ContrastNote } from "../ContrastBadge";
 import type { SectionProps } from "./types";
 import { COLOR_DIRECTIONS } from "../../../lib/brand/artVocab";
 import { colorName, generatePalette, inkOn, normalizeHex, PALETTE_ROLES } from "../../../lib/brand/color";
@@ -129,22 +128,16 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
             <div key={m.label} className="flex flex-col justify-center gap-ds-xs rounded-xl p-ds-lg" style={{ background: m.surface }}>
               <p className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: m.ink, opacity: 0.7 }}>{m.label}</p>
               <p className="font-display text-[32px] font-semibold leading-none" style={{ color: m.ink }}>{brand.name || "Brand"}</p>
-              <p className="flex items-center gap-ds-sm font-label text-label" style={{ color: brand.palette[0].hex }}>
-                Primary on {m.surfaceName} <ContrastBadge fg={brand.palette[0].hex} bg={m.surface} />
+              <p className="font-label text-label" style={{ color: m.label === "Dark" ? m.ink : brand.palette[0].hex }}>
+                {m.label === "Dark" ? "Light neutral" : "Primary"} on {m.surfaceName}
               </p>
-              <span className="mt-ds-sm flex w-fit items-center gap-ds-sm rounded-full px-ds-md py-ds-xs font-label text-label" style={{ background: brand.palette[2].hex, color: inkOn(brand.palette[2].hex) }}>
-                Accent button <ContrastBadge fg={inkOn(brand.palette[2].hex)} bg={brand.palette[2].hex} />
+              <span className="mt-ds-sm w-fit rounded-full px-ds-md py-ds-xs font-label text-label" style={{ background: brand.palette[2].hex, color: inkOn(brand.palette[2].hex) }}>
+                Accent button
               </span>
             </div>
           ))}
         </div>
 
-        <ContrastNote pairs={[
-          ["Primary on light neutral", brand.palette[0].hex, brand.palette[3].hex],
-          ["Primary on deep neutral", brand.palette[0].hex, brand.palette[4].hex],
-          ["Deep neutral on light neutral", brand.palette[4].hex, brand.palette[3].hex],
-          ["Text on the accent", inkOn(brand.palette[2].hex), brand.palette[2].hex],
-        ]} />
       </div>
     </SectionShell>
   );
