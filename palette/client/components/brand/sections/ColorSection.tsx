@@ -3,7 +3,7 @@ import { RefreshCw } from "lucide-react";
 import { ChipPicker, CopyButton, LockButton, SectionShell, SubPanel, softButton } from "../ui";
 import type { SectionProps } from "./types";
 import { COLOR_DIRECTIONS } from "../../../lib/brand/artVocab";
-import { colorName, generatePalette, inkOn, normalizeHex, PALETTE_ROLES } from "../../../lib/brand/color";
+import { colorName, generatePalette, inkOn, normalizeHex, PALETTE_ROLES, primaryOnDark } from "../../../lib/brand/color";
 import { newSeed, rng } from "../../../lib/brand/random";
 import { directionFromTraits } from "../../../lib/brand/state";
 import type { Swatch } from "../../../lib/brand/types";
@@ -53,7 +53,11 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
       return { ...s, palette: s.palette.map((sw, k) => (k === i ? { hex: next[i].hex, locked: false } : sw)) };
     });
 
-  const paletteText = brand.palette.map((p, i) => `${PALETTE_ROLES[i]}: ${p.hex.toUpperCase()}`).join("\n");
+  const darkPrimary = primaryOnDark(brand.palette);
+  const paletteText = [
+    ...brand.palette.map((p, i) => `${PALETTE_ROLES[i]}: ${p.hex.toUpperCase()}`),
+    `Primary on dark (derived): ${darkPrimary.toUpperCase()}`,
+  ].join("\n");
 
   return (
     <SectionShell
@@ -128,8 +132,9 @@ export function ColorSection({ brand, set, commit }: SectionProps) {
             <div key={m.label} className="flex flex-col justify-center gap-ds-xs rounded-xl p-ds-lg" style={{ background: m.surface }}>
               <p className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: m.ink, opacity: 0.7 }}>{m.label}</p>
               <p className="font-display text-[32px] font-semibold leading-none" style={{ color: m.ink }}>{brand.name || "Brand"}</p>
-              <p className="font-label text-label" style={{ color: m.label === "Dark" ? m.ink : brand.palette[0].hex }}>
-                {m.label === "Dark" ? "Light neutral" : "Primary"} on {m.surfaceName}
+              <p className="font-label text-label" style={{ color: m.label === "Dark" ? darkPrimary : brand.palette[0].hex }}>
+                Primary on {m.surfaceName}
+                {m.label === "Dark" && <span className="ml-ds-sm font-caption text-caption opacity-80">{darkPrimary.toUpperCase()} · derived</span>}
               </p>
               <span className="mt-ds-sm w-fit rounded-full px-ds-md py-ds-xs font-label text-label" style={{ background: brand.palette[2].hex, color: inkOn(brand.palette[2].hex) }}>
                 Accent button

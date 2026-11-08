@@ -137,6 +137,14 @@ function fitContrast(hex: string, surface: string, target: number, darken: boole
 }
 
 /**
+ * The primary, lightened until it reads on the deep neutral — the dark-mode tint of the same hue.
+ * Derived, never stored: it follows whatever the primary and deep neutral currently are.
+ */
+export function primaryOnDark(palette: Swatch[]): string {
+  return fitContrast(palette[0].hex, palette[4].hex, TEXT_AA, false);
+}
+
+/**
  * Every generated palette is usable as text: the light neutral is kept light and the deep
  * neutral deep, and primary / secondary / accent are darkened until each reads on the light
  * neutral at 4.5:1. Locked swatches are left exactly as the user set them.

@@ -1,5 +1,5 @@
 import type { BrandState, ImageConcept, LogoConcept } from "./types";
-import { colorName, PALETTE_ROLES } from "./color";
+import { colorName, PALETTE_ROLES, primaryOnDark } from "./color";
 import { resolveFont } from "./fonts";
 import { industryProfile, voiceWords } from "./generate";
 import { article, cap, listJoin, pickR, rng } from "./random";
@@ -215,7 +215,7 @@ function composeDeliverableMini(s: BrandState, seed: number): string {
   return [
     `${opener} ${d.request} for ${f.name}, ${article(mood || "a")} ${mood || "distinctive"} ${f.industry}.`,
     f.tagline ? `Headline or sign-off: “${f.tagline}”.` : "",
-    `Palette: ${palette}, with ${f.colors[4].name} ${f.colors[4].hex} for type.`,
+    `Palette: ${palette}, with ${f.colors[4].name} ${f.colors[4].hex} for type. On dark surfaces, use ${primaryOnDark(s.palette).toUpperCase()} as the primary.`,
     `Typography: ${f.display.name} for headlines, ${f.body.name} for supporting text.`,
     f.logo ? `Logo: ${f.logo.direction.toLowerCase()} placed with clear space.` : "",
     concept && d.kind !== "board" ? `Imagery: ${subjectOf(concept) ? `${subjectOf(concept)}, ` : ""}${concept.lighting.toLowerCase()}, ${concept.atmosphere.toLowerCase()} mood.` : "",
@@ -362,7 +362,7 @@ export function composeMiniPrompt(s: BrandState, seed: number): string {
   return [
     `${lead} ${article(mood)} ${mood} ${f.industry}.`,
     treatment ? `Visual treatment: ${treatment}` : "",
-    `Palette: ${palette}, with ${f.colors[4].name} ${f.colors[4].hex} for type.`,
+    `Palette: ${palette}, with ${f.colors[4].name} ${f.colors[4].hex} for type. On dark surfaces, use ${primaryOnDark(s.palette).toUpperCase()} as the primary.`,
     `Typography: ${f.display.name} for headlines and ${f.body.name} for supporting text.`,
     f.tagline ? `Headline or sign-off: “${f.tagline}”.` : "",
     f.logo ? `Place the ${f.logo.direction.toLowerCase()} logo with generous clear space.` : "",
