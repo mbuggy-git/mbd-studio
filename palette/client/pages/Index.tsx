@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { AppsCard } from "../components/AppsCard";
 import { AppHeader } from "../components/AppHeader";
 import { DirectionPanel } from "../components/DirectionPanel";
@@ -7,6 +7,15 @@ import { CreativeRemix } from "../components/CreativeRemix";
 import { PromptBox } from "../components/PromptBox";
 import { buildPrompt } from "../lib/prompt";
 import { CATEGORIES, SURPRISE_PRESETS, type CategoryId } from "../lib/vocabulary";
+
+/** Teal scheme for the free Art Direction Palette only — the paid apps stay purple. */
+const ART_THEME = {
+  backgroundColor: "#4a7587",
+  "--primary": "#06405e",
+  "--ring": "#06405e",
+  "--border": "#86b1b6",
+  "--input": "#86b1b6",
+} as CSSProperties;
 
 const pick = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
 
@@ -79,8 +88,13 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
     setOutput(buildPrompt(brief, selected, nextSeed));
   };
 
+  // Light text on the teal page; the paid Remix view keeps its original footer color.
+  const footerText = view === "vocabulary"
+    ? "font-caption text-caption text-[#d5e4e6]"
+    : "font-caption text-caption text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]";
+
   return (
-    <main className="min-h-screen bg-[color-mix(in_srgb,var(--primary)_16%,var(--background))]" data-oid="0dd563991d" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" style={{ backgroundColor: "#614a8a" }}>
+    <main className="min-h-screen bg-[color-mix(in_srgb,var(--primary)_16%,var(--background))]" data-oid="0dd563991d" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true" style={view === "vocabulary" ? ART_THEME : { backgroundColor: "#614a8a" }}>
       <div className="mx-auto max-w-[1720px] px-ds-xl py-ds-2xl xl:px-ds-3xl" data-oid="64cc3d8886" data-oid-text-editable="false" data-oid-text-source="expression:5165575bbbf9|expression:cec0ea56eb49|element:footer">
         {view === "vocabulary" && <>
         <AppHeader
@@ -134,8 +148,8 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
         </>}
         {view === "remix" && <CreativeRemix />}
         <footer className="mt-ds-3xl flex items-center justify-between border-t border-border pt-ds-lg" data-oid="5aac26680b">
-          <p className="font-caption text-caption text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]" data-oid="5005f86da7">Art Direction Palette — find the words for what you already see.</p>
-          <p className="font-caption text-caption text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]" data-oid="7b11a4a4a5" data-oid-text-editable="false" data-oid-text-source="expression:5c6505ae3c86|text|expression:69aa634b62af|text">{TOTAL} terms across {CATEGORIES.length} categories · hover any word for its meaning</p>
+          <p className={footerText} data-oid="5005f86da7">Art Direction Palette — find the words for what you already see.</p>
+          <p className={footerText} data-oid="7b11a4a4a5" data-oid-text-editable="false" data-oid-text-source="expression:5c6505ae3c86|text|expression:69aa634b62af|text">{TOTAL} terms across {CATEGORIES.length} categories · hover any word for its meaning</p>
         </footer>
       </div>
     </main>);

@@ -65,7 +65,7 @@ export function VocabularyBoard({
         role="tablist"
         aria-label="Vocabulary categories"
         onKeyDown={onTabKey}
-        className="flex flex-col items-start gap-ds-md rounded-xl border border-border bg-[#ccb7ed] p-ds-md md:flex-row md:items-center md:justify-between" data-oid="d15bd7a5ab">
+        className="flex flex-col items-start gap-ds-md rounded-xl border border-border bg-[#9fc9cc] p-ds-md md:flex-row md:items-center md:justify-between" data-oid="d15bd7a5ab">
         <div className="grid grid-cols-2 gap-ds-sm sm:grid-cols-4">
         
         {CATEGORIES.map((category) => {
@@ -84,12 +84,12 @@ export function VocabularyBoard({
                 onCategoryChange(category.id);
                 if (q) onClearQuery();
               }}
-              className="inline-flex items-center justify-center gap-ds-sm rounded-full border border-border bg-white px-ds-md py-ds-sm font-label text-label font-medium text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-colors duration-150 hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:border-foreground aria-selected:bg-foreground aria-selected:text-background" data-oid="38cf42f8e2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:26a101576c9d|expression:d604b044a85d">
+              className="inline-flex items-center justify-center gap-ds-sm rounded-full border border-border bg-white px-ds-md py-ds-sm font-label text-label font-medium text-primary transition-colors duration-150 hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:border-foreground aria-selected:bg-foreground aria-selected:text-background" data-oid="38cf42f8e2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:26a101576c9d|expression:d604b044a85d">
               
               <span className={cn("h-2.5 w-2.5 shrink-0 rounded-full", category.dotClass)} aria-hidden="true" data-oid="46779dea4e" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true" />
               {category.short ?? category.label}
               {count > 0 &&
-              <span className="rounded-full bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" aria-label={`${count} selected`} data-oid="eb9f9c8a72" data-oid-shared="true">
+              <span className="rounded-full bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-sm font-caption text-caption font-semibold text-primary" aria-label={`${count} selected`} data-oid="eb9f9c8a72" data-oid-shared="true">
                   {count}
                 </span>
               }
@@ -97,22 +97,22 @@ export function VocabularyBoard({
 
         })}
         </div>
-        <button type="button" onClick={onGetPrompt} disabled={!canGenerate} title={canGenerate ? "Build the image prompt from your picks" : "Pick a few words first"} className="ds-button ds-button-primary h-[42px] shrink-0 rounded-lg px-ds-lg">
+        <button type="button" onClick={onGetPrompt} disabled={!canGenerate} title={canGenerate ? "Build the image prompt from your picks" : "Pick a few words first"} className="ds-button bg-[#cb5cbe] font-semibold text-white hover:bg-[#b94aac] h-[42px] shrink-0 rounded-lg px-ds-lg">
           <Wand2 className="h-4 w-4" />
           Get prompt
         </button>
       </div>
 
       {groups.length === 0 ?
-      <div className="flex flex-col items-center justify-center gap-ds-sm rounded-xl border border-dashed border-border bg-[#ccb7ed] px-ds-xl py-ds-3xl text-center" data-oid="96b04e5d83">
-          <SearchX className="h-8 w-8 text-[#5f5f7a]" data-oid="1b61efe79a" />
-          <h2 className="font-display text-[32px] font-semibold leading-none text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="dc9a3d75ca" data-oid-text-editable="false" data-oid-text-source="text|expression:7cd9148ec5a5|text">No words match “{query}”</h2>
-          <p className="text-body text-[#5f5f7a]" data-oid="07bdb038ec">Try a feeling, a material, a camera angle or a light source instead.</p>
+      <div className="flex flex-col items-center justify-center gap-ds-sm rounded-xl border border-dashed border-border bg-[#9fc9cc] px-ds-xl py-ds-3xl text-center" data-oid="96b04e5d83">
+          <SearchX className="h-8 w-8 text-[#3d5a66]" data-oid="1b61efe79a" />
+          <h2 className="font-display text-[32px] font-semibold leading-none text-primary" data-oid="dc9a3d75ca" data-oid-text-editable="false" data-oid-text-source="text|expression:7cd9148ec5a5|text">No words match “{query}”</h2>
+          <p className="text-body text-[#3d5a66]" data-oid="07bdb038ec">Try a feeling, a material, a camera angle or a light source instead.</p>
         </div> :
 
       <div id="category-panel" role="tabpanel" aria-labelledby={q ? undefined : `tab-${active.id}`} className="flex flex-col gap-ds-lg" data-oid="7d721cf39a" data-oid-text-editable="false" data-oid-text-source="expression:ddc71fa87cd1|expression:39a6d1e392d9">
           {q &&
-        <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#cfcfe6]" data-oid="521f125eb9" data-oid-text-editable="false" data-oid-text-source="text|expression:7cd9148ec5a5|text|expression:c306c98939a1|expression:9bc2932d640b">
+        <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#d5e4e6]" data-oid="521f125eb9" data-oid-text-editable="false" data-oid-text-source="text|expression:7cd9148ec5a5|text|expression:c306c98939a1|expression:9bc2932d640b">
               Results for “{query}” across {groups.length} {groups.length === 1 ? "category" : "categories"}
             </p>
         }
@@ -122,7 +122,7 @@ export function VocabularyBoard({
           return (
             <section
               key={category.id}
-              className="relative min-h-[360px] rounded-xl border border-border bg-[#ccb7ed] p-ds-xl shadow-[0_1px_0_rgba(0,0,0,0.03)]"
+              className="relative min-h-[360px] rounded-xl border border-border bg-[#9fc9cc] p-ds-xl shadow-[0_1px_0_rgba(0,0,0,0.03)]"
               aria-labelledby={`cat-${category.id}`} data-oid="13245c0361" data-oid-shared="true" data-oid-instance-targetable="true">
               
                 <div className="mb-ds-xl flex flex-wrap items-start justify-between gap-ds-lg" data-oid="253653d75a" data-oid-shared="true" data-oid-instance-targetable="true">
@@ -132,14 +132,14 @@ export function VocabularyBoard({
                       className={cn("h-2.5 w-2.5 rounded-full", category.dotClass)}
                       style={category.id === "mood" ? { backgroundColor: "#ccf5a9" } : undefined} data-oid="4791982e2e" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-style-dynamic="*" data-oid-classname-dynamic="true" />
                     
-                      <span className="font-caption text-caption font-medium uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="73c3c91ad7" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:cbb29999d2c8|text|expression:f8367d98663d|text|expression:47907da26688|text">
+                      <span className="font-caption text-caption font-medium uppercase tracking-[0.2em] text-[#3d5a66]" data-oid="73c3c91ad7" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:cbb29999d2c8|text|expression:f8367d98663d|text|expression:47907da26688|text">
                         {category.index} · {count > 0 ? `${count} selected` : "Choose any"} · {category.terms.length} terms
                       </span>
                     </div>
-                    <h2 id={`cat-${category.id}`} className="font-display text-[44px] font-semibold leading-none tracking-[-0.02em] text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] xl:text-[56px]" data-oid="4f5badd93a" data-oid-shared="true" data-oid-instance-targetable="true">
+                    <h2 id={`cat-${category.id}`} className="font-display text-[44px] font-semibold leading-none tracking-[-0.02em] text-primary xl:text-[56px]" data-oid="4f5badd93a" data-oid-shared="true" data-oid-instance-targetable="true">
                       {category.label}
                     </h2>
-                    <p className="max-w-lg font-label text-label font-normal text-[#5f5f7a]" data-oid="bcdc4a7467" data-oid-shared="true" data-oid-instance-targetable="true">{category.blurb}</p>
+                    <p className="max-w-lg font-label text-label font-normal text-[#3d5a66]" data-oid="bcdc4a7467" data-oid-shared="true" data-oid-instance-targetable="true">{category.blurb}</p>
                   </div>
                   <div className="flex flex-col items-end gap-ds-sm" data-oid="344258e1d2" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="element:div|expression:d5769ccd0ecd|expression:9a94843d16ee">
                     <div className="flex -space-x-2" aria-hidden="true" data-oid="17127b5e18" data-oid-shared="true" data-oid-instance-targetable="true">
@@ -170,7 +170,7 @@ export function VocabularyBoard({
                       </button>
                   }
                     {photoCount > 0 &&
-                  <p className="inline-flex items-center gap-ds-xs font-caption text-caption text-[#5f5f7a]" data-oid="722f49281c" data-oid-shared="true" data-oid-text-editable="false">
+                  <p className="inline-flex items-center gap-ds-xs font-caption text-caption text-[#3d5a66]" data-oid="722f49281c" data-oid-shared="true" data-oid-text-editable="false">
                         <Camera className="h-3.5 w-3.5" data-oid="722a0a7da1" data-oid-shared="true" />
                         {photoCount} photo examples · hover to learn
                       </p>
@@ -194,7 +194,7 @@ export function VocabularyBoard({
                         aria-describedby={`tip-${category.id}-${i}`}
                         onClick={() => onToggle(term.name)}
                         className={cn(
-                          "inline-flex items-center gap-ds-sm rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] py-ds-xs pl-ds-xs pr-ds-md font-label text-label font-medium text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] transition-all duration-150 hover:-translate-y-px hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                          "inline-flex items-center gap-ds-sm rounded-full border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] py-ds-xs pl-ds-xs pr-ds-md font-label text-label font-medium text-primary transition-all duration-150 hover:-translate-y-px hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                           category.chipClass
                         )} data-oid="98f0d1e0cf" data-oid-shared="true" data-oid-text-editable="false" data-oid-text-source="element:span|expression:68a3773897b1" data-oid-classname-dynamic="true">
                         

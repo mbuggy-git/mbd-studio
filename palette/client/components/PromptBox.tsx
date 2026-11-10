@@ -29,16 +29,16 @@ export function PromptBox({ output, onOutputChange, onRegenerate, onClear, canGe
     window.setTimeout(() => setCopied(false), 1500);
   };
 
-  const soft = "ds-button rounded-lg border border-border bg-white text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50";
+  const soft = "ds-button rounded-lg border border-border bg-white text-primary hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50";
 
   return (
-    <section id="prompt-box" aria-label="Image prompt" className="flex flex-col gap-ds-sm rounded-xl border border-border bg-[#ccb7ed] p-ds-xl shadow-[0_24px_60px_-30px_rgba(0,0,0,0.25)]">
+    <section id="prompt-box" aria-label="Image prompt" className="flex flex-col gap-ds-sm rounded-xl border border-border bg-[#9fc9cc] p-ds-xl shadow-[0_24px_60px_-30px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-ds-xs font-display text-[28px] font-semibold leading-none tracking-[-0.02em] text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]">
+        <h2 className="flex items-center gap-ds-xs font-display text-[28px] font-semibold leading-none tracking-[-0.02em] text-primary">
           <Sparkles className="h-5 w-5 text-primary" />
           Image prompt
         </h2>
-        <span className="font-caption text-caption text-[#5f5f7a]">{words ? `${words} words` : "—"}</span>
+        <span className="font-caption text-caption text-[#3d5a66]">{words ? `${words} words` : "—"}</span>
       </div>
       <textarea
         id="output"
@@ -46,10 +46,10 @@ export function PromptBox({ output, onOutputChange, onRegenerate, onClear, canGe
         value={output}
         onChange={(e) => onOutputChange(e.target.value)}
         placeholder="Your art direction will appear here. Choose a few words, say what you're making, then Get prompt."
-        className="ds-input w-full resize-y rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] p-ds-md font-display text-[22px] leading-[1.35] text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]"
+        className="ds-input w-full resize-y rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] p-ds-md font-display text-[22px] leading-[1.35] text-primary"
       />
       <div className="flex flex-wrap gap-ds-sm">
-        <button type="button" onClick={copy} disabled={!output} className="ds-button ds-button-primary rounded-lg px-ds-lg">
+        <button type="button" onClick={copy} disabled={!output} className="ds-button bg-[#cb5cbe] font-semibold text-white hover:bg-[#b94aac] rounded-lg px-ds-lg">
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? "Copied" : "Copy prompt"}
         </button>
