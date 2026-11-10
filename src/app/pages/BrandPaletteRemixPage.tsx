@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import appsBrand from "../../assets/apps-brand.jpg";
 import appsRemix from "../../assets/apps-remix.jpg";
 import appsBrandColor from "../../assets/apps-brand-color.jpg";
+import aiHandbookCover from "../../assets/AI-handbook-cover.png";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
@@ -155,6 +156,31 @@ export function BrandPaletteRemixPage() {
               <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                 <BuyButton />
                 <span className="text-white text-xl font-bold">{PRICE}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 7. Handbook promo */}
+          <div className="bg-white/10 rounded-2xl p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-6 sm:gap-10 items-center">
+            <Link to="/get-the-goods/ai-workflows" className="block w-[160px] sm:w-full mx-auto">
+              <img src={aiHandbookCover} alt="New AI Workflows — A Creative Handbook for Designers" loading="lazy" className="block w-full h-auto rounded-lg shadow-[0px_20px_25px_0px_rgba(0,0,0,0.25)]" />
+            </Link>
+            <div className="text-left">
+              <p className="text-white/80 text-sm font-bold uppercase tracking-[0.2em]">Also from MBD Studio</p>
+              <h2 className="mt-2 text-white text-3xl font-bold">New AI Workflows</h2>
+              <p className="mt-1 text-white/95 text-xl font-medium">A Creative Handbook for Designers</p>
+              <p className="mt-4 text-white/95 text-[18px] [font-weight:400]! leading-relaxed">
+                The thinking behind these apps, on the page. 63 pages, 6 cheat sheets and example
+                prompts to give you more creative control over your AI workflows.
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                <Link
+                  to="/get-the-goods/ai-workflows"
+                  className="inline-flex items-center justify-center rounded-full border-2 border-white text-white px-7 py-3 text-lg font-bold transition-all duration-200 hover:bg-white hover:text-[#5816dd] hover:-translate-y-0.5"
+                >
+                  See the handbook →
+                </Link>
+                <span className="text-white text-xl font-bold">$9.95 USD</span>
               </div>
             </div>
           </div>
