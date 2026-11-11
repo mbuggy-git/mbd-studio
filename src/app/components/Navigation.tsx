@@ -115,6 +115,12 @@ export function Navigation({ variant = 'default', currentPage }: NavigationProps
             </Link>
           </li>
           <li>
+            {/* Art Direction Palette is a separate app build served at /palette, so a plain link */}
+            <a href="/palette" className={getLinkClasses('palette')}>
+              Palette
+            </a>
+          </li>
+          <li>
             <Link
               to="/vidpod"
               className={getLinkClasses('vidpod')}
@@ -208,6 +214,15 @@ export function Navigation({ variant = 'default', currentPage }: NavigationProps
                 >
                   Get the Goods
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="/palette"
+                  className="text-gray-700 hover:text-[#5928CB] transition-colors duration-200 block font-bold"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Palette
+                </a>
               </li>
               <li>
                 <Link

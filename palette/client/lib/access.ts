@@ -43,6 +43,10 @@ export function captureTokenFromUrl() {
 }
 
 export async function checkAccess(): Promise<boolean> {
+  // Local dev server only (import.meta.env.DEV is false in the built site):
+  // skip the purchase check so the apps open without a buyer token.
+  // Add ?locked to the address to see the pitch page in dev.
+  if (import.meta.env.DEV && !new URLSearchParams(window.location.search).has("locked")) return true;
   const token = read(TOKEN_KEY);
   if (!token) return false;
   if (read(VALID_KEY, true) === token) return true;
