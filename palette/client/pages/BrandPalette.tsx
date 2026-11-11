@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppSwitcher } from "../components/AppSwitcher";
 import { BrandHeader } from "../components/brand/BrandHeader";
-import { SectionNav } from "../components/brand/SectionNav";
+import { SectionNav, SECTIONS } from "../components/brand/SectionNav";
 import { BrandBoard } from "../components/brand/BrandBoard";
 import { PromptStudio } from "../components/brand/PromptStudio";
 import { ConceptSection } from "../components/brand/sections/ConceptSection";
@@ -25,6 +25,8 @@ export default function BrandPalette() {
   const [panel, setPanel] = useState<"board" | "prompts">("board");
   const meta = useMemo(() => sectionMeta(brand, store.library.length), [brand, store.library.length]);
   const props = { brand, set, commit };
+  // All seven steps checked: the Prompt Studio tab lights up to say the brand is ready for prompts.
+  const allDone = SECTIONS.every((x) => meta[x.id].done);
 
   // New and Open both leave the library and land on step one, so the fresh brand is in front of you.
   const backToStepOne = () => {
@@ -122,7 +124,9 @@ export default function BrandPalette() {
                 aria-selected={panel === "prompts"}
                 aria-controls="brand-right-panel"
                 onClick={() => setPanel("prompts")}
-                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background" data-oid="50a048ae45">Prompt Studio
+                data-ready={allDone && panel !== "prompts"}
+                title={allDone ? "All seven steps are done. Your prompts are ready." : undefined}
+                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background data-[ready=true]:bg-[#b267c7] data-[ready=true]:text-white data-[ready=true]:hover:bg-[#a155b8]" data-oid="50a048ae45">Prompt Studio
 
               </button>
             </div>
