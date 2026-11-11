@@ -47,7 +47,7 @@ export function ConfirmClearButton({ onConfirm, title, message, disabled }: Prop
           <p className="font-label text-label font-semibold text-[#2a1d38]" data-oid="66f2d76792" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">{title}</p>
           <p className="font-caption text-caption leading-relaxed text-[#5f5f7a]" data-oid="55ba762921" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">{message}</p>
           <div className="flex justify-end gap-ds-xs pt-ds-xs" data-oid="a0779c83f3" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">
-            <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[#d4c4ea] px-ds-md py-ds-xs font-label text-label text-[#3b2b4d] hover:border-[#3b2b4d]" data-oid="4ca941c621" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">
+            <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[#d4c4ea] px-ds-md py-ds-xs font-label text-label text-[#2a1d38] hover:border-[#2a1d38]" data-oid="4ca941c621" data-oid-callsite-deletable="true" data-oid-callsite-editable="true">
               Cancel
             </button>
             <button

@@ -23,7 +23,7 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
         <div className="flex flex-wrap items-center gap-ds-md" data-oid="3676500e7c">
           <p className="font-caption text-caption font-medium uppercase tracking-[0.24em] text-[#cfcfe6]" data-oid="70d7d56161">An interactive brand identity playground · Brought to you by <a href="https://mbd.studio" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-[#f3eefa]" data-oid="009016a46a">MBD.studio</a></p>
         </div>
-        <h1 className="font-display text-[64px] font-semibold leading-[0.9] tracking-[-0.02em] text-[#f3eefa] xl:text-[112px]" data-oid="cfe99e1998" style={{ color: "#432e4b" }}>
+        <h1 className="font-display text-[64px] font-semibold leading-[0.9] tracking-[-0.02em] text-[#2a1d38] xl:text-[112px]" data-oid="cfe99e1998">
           Brand <em className="not-italic text-[#d9cade]" data-oid="a754a3b135">Palette</em>
         </h1>
       </div>

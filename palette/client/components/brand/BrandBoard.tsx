@@ -27,7 +27,7 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
       <div className="flex items-center justify-between gap-ds-sm border-b border-[#e0d4f1] px-ds-lg py-ds-md" data-oid="5972340dd3">
         <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]" data-oid="57b9e6c328">Live Brand Board · Exploration</p>
         <div className="board-no-print flex items-center gap-ds-xs" data-oid="b0a871d49b">
-          <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-ds-xs rounded-md border border-[#e0d4f1] px-ds-sm py-ds-xs font-caption text-caption text-[#3b2b4d] hover:border-[#3b2b4d]" title="Print-friendly view — only the board is printed" data-oid="8e0aabbf2e">
+          <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-ds-xs rounded-md border border-[#e0d4f1] px-ds-sm py-ds-xs font-caption text-caption text-[#2a1d38] hover:border-[#2a1d38]" title="Print-friendly view — only the board is printed" data-oid="8e0aabbf2e">
             <Printer className="h-3.5 w-3.5" data-oid="c517dd651f" />
             Print
           </button>
@@ -39,7 +39,7 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
               await exportBoardPng(brand);
               setExporting(false);
             }}
-            className="inline-flex items-center gap-ds-xs rounded-md border border-[#e0d4f1] px-ds-sm py-ds-xs font-caption text-caption text-[#3b2b4d] hover:border-[#3b2b4d] disabled:opacity-50"
+            className="inline-flex items-center gap-ds-xs rounded-md border border-[#e0d4f1] px-ds-sm py-ds-xs font-caption text-caption text-[#2a1d38] hover:border-[#2a1d38] disabled:opacity-50"
             title="Downloads a flat raster PNG (not editable vector layers)" data-oid="42a3cca12c"
           >
             <ImageDown className="h-3.5 w-3.5" data-oid="0537961860" />
@@ -69,7 +69,7 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
             <span className="text-[72px] leading-none text-[#2a1d38]" style={displayStyle} data-oid="14062fa100" data-oid-style-dynamic="*">Aa</span>
             <div className="flex flex-col gap-ds-xs" data-oid="f56b19beaa">
               <p className="font-caption text-caption text-[#5f5f7a]" data-oid="5511ec078e" data-oid-text-editable="false" data-oid-text-source="text|expression:1f7ac36cb000">Display · {f.display.name}</p>
-              <p className="text-[14px] leading-snug text-[#3b2b4d]" style={bodyStyle} data-oid="f37b9e4b0a" data-oid-text-editable="false" data-oid-text-source="text|expression:fcdef310caac|text" data-oid-style-dynamic="*">Body · {f.body.name}. The quick brown fox jumps over the lazy dog.</p>
+              <p className="text-[14px] leading-snug text-[#2a1d38]" style={bodyStyle} data-oid="f37b9e4b0a" data-oid-text-editable="false" data-oid-text-source="text|expression:fcdef310caac|text" data-oid-style-dynamic="*">Body · {f.body.name}. The quick brown fox jumps over the lazy dog.</p>
             </div>
           </div>
           <div className="flex flex-col overflow-hidden rounded-lg border border-[#e0d4f1]" data-oid="725c584e14">
@@ -82,7 +82,7 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
 
         <ul className="flex flex-wrap gap-ds-xs" aria-label="Personality keywords" data-oid="da5d82d39e" data-oid-text-editable="false" data-oid-text-source="expression:1c5d2e23033b|expression:bd16b77d5f07">
           {brand.traits.map((t) => (
-            <li key={t} className="rounded-full border border-[#3b2b4d]/30 px-ds-sm py-ds-xs font-caption text-caption text-[#3b2b4d]" data-oid="f617783155" data-oid-shared="true" data-oid-instance-targetable="true">{t}</li>
+            <li key={t} className="rounded-full border border-[#2a1d38]/30 px-ds-sm py-ds-xs font-caption text-caption text-[#2a1d38]" data-oid="f617783155" data-oid-shared="true" data-oid-instance-targetable="true">{t}</li>
           ))}
           {brand.traits.length === 0 && <li className="font-caption text-caption text-[#5f5f7a]" data-oid="4e0e61a66c">Pick personality words to see them here.</li>}
         </ul>
@@ -91,14 +91,14 @@ export function BrandBoard({ brand }: { brand: BrandState }) {
           <p className="font-caption text-caption uppercase tracking-[0.2em] text-[#5f5f7a]">Visual language · image concepts</p>
           <ul className="flex flex-wrap gap-ds-xs" aria-label="Image concepts">
             {brand.imageConcepts.map((c) => (
-              <li key={c.id} className="rounded-full border border-[#3b2b4d]/30 px-ds-sm py-ds-xs font-caption text-caption text-[#3b2b4d]">{c.kind} · {c.ratio}</li>
+              <li key={c.id} className="rounded-full border border-[#2a1d38]/30 px-ds-sm py-ds-xs font-caption text-caption text-[#2a1d38]">{c.kind} · {c.ratio}</li>
             ))}
             {brand.imageConcepts.length === 0 && <li className="font-caption text-caption text-[#5f5f7a]">Choose image concepts in step 07 to see them here.</li>}
           </ul>
         </div>
 
         <div className="flex flex-col gap-ds-xs border-t border-[#e0d4f1] pt-ds-md" data-oid="8fa513e17f">
-          <p className="text-[15px] leading-relaxed text-[#3b2b4d]" style={{ fontFamily: f.body.stack }} data-oid="52463720c6" data-oid-style-dynamic="fontFamily">{brand.description.text}</p>
+          <p className="text-[15px] leading-relaxed text-[#2a1d38]" style={{ fontFamily: f.body.stack }} data-oid="52463720c6" data-oid-style-dynamic="fontFamily">{brand.description.text}</p>
           <p className="font-caption text-caption uppercase tracking-[0.16em] text-[#5f5f7a]" data-oid="6f3f92e369" data-oid-text-editable="false" data-oid-text-source="text|expression:15fcf98dcede">Voice · {brand.voice.map((v) => v.text).join(" / ")}</p>
         </div>
       </div>

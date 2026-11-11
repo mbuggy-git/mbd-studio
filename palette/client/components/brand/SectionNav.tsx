@@ -47,13 +47,13 @@ export function SectionNav({ active, onChange, meta }: Props) {
           <span className="flex w-full items-center justify-between gap-ds-xs font-caption text-caption opacity-80" data-oid="0ac5a19e33" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-text-editable="false" data-oid-text-source="expression:71f1ac52e481|expression:aab133ed370b">
             {String(i + 1).padStart(2, "0")}
             {meta[s.id].done && active !== s.id && (
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#432e4b] text-white" aria-label="Step complete" data-oid="a6db80c794" data-oid-shared="true">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#2a1d38] text-white" aria-label="Step complete" data-oid="a6db80c794" data-oid-shared="true">
                 <Check className="h-3 w-3" strokeWidth={3} data-oid="6f1f1dc472" data-oid-shared="true" />
               </span>
             )}
           </span>
-          <span data-done={active !== s.id} className="whitespace-nowrap font-body text-[15px] font-semibold leading-tight data-[done=true]:text-[#432e4b]" data-oid="7b4ec1b569" data-oid-shared="true" data-oid-instance-targetable="true">{s.short}</span>
-          {meta[s.id].done && active !== s.id && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-[#432e4b]" data-oid="6efd144c9b" data-oid-shared="true" />}
+          <span data-done={active !== s.id} className="whitespace-nowrap font-body text-[15px] font-semibold leading-tight data-[done=true]:text-[#2a1d38]" data-oid="7b4ec1b569" data-oid-shared="true" data-oid-instance-targetable="true">{s.short}</span>
+          {meta[s.id].done && active !== s.id && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-[#2a1d38]" data-oid="6efd144c9b" data-oid-shared="true" />}
         </button>
       ))}
     </div>
