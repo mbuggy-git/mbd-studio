@@ -1,6 +1,5 @@
 import { LayoutDashboard, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { AppSwitcher } from "../components/AppSwitcher";
 import { BrandHeader } from "../components/brand/BrandHeader";
 import { SectionNav } from "../components/brand/SectionNav";
 import { BrandBoard } from "../components/brand/BrandBoard";
@@ -54,7 +53,6 @@ export default function BrandPalette() {
   return (
     <main className="min-h-screen bg-[#614a8a]" data-oid="9b1692ae53" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
       <div className="mx-auto max-w-[1760px] px-ds-xl py-ds-2xl xl:px-ds-3xl" data-oid="6c75f80925">
-        <AppSwitcher current="brand" />
         <BrandHeader
           onSurprise={() => commit(surpriseBrand)}
           onUndo={store.undo}

@@ -1,5 +1,6 @@
 import { Cpu, FolderOpen, Plus, Save, Sparkles, Undo2 } from "lucide-react";
 import type { SavedBrand } from "../../lib/brand/types";
+import { AppSwitcher } from "../AppSwitcher";
 import { ConfirmClearButton } from "../ConfirmClearButton";
 
 type Props = {
@@ -26,12 +27,10 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
         <h1 className="font-display text-[64px] font-semibold leading-[0.9] tracking-[-0.02em] text-[#2a1d38] xl:text-[112px]" data-oid="cfe99e1998">
           Brand <em className="not-italic text-[#d9cade]" data-oid="a754a3b135">Palette</em>
         </h1>
+        <p className="max-w-[60ch] text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the business is and its personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}</p>
       </div>
       <div className="flex flex-col gap-ds-lg" data-oid="a67e6a17a2">
-        <p className="w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the business is and its personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}
-
-
-        </p>
+        <AppSwitcher current="brand" className="flex flex-wrap items-center gap-ds-sm lg:justify-end" />
         <div className="flex flex-wrap items-center gap-ds-sm" data-oid="0e02f8f6bb">
           <button type="button" onClick={onShowLibrary} className="ds-button h-[42px] rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground" data-oid="632dabd27c">
             <FolderOpen className="h-4 w-4" data-oid="1ace29006d" />
