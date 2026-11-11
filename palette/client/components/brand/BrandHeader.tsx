@@ -19,18 +19,19 @@ type Props = {
 
 export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSaved, onShowLibrary, onNew, aiLabel }: Props) {
   return (
-    <header className="grid grid-cols-1 items-start gap-ds-xl border-b border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pb-ds-2xl lg:grid-cols-[1.35fr_1fr]" data-oid="7ce93247cd" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
-      <div className="flex flex-col gap-ds-md" data-oid="a0c606ab66">
-        <div className="flex flex-wrap items-center gap-ds-md" data-oid="3676500e7c">
-          <p className="font-caption text-caption font-medium uppercase tracking-[0.24em] text-[#cfcfe6]" data-oid="70d7d56161">An interactive brand identity playground · Brought to you by <a href="https://mbd.studio" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-[#f3eefa]" data-oid="009016a46a">MBD.studio</a></p>
-        </div>
-        <h1 className="font-display text-[64px] font-semibold leading-[0.9] tracking-[-0.02em] text-[#2a1d38] xl:text-[112px]" data-oid="cfe99e1998">
+    // Columns match the page grid below (BrandPalette.tsx) so the right column lines up with the board panel.
+    <header className="grid grid-cols-1 items-start gap-ds-xl border-b border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pb-ds-2xl lg:grid-cols-[minmax(0,1fr)_460px] 2xl:grid-cols-[minmax(0,1fr)_560px]" data-oid="7ce93247cd" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
+      {/* w-fit + the w-0/min-w-full children: the title sets the column width, caption and intro wrap to it */}
+      <div className="flex w-fit max-w-full flex-col gap-ds-md" data-oid="a0c606ab66">
+        {/* Trim the empty space above the capitals so the title's top edge sits level with the buttons (margin fallback for browsers without text-box) */}
+        <h1 className="font-display text-[64px] font-semibold leading-[0.9] [text-box:trim-start_cap_alphabetic] not-supports-[text-box:trim-start_cap_alphabetic]:-mt-[0.096em] tracking-[-0.02em] text-[#2a1d38] xl:text-[112px]" data-oid="cfe99e1998">
           Brand <em className="not-italic text-[#d9cade]" data-oid="a754a3b135">Palette</em>
         </h1>
-        <p className="max-w-[60ch] text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the business is and its personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and leave with a prompt ready for any AI design tool."}</p>
+        <p className="w-0 min-w-full font-caption text-caption font-medium uppercase tracking-[0.24em] text-[#cfcfe6]" data-oid="70d7d56161">A brand identity playground · Brought to you by <a href="https://mbd.studio" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-[#f3eefa]" data-oid="009016a46a">MBD.studio</a></p>
+        <p className="mt-ds-md w-0 min-w-full text-body text-[#cfcfe6]" data-oid="d34ccd0747">{"Start with what the business is and its personality, then name it and style it yourself, or hit \"Surprise Me\". Enter the Prompt Studio, and get a full prompt."}</p>
       </div>
       <div className="flex flex-col gap-ds-lg" data-oid="a67e6a17a2">
-        <AppSwitcher current="brand" className="flex flex-wrap items-center gap-ds-sm lg:justify-end" />
+        <AppSwitcher current="brand" className="flex flex-wrap items-center gap-ds-sm" />
         <div className="flex flex-wrap items-center gap-ds-sm" data-oid="0e02f8f6bb">
           <button type="button" onClick={onShowLibrary} className="ds-button h-[42px] rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground" data-oid="632dabd27c">
             <FolderOpen className="h-4 w-4" data-oid="1ace29006d" />

@@ -1,5 +1,5 @@
 import { LayoutDashboard, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BrandHeader } from "../components/brand/BrandHeader";
 import { SectionNav } from "../components/brand/SectionNav";
 import { BrandBoard } from "../components/brand/BrandBoard";
@@ -23,6 +23,17 @@ export default function BrandPalette() {
   const { brand, set, commit } = store;
   const [section, setSection] = useState<SectionId>("personality");
   const [panel, setPanel] = useState<"board" | "prompts">("board");
+  // Height of the step bar, so the Board/Prompt switch can centre against it
+  // and the two boxes underneath start level.
+  const navRef = useRef<HTMLDivElement>(null);
+  const [navHeight, setNavHeight] = useState(0);
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setNavHeight(el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const meta = useMemo(() => sectionMeta(brand, store.library.length), [brand, store.library.length]);
   const props = { brand, set, commit };
 
@@ -73,7 +84,9 @@ export default function BrandPalette() {
 
         <div className="mt-ds-2xl grid grid-cols-1 items-start gap-ds-xl lg:grid-cols-[minmax(0,1fr)_460px] 2xl:grid-cols-[minmax(0,1fr)_560px]" data-oid="cbff30a257">
           <div className="flex min-w-0 flex-col gap-ds-lg" data-oid="a403a01012">
-            <SectionNav active={section} onChange={setSection} meta={meta} />
+            <div ref={navRef}>
+              <SectionNav active={section} onChange={setSection} meta={meta} />
+            </div>
             <div id="brand-section-panel" role="tabpanel" aria-labelledby={`brand-tab-${section}`} data-oid="18a3364446" data-oid-text-editable="false" data-oid-text-source="expression:f4181b32ff6a|expression:fcfcd1650c8f|expression:09da34f87a37|expression:9ab98621e674|expression:bfb756a930fb|expression:81041e920338|expression:b54f8de8168b|expression:094a477892b0|expression:27f4b955e1e6">
               {section === "concept" && <ConceptSection {...props} />}
               {section === "personality" && <PersonalitySection {...props} />}
@@ -101,7 +114,8 @@ export default function BrandPalette() {
             </div>
           </div>
 
-          <aside className="flex flex-col gap-ds-md lg:sticky lg:top-ds-xl" aria-label="Brand board and prompts" data-oid="01f67b85a6">
+          <aside className="flex flex-col gap-ds-lg lg:sticky lg:top-ds-xl" aria-label="Brand board and prompts" style={{ ["--brand-nav-h" as string]: `${navHeight}px` }} data-oid="01f67b85a6">
+            <div className="flex flex-col justify-center lg:min-h-[var(--brand-nav-h)]">
             <div role="tablist" aria-label="Right panel" data-panel={panel} className="group relative grid grid-cols-2 rounded-full border border-[#c4b0e6] bg-white p-1 shadow-[inset_0_1px_3px_rgba(60,40,100,0.18)]" data-oid="655180adbf">
               <span aria-hidden="true" className="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-4px)] rounded-full bg-foreground shadow-[0_2px_6px_rgba(30,10,50,0.35)] transition-transform duration-300 ease-out group-data-[panel=prompts]:translate-x-full" data-oid="33006ad7bd" />
               <button
@@ -130,6 +144,7 @@ export default function BrandPalette() {
                   Prompt Studio
                 </span>
               </button>
+            </div>
             </div>
             <div id="brand-right-panel" role="tabpanel" aria-labelledby={`panel-tab-${panel}`} data-oid="4cf61d3fad">
               {panel === "board" ?
