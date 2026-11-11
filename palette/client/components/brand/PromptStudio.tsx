@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Wand2 } from "lucide-react";
 import { CopyButton, SubPanel, TextCard } from "./ui";
 import type { SectionProps } from "./sections/types";
@@ -21,15 +22,19 @@ const ASSETS = DELIVERABLES.filter((x) => x.kind !== "board");
 /** Right-hand Prompt Studio: Brand DNA, then one card that is either a brief (for a board) or a prompt (for an asset). */
 export function PromptStudio({ brand, set, commit }: SectionProps) {
   const mode: "brief" | "asset" = brand.studioMode ?? "brief";
-  // The stage follows the mode: exploring a board vs producing a finished board or an asset.
-  const stageFor = (m: "brief" | "asset", deliverable: string) => (m === "asset" || deliverable === "finished-board" ? "produce" : "explore");
+  // The stage follows the mode: a brand board is always exploration, an asset is production.
+  const stageFor = (m: "brief" | "asset") => (m === "asset" ? "produce" : "explore");
   const setMode = (m: "brief" | "asset") =>
     set((s) => {
       const list = m === "brief" ? BOARDS : ASSETS;
       const deliverable = list.some((x) => x.id === s.deliverable) ? s.deliverable : list[0].id;
-      return { ...s, studioMode: m, deliverable, stage: stageFor(m, deliverable) };
+      return { ...s, studioMode: m, deliverable, stage: stageFor(m) };
     });
-  const setDeliverable = (deliverable: string) => set((s) => ({ ...s, deliverable, stage: stageFor(mode, deliverable) }));
+  const setDeliverable = (deliverable: string) => set((s) => ({ ...s, deliverable, stage: stageFor(mode) }));
+  // There is one board now (exploration). Brands saved with the retired "finished board" choice fall back to it.
+  useEffect(() => {
+    if (mode === "brief" && (brand.deliverable !== BOARDS[0].id || brand.stage !== "explore")) set((s) => ({ ...s, deliverable: BOARDS[0].id, stage: "explore" }));
+  }, [mode, brand.deliverable, brand.stage, set]);
   const valueOf = (key: LiveKey) => brand[key].override ?? COMPOSE[key](brand, brand[key].seed);
   const patchLive = (key: LiveKey, p: Partial<LiveText>) => set((s) => ({ ...s, [key]: { ...s[key], ...p } }) as BrandState);
 
@@ -82,15 +87,7 @@ export function PromptStudio({ brand, set, commit }: SectionProps) {
             {...handlers("fullBrief")}
             rows={18}
             mono
-            hint="An art-director-style prompt for a brand board, built from everything above."
-            before={
-              <div className="ds-field flex flex-col gap-ds-xs">
-                <label htmlFor="studio-deliverable" className="ds-field-label font-caption text-caption text-[#5f5f7a]">Board</label>
-                <select id="studio-deliverable" value={brand.deliverable} onChange={(e) => setDeliverable(e.target.value)} className="ds-input rounded-lg bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] text-body">
-                  {BOARDS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
-                </select>
-              </div>
-            } />
+            hint="An art-director-style prompt for a brand board, built from your palette." />
         ) : (
           <TextCard
             title="Asset Prompt"

@@ -142,7 +142,6 @@ export type DeliverableKind = "board" | "logo" | "photo" | "portrait" | "layout"
 
 export const DELIVERABLES: { id: string; label: string; kind: DeliverableKind; request: string }[] = [
   { id: "exploration-board", label: "Full brand exploration board", kind: "board", request: "a full brand exploration board" },
-  { id: "finished-board", label: "Finished brand board", kind: "board", request: "a finished, presentation-ready brand board" },
   { id: "logo", label: "Logo concepts", kind: "logo", request: "a set of logo concepts" },
   { id: "product", label: "Product photography", kind: "photo", request: "product photography" },
   { id: "portraits", label: "Portraits", kind: "portrait", request: "brand portrait photography" },
