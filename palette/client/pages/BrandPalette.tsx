@@ -1,8 +1,8 @@
-import { Check } from "lucide-react";
+import { LayoutDashboard, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { AppSwitcher } from "../components/AppSwitcher";
 import { BrandHeader } from "../components/brand/BrandHeader";
-import { SectionNav, SECTIONS } from "../components/brand/SectionNav";
+import { SectionNav } from "../components/brand/SectionNav";
 import { BrandBoard } from "../components/brand/BrandBoard";
 import { PromptStudio } from "../components/brand/PromptStudio";
 import { ConceptSection } from "../components/brand/sections/ConceptSection";
@@ -26,8 +26,6 @@ export default function BrandPalette() {
   const [panel, setPanel] = useState<"board" | "prompts">("board");
   const meta = useMemo(() => sectionMeta(brand, store.library.length), [brand, store.library.length]);
   const props = { brand, set, commit };
-  // All seven steps checked: the Prompt Studio tab lights up to say the brand is ready for prompts.
-  const allDone = SECTIONS.every((x) => meta[x.id].done);
 
   // New and Open both leave the library and land on step one, so the fresh brand is in front of you.
   const backToStepOne = () => {
@@ -115,8 +113,11 @@ export default function BrandPalette() {
                 aria-selected={panel === "board"}
                 aria-controls="brand-right-panel"
                 onClick={() => setPanel("board")}
-                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background" data-oid="99452e9bb4">
-                Brand Board
+                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-bold text-[#b267c7] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:font-medium aria-selected:text-background" data-oid="99452e9bb4">
+                <span className="inline-flex items-center justify-center gap-[5px]">
+                  <LayoutDashboard className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+                  Brand Board
+                </span>
               </button>
               <button
                 type="button"
@@ -125,19 +126,11 @@ export default function BrandPalette() {
                 aria-selected={panel === "prompts"}
                 aria-controls="brand-right-panel"
                 onClick={() => setPanel("prompts")}
-                data-ready={allDone && panel !== "prompts"}
-                title={allDone ? "All seven steps are done. Your prompts are ready." : undefined}
-                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background data-[ready=true]:text-[#432e4b]" data-oid="50a048ae45">
-                <span className="inline-flex items-center justify-center gap-ds-xs">
+                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-bold text-[#b267c7] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:font-medium aria-selected:text-background" data-oid="50a048ae45">
+                <span className="inline-flex items-center justify-center gap-[5px]">
+                  <Sparkles className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
                   Prompt Studio
-                  {/* Same checkmark the finished steps wear, so it reads as "ready", not as a second selected tab. */}
-                  {allDone && panel !== "prompts" && (
-                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#432e4b] text-white" aria-label="Ready">
-                      <Check className="h-3 w-3" strokeWidth={3} />
-                    </span>
-                  )}
                 </span>
-
               </button>
             </div>
             <div id="brand-right-panel" role="tabpanel" aria-labelledby={`panel-tab-${panel}`} data-oid="4cf61d3fad">
