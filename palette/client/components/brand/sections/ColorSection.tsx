@@ -5,7 +5,7 @@ import type { SectionProps } from "./types";
 import { COLOR_DIRECTIONS } from "../../../lib/brand/artVocab";
 import { colorName, generatePalette, inkOn, normalizeHex, PALETTE_ROLES, primaryOnDark } from "../../../lib/brand/color";
 import { newSeed, pickR, rng } from "../../../lib/brand/random";
-import { directionFromTraits } from "../../../lib/brand/state";
+import { directionFromTraits, NEUTRAL_PALETTE } from "../../../lib/brand/state";
 import type { Swatch } from "../../../lib/brand/types";
 
 function HexField({ value, onCommit, label }: { value: string; onCommit: (hex: string) => void; label: string }) {
@@ -31,8 +31,6 @@ function HexField({ value, onCommit, label }: { value: string; onCommit: (hex: s
     </div>
   );
 }
-
-const NEUTRAL_PALETTE = ["#2b2b2b", "#6b6b6b", "#a3a3a3", "#efefef", "#141414"];
 
 export function ColorSection({ brand, set, commit }: SectionProps) {
   const updateSwatch = (i: number, patch: Partial<Swatch>) =>

@@ -67,6 +67,9 @@ export function createSampleBrand(): BrandState {
  * and type slots fall back to neutral defaults because the UI always needs five swatches and two slots.
  * Gets a new id so a previously saved brand is never overwritten by the empty one.
  */
+/** The grey starter palette of a blank brand. The Color step counts as done once the palette is anything else. */
+export const NEUTRAL_PALETTE = ["#2b2b2b", "#6b6b6b", "#a3a3a3", "#efefef", "#141414"];
+
 export function createBlankBrand(): BrandState {
   const base: BrandState = {
     ...createSampleBrand(),
@@ -78,7 +81,7 @@ export function createBlankBrand(): BrandState {
     traits: [],
     traitsLocked: false,
     colorDirection: null,
-    palette: ["#2b2b2b", "#6b6b6b", "#a3a3a3", "#efefef", "#141414"].map((hex) => ({ hex, locked: false })),
+    palette: NEUTRAL_PALETTE.map((hex) => ({ hex, locked: false })),
     // Nothing chosen: the board previews the top recommendation until the user picks.
     display: slot("", [], []),
     body: slot("", [], []),
@@ -228,10 +231,12 @@ export function surpriseBrand(s: BrandState): BrandState {
 export type SectionMeta = { count: string; done: boolean };
 
 export function sectionMeta(s: BrandState, savedCount: number): Record<SectionId, SectionMeta> {
+  // Any color work counts: a direction, Generate, Follow personality, a re-rolled or hand-picked swatch.
+  const colorDone = s.colorDirection !== null || s.palette.some((sw, i) => sw.hex.toLowerCase() !== NEUTRAL_PALETTE[i]);
   return {
     concept: { count: s.name.trim() ? "1" : "0", done: !!s.name.trim() },
     personality: { count: String(s.traits.length), done: !!s.industry.trim() && s.traits.length >= 3 },
-    color: { count: s.colorDirection ? "1" : "0", done: s.colorDirection !== null },
+    color: { count: colorDone ? "1" : "0", done: colorDone },
     type: { count: `${[s.display.font, s.body.font].filter(Boolean).length}/2`, done: !!(s.display.font || s.body.font) },
     // Pills count choices the user has made, never generated placeholders.
     logo: { count: String(s.logoDirections.length), done: s.logoDirections.length > 0 },
