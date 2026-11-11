@@ -160,7 +160,7 @@ export default function BrandPalette() {
         </div>
 
         <footer className="mt-ds-3xl flex flex-wrap items-center justify-between gap-ds-md border-t border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pt-ds-lg" data-oid="2481959373">
-          <p className="font-caption text-caption text-[#cfcfe6]" data-oid="ce48ef3bc8">Brand Palette — a sister app to <Link to="/" className="underline underline-offset-4 hover:text-[#f3eefa]">Art Direction Palette</Link>. Invent, remix, brief.</p>
+          <p className="font-caption text-caption text-[#cfcfe6]" data-oid="ce48ef3bc8">Brand Palette — a sister app to <Link to="/" className="underline underline-offset-4 hover:text-[#f3eefa]">Art Direction Palette</Link>. Define, remix, reimagine.</p>
           <p className="font-caption text-caption text-[#cfcfe6]" data-oid="4af3841b45">Saved brands live in this browser only · no AI service connected</p>
         </footer>
       </div>
