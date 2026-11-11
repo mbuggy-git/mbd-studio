@@ -24,6 +24,14 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  // Dev only: the Palette apps are a separate Vite app (palette/, port 5174).
+  // Pass /palette through so nav links and bookmarks on this server reach it.
+  // Needs the palette dev server running: cd palette && npm run dev
+  server: {
+    proxy: {
+      '/palette': { target: 'http://127.0.0.1:5174', ws: true },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src/app'),
