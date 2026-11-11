@@ -363,6 +363,17 @@ export function BrandPaletteRemixPage() {
               </div>
             </div>
           </div>
+
+          {/* 8. Contact */}
+          <p className="mt-12 lg:mt-16 text-center text-white/90 text-lg [font-weight:400]!">
+            Questions about the apps?{" "}
+            <a
+              href="mailto:michelle@mbd.studio?subject=Brand%20Palette%20%26%20Creative%20Remix"
+              className="font-bold text-white underline underline-offset-4 hover:text-[#F65CE1]"
+            >
+              Contact us
+            </a>
+          </p>
         </div>
       </div>
       <Footer />
