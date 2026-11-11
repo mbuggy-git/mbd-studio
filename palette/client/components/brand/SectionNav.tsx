@@ -5,7 +5,7 @@ import type { SectionMeta } from "../../lib/brand/state";
 
 export const SECTIONS: { id: SectionId; label: string; short: string }[] = [
   // Personality first: the name generator and the copy draw on these words.
-  { id: "personality", label: "Business & Personality", short: "Business" },
+  { id: "personality", label: "Business & Personality", short: "Style" },
   { id: "concept", label: "Naming", short: "Name" },
   { id: "color", label: "Color Palette", short: "Color" },
   { id: "type", label: "Typography", short: "Type" },
