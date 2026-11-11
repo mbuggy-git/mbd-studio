@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { AppSwitcher } from "../components/AppSwitcher";
 import { BrandHeader } from "../components/brand/BrandHeader";
@@ -126,7 +127,16 @@ export default function BrandPalette() {
                 onClick={() => setPanel("prompts")}
                 data-ready={allDone && panel !== "prompts"}
                 title={allDone ? "All seven steps are done. Your prompts are ready." : undefined}
-                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background data-[ready=true]:bg-[#b267c7] data-[ready=true]:text-white data-[ready=true]:hover:bg-[#a155b8]" data-oid="50a048ae45">Prompt Studio
+                className="relative z-10 rounded-full px-ds-lg py-ds-sm text-center font-label text-label font-medium text-[#5f5f7a] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:text-background data-[ready=true]:text-[#432e4b]" data-oid="50a048ae45">
+                <span className="inline-flex items-center justify-center gap-ds-xs">
+                  Prompt Studio
+                  {/* Same checkmark the finished steps wear, so it reads as "ready", not as a second selected tab. */}
+                  {allDone && panel !== "prompts" && (
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#432e4b] text-white" aria-label="Ready">
+                      <Check className="h-3 w-3" strokeWidth={3} />
+                    </span>
+                  )}
+                </span>
 
               </button>
             </div>
