@@ -1,4 +1,4 @@
-import { Cpu, FolderOpen, Save, Sparkles, Undo2 } from "lucide-react";
+import { Cpu, FolderOpen, Plus, Save, Sparkles, Undo2 } from "lucide-react";
 import type { SavedBrand } from "../../lib/brand/types";
 import { ConfirmClearButton } from "../ConfirmClearButton";
 
@@ -12,10 +12,11 @@ type Props = {
   library?: SavedBrand[];
   onOpen?: (id: string) => void;
   onShowLibrary: () => void;
+  onNew: () => void;
   aiLabel: string;
 };
 
-export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSaved, onShowLibrary, aiLabel }: Props) {
+export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSaved, onShowLibrary, onNew, aiLabel }: Props) {
   return (
     <header className="grid grid-cols-1 items-start gap-ds-xl border-b border-[color-mix(in_srgb,var(--primary)_40%,var(--border))] pb-ds-2xl lg:grid-cols-[1.35fr_1fr]" data-oid="7ce93247cd" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
       <div className="flex flex-col gap-ds-md" data-oid="a0c606ab66">
@@ -35,6 +36,10 @@ export function BrandHeader({ onSurprise, onUndo, onClear, canUndo, onSave, isSa
           <button type="button" onClick={onShowLibrary} className="ds-button h-[42px] rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground" data-oid="632dabd27c">
             <FolderOpen className="h-4 w-4" data-oid="1ace29006d" />
             Library
+          </button>
+          <button type="button" onClick={onNew} title="Start a new blank brand. Saved brands stay in your library." className="ds-button h-[42px] rounded-lg border border-border bg-[color-mix(in_srgb,var(--primary)_4%,var(--background))] px-ds-md text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))] hover:border-foreground">
+            <Plus className="h-4 w-4" />
+            New brand
           </button>
           <button type="button" onClick={onSurprise} title="Invent a new brand direction" className="ds-button ds-button-primary h-[42px] rounded-lg px-ds-lg" data-oid="215e18e7a5">
             <Sparkles className="h-4 w-4" data-oid="77a182ef80" />

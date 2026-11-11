@@ -26,6 +26,17 @@ export default function BrandPalette() {
   const meta = useMemo(() => sectionMeta(brand, store.library.length), [brand, store.library.length]);
   const props = { brand, set, commit };
 
+  // New and Open both leave the library and land on step one, so the fresh brand is in front of you.
+  const backToStepOne = () => {
+    setSection("personality");
+    setPanel("board");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const startNew = () => {
+    store.startNew();
+    backToStepOne();
+  };
+
   // Load the brand's current display/body families so previews render in the real typeface.
   const displayFont = resolveFont(brand.display, brand.traits, "display").name;
   const bodyFont = resolveFont(brand.body, brand.traits, "body").name;
@@ -57,6 +68,7 @@ export default function BrandPalette() {
           library={store.library}
           onOpen={store.openBrand}
           onShowLibrary={() => setSection("library")}
+          onNew={startNew}
           aiLabel={aiStatus().label} />
         
 
@@ -77,11 +89,14 @@ export default function BrandPalette() {
                 library={store.library}
                 savedId={store.savedId}
                 onSave={store.saveCurrent}
-                onOpen={store.openBrand}
+                onOpen={(id) => {
+                  store.openBrand(id);
+                  backToStepOne();
+                }}
                 onDuplicate={store.duplicateBrand}
                 onRename={store.renameBrand}
                 onDelete={store.deleteBrand}
-                onNew={store.startNew} />
+                onNew={startNew} />
 
               }
             </div>
