@@ -138,7 +138,8 @@ export function applyIndustry(s: BrandState, industry: string): BrandState {
   next.logoConcepts = s.logoConcepts.map((lc, i) =>
     lc.locked
       ? { ...lc, description: fix(lc.description), promptOverride: lc.promptOverride === null ? null : fix(lc.promptOverride) }
-      : generateLogoConcept(next, i, lc.seed, lc.id)
+      : // Keep the card's own direction and graphic language (including "None"); only the wording is re-derived.
+        { ...generateLogoConcept(next, i, lc.seed, lc.id, { direction: lc.direction, graphic: lc.graphic }), pinDirection: lc.pinDirection, pinGraphic: lc.pinGraphic }
   );
   const refreshed = refreshCopy(next, s.dna.seed + 3);
   return {

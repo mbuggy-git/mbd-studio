@@ -7,14 +7,21 @@ import { freshPair, generateLogoConcept, pinsOf, regenerateLogos } from "../../.
 import { logoPrompt } from "../../../lib/brand/prompts";
 import { resolveFont } from "../../../lib/brand/fonts";
 import { newSeed, rng } from "../../../lib/brand/random";
-import type { LogoConcept } from "../../../lib/brand/types";
+import type { BrandState, LogoConcept } from "../../../lib/brand/types";
 import { LogoPreview } from "../LogoPreview";
+
+// The brand's direction + graphic language mirror the selected card, so the board and every prompt
+// follow when that card changes (including to "None").
+const followSelection = (s: BrandState): BrandState => {
+  const chosen = s.logoConcepts[s.selectedLogo];
+  return chosen ? { ...s, logoDirections: [chosen.direction], graphicLanguage: chosen.graphic ? [chosen.graphic] : [] } : s;
+};
 
 export function LogoSection({ brand, set, commit }: SectionProps) {
   const ready = brand.logoConceptsReady !== false && brand.logoConcepts.length > 0;
   // A dropdown choice pins that card: the concept is rewritten for the new direction/graphic and keeps it on re-rolls.
   const repin = (i: number, pin: { direction?: string; graphic?: string }) =>
-    commit((s) => ({
+    commit((s) => followSelection({
       ...s,
       logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, newSeed(), c.id, { ...pinsOf(c), direction: pin.direction ?? c.direction, graphic: pin.graphic ?? c.graphic }) : c)),
     }));
@@ -31,7 +38,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
       title="Explore the mark"
       blurb="Three exploratory concepts side by side. Set each card's direction and graphic language, re-roll until the words land, then select one. Previews are typographic sketches drawn in code — not finished or AI-rendered logos."
       actions={
-        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => ({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
+        <button type="button" className="ds-button ds-button-primary rounded-lg" onClick={() => commit((s) => followSelection({ ...s, logoConcepts: regenerateLogos(s, newSeed()), logoConceptsReady: true }))} data-oid="4ba756f9bb" data-oid-component-root="true" data-oid-callsite-deletable="true" data-oid-callsite-single="true">
           <RefreshCw className="h-4 w-4" data-oid="c75801596d" />
           {ready ? "Regenerate concepts" : "Generate concepts"}
         </button>
@@ -101,7 +108,7 @@ export function LogoSection({ brand, set, commit }: SectionProps) {
                     <Pencil className="h-4 w-4" data-oid="ca20990995" data-oid-shared="true" data-oid-instance-targetable="true" />
                     {editing === lc.id ? "Done" : "Edit"}
                   </button>
-                  <button type="button" className={softButton} title="A new idea for this card — new direction, graphic language and wording" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => { const seed = newSeed(); return { ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, seed, c.id, freshPair(rng(seed), c)) : c)) }; })} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
+                  <button type="button" className={softButton} title="A new idea for this card — new direction, graphic language and wording" aria-label={`Regenerate concept ${i + 1}`} onClick={() => commit((s) => { const seed = newSeed(); return followSelection({ ...s, logoConcepts: s.logoConcepts.map((c, k) => (k === i ? generateLogoConcept(s, i, seed, c.id, freshPair(rng(seed), c)) : c)) }); })} data-oid="a1156152be" data-oid-shared="true" data-oid-instance-targetable="true" data-oid-classname-dynamic="true">
                     <RefreshCw className="h-4 w-4" data-oid="2133b058bf" data-oid-shared="true" data-oid-instance-targetable="true" />
                   </button>
                   <LockButton compact locked={lc.locked} onToggle={() => patchConcept(lc.id, { locked: !lc.locked })} label={`concept ${i + 1}`} />

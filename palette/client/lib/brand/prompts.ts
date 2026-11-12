@@ -47,7 +47,7 @@ export function composeDNA(s: BrandState, seed: number): string {
   ]);
   const type = `Headlines use ${f.display.name}, ${article(s.display.classification)} ${s.display.classification.toLowerCase()}${dWords.length ? ` with ${listJoin(dWords.slice(0, 3))} character` : ""}, while ${f.body.name} keeps supporting text ${slotWords(s.body).slice(0, 2).join(" and ") || "clear and readable"}.`;
   const logo = f.logo
-    ? `The identity leans toward ${article(f.logo.direction)} ${f.logo.direction.toLowerCase()} expressed through ${s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : f.logo.graphic.toLowerCase()} graphic language.`
+    ? `The identity leans toward ${article(f.logo.direction)} ${f.logo.direction.toLowerCase()}${s.graphicLanguage.length || f.logo.graphic ? ` expressed through ${s.graphicLanguage.length ? listJoin(lower(s.graphicLanguage)) : f.logo.graphic.toLowerCase()} graphic language` : ""}.`
     : "";
   const tone = `Overall the tone is ${listJoin(f.voice.length ? f.voice : voiceWords(s.traits).slice(0, 3))} — ${pickR(r, ["never generic, always intentional", "confident without shouting", "crafted to be remembered", "warm, specific and unmistakably its own"])}.`;
   return [opening, color, type, logo, tone].filter(Boolean).join(" ");
@@ -60,11 +60,11 @@ export function logoPrompt(s: BrandState, lc: LogoConcept): string {
   return [
     `Logo design for “${f.name}”, ${article(f.industry)} ${f.industry}.`,
     `Direction: ${lc.direction.toLowerCase()} — ${lc.description}`,
-    [lc.graphic ? `Graphic language: ${lc.graphic.toLowerCase()}` : "", f.personality.length ? `personality: ${listJoin(f.personality.slice(0, 3))}` : ""].filter(Boolean).join("; ") + ".",
+    [[lc.graphic ? `Graphic language: ${lc.graphic.toLowerCase()}` : "", f.personality.length ? `personality: ${listJoin(f.personality.slice(0, 3))}` : ""].filter(Boolean).join("; ")].filter(Boolean).map((t) => `${t}.`).join(""),
     `Typography reference: ${f.display.name}${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).length ? ` (${[s.display.classification.toLowerCase(), ...slotWords(s.display).slice(0, 3)].filter(Boolean).join(", ")})` : ""}.`,
     `Colors: ${f.colors.slice(0, 3).map((c) => `${c.name} ${c.hex}`).join(", ")} on ${f.colors[3].name} ${f.colors[3].hex}.`,
     `Flat, vector-style artwork centered on a plain background; no mockups, no extra words beyond the brand name. ${stage}`,
-  ].join(" ");
+  ].filter(Boolean).join(" ");
 }
 
 // ——— Image prompts ———
