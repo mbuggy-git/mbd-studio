@@ -36,7 +36,7 @@ const includes: [string, string][] = [
   ["Brand Palette", " — business, personality, name, color, type, logo, copy, imagery"],
   ["Live brand board", " with print and PNG export"],
   ["Prompt Studio", ": a brand board prompt and asset prompts for any AI design tool"],
-  ["Creative Remix", " — style × influence × mood, with a remix prompt"],
+  ["Creative Remix", " — style + influence + mood, with a remix prompt"],
   ["Runs in the browser", ", no account, no AI credits"],
   ["Personal link by email", ", yours to keep"],
 ];
@@ -107,7 +107,7 @@ function Hero() {
           <div>
             <p className="bpr-mono">02</p>
             <h2 className="bpr-display">Creative Remix</h2>
-            <p>Style × influence × mood, written up as a remix prompt.</p>
+            <p>Style + influence + mood, written up as a remix prompt.</p>
           </div>
           <ArrowDownRight />
         </a>
