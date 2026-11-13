@@ -175,6 +175,7 @@ export function AiWorkflowsPage() {
                 <img src={lighthouse3} alt="White lighthouse above a curving seaside road at sunset" style={{ width: "275.3%", left: "-20.9%", top: "-238.8%" }} />
               </div>
               <img src={mbdLogo} alt="MBD Studio logo" className="aiw-collage-logo" />
+              <img src={handbookCover} alt="New AI Workflows handbook cover" className="aiw-collage-book" />
               <div className="aiw-quote">
                 <p className="aiw-caption aiw-muted">Same prompt</p>
                 <p className="aiw-body">“A winding coastal road leading to a lighthouse at sunset”</p>

@@ -185,7 +185,16 @@
 .aiw-circle img { position: absolute; max-width: none; height: auto; }
 .aiw-circle-1 { left: 2%; top: 4%; width: 52.8%; }
 .aiw-circle-2 { right: 4%; top: 26%; width: 45.8%; }
-.aiw-circle-3 { left: 22%; bottom: 2%; width: 40.3%; }
+.aiw-circle-3 { left: 31%; bottom: 2%; width: 40.3%; }
+/* The handbook itself, standing in front of the circles so the page reads as an ebook at a glance. */
+.aiw-collage-book {
+  position: absolute;
+  left: -9%;
+  bottom: -6%;
+  width: 52%;
+  height: auto;
+  filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+}
 .aiw-collage-logo {
   position: absolute;
   right: 2%;
