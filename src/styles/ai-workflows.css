@@ -1,0 +1,454 @@
+/* New AI Workflows landing page (/get-the-goods/ai-workflows).
+   Self-contained: sizes are in px because the site root is 14px, and every
+   rule is scoped under .aiw so the page's palette never leaks into the site. */
+
+.aiw {
+  --aiw-bg: hsl(259.7 78.2% 19.8%);
+  --aiw-fg: #ffffff;
+  --aiw-card: hsl(259.5 68.7% 32.5%);
+  --aiw-primary: hsl(328 100% 62.2%);
+  --aiw-light: hsl(257.1 22.6% 93.9%);
+  --aiw-muted: hsl(259.4 66.9% 72.7%);
+  --aiw-accent: hsl(279.9 75.6% 59.8%);
+  --aiw-deep: hsl(258.9 65.5% 11.4%);
+  --aiw-border: hsl(258.7 56.1% 51.8%);
+  --aiw-success: hsl(149.8 64.1% 48%);
+  --aiw-warning: hsl(38.9 100% 57.1%);
+  --aiw-gutter: clamp(20px, 4.5vw, 64px);
+  --aiw-section: clamp(56px, 8vw, 96px);
+  --aiw-display: "Oswald", "Arial Narrow", sans-serif;
+  --aiw-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  min-height: 100vh;
+  background: var(--aiw-bg);
+  color: var(--aiw-fg);
+  font-family: var(--aiw-body);
+  font-weight: 400;
+}
+
+/* The site nav keeps the look it has on every other page. */
+.aiw-nav {
+  position: relative;
+  z-index: 30;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.aiw-wrap {
+  position: relative;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding-left: var(--aiw-gutter);
+  padding-right: var(--aiw-gutter);
+}
+
+.aiw section,
+.aiw footer { position: relative; overflow: hidden; }
+.aiw-section { padding-top: var(--aiw-section); padding-bottom: var(--aiw-section); }
+.aiw [id] { scroll-margin-top: 24px; }
+
+/* ── Type ─────────────────────────────────────────────────────────── */
+.aiw-display {
+  margin: 0;
+  font-family: var(--aiw-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  font-size: clamp(46px, 7vw, 112px);
+}
+.aiw-heading {
+  margin: 0;
+  font-family: var(--aiw-display);
+  font-weight: 600;
+  line-height: 1.05;
+  text-transform: uppercase;
+  font-size: 36px;
+}
+.aiw-body { margin: 0; font-size: 18px; line-height: 1.55; font-weight: 400; }
+.aiw-label {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.aiw-caption {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.aiw-pink { color: var(--aiw-primary); }
+.aiw-muted { color: var(--aiw-muted); }
+.aiw-rule { height: 4px; width: 160px; border-radius: 999px; background: var(--aiw-primary); }
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+.aiw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 4px clamp(20px, 3vw, 40px);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--aiw-fg);
+  cursor: pointer;
+  font-family: var(--aiw-body);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 80ms ease;
+}
+.aiw-btn svg { width: 20px; height: 20px; flex: none; }
+.aiw-btn:hover { transform: translateY(-1px); }
+.aiw-btn:active { transform: translateY(0); }
+.aiw-btn:focus-visible { outline: 2px solid var(--aiw-primary); outline-offset: 2px; }
+.aiw-btn:disabled { cursor: not-allowed; opacity: 0.6; transform: none; }
+.aiw-btn-primary { background: var(--aiw-primary); color: var(--aiw-bg); }
+.aiw-btn-primary:hover { background: color-mix(in srgb, var(--aiw-primary) 88%, #fff); }
+.aiw-btn-ghost { border-color: var(--aiw-border); }
+.aiw-btn-ghost:hover { background: var(--aiw-card); }
+.aiw-btn-dark { width: 100%; background: var(--aiw-bg); }
+.aiw-btn-dark:hover:not(:disabled) { background: #fff; color: var(--aiw-bg); }
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.aiw-hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--aiw-border) 55%, transparent), transparent 55%),
+    radial-gradient(ellipse at 85% 80%, color-mix(in srgb, var(--aiw-primary) 30%, transparent), transparent 50%);
+}
+.aiw-hero-fade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 33%;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--aiw-bg), transparent);
+}
+.aiw-hero-ghost {
+  position: absolute;
+  left: var(--aiw-gutter);
+  bottom: -40px;
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--aiw-display);
+  font-weight: 700;
+  font-size: clamp(110px, 20vw, 288px);
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.05);
+}
+.aiw-hero-grid {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: clamp(32px, 5vw, 64px);
+  padding-top: clamp(24px, 3vw, 40px);
+  padding-bottom: var(--aiw-section);
+}
+.aiw-pill {
+  display: inline-flex;
+  padding: 4px 16px;
+  border: 1px solid var(--aiw-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--aiw-card) 60%, transparent);
+  color: var(--aiw-primary);
+}
+.aiw-hero-title { margin-top: 24px; font-size: clamp(56px, 16vw, 120px); }
+.aiw-hero-sub { margin-top: 24px; font-size: clamp(24px, 3.2vw, 40px); }
+.aiw-hero-copy { margin-top: 16px; max-width: 576px; }
+.aiw-actions { margin-top: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.aiw-stats { margin: 40px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 24px clamp(20px, 3vw, 40px); }
+.aiw-stats li { display: flex; flex-direction: column; }
+
+.aiw-collage { position: relative; width: 100%; max-width: 720px; margin: 0 auto; aspect-ratio: 1; }
+.aiw-circle {
+  position: absolute;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 4px solid var(--aiw-bg);
+  background: var(--aiw-card);
+  box-shadow: 0 40px 80px -20px rgb(0 0 0 / 0.6);
+}
+.aiw-circle img { position: absolute; max-width: none; height: auto; }
+.aiw-circle-1 { left: 2%; top: 4%; width: 52.8%; }
+.aiw-circle-2 { right: 4%; top: 26%; width: 45.8%; }
+.aiw-circle-3 { left: 22%; bottom: 2%; width: 40.3%; }
+.aiw-collage-logo {
+  position: absolute;
+  right: 2%;
+  bottom: 8%;
+  width: 24.4%;
+  height: auto;
+  border-radius: 50%;
+  transform: rotate(-8deg);
+  box-shadow: 0 20px 50px -10px color-mix(in srgb, var(--aiw-primary) 60%, transparent);
+}
+.aiw-quote {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  max-width: min(300px, 48%);
+  padding: 8px 16px;
+  border: 1px solid var(--aiw-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--aiw-card) 90%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2);
+}
+.aiw-quote .aiw-body { font-size: clamp(13px, 1.6vw, 16px); }
+
+/* ── Introduction ─────────────────────────────────────────────────── */
+.aiw-two { display: grid; grid-template-columns: 1fr; gap: clamp(32px, 5vw, 64px); }
+.aiw-intro-copy { display: flex; flex-direction: column; justify-content: flex-end; gap: 24px; }
+.aiw-lead { font-size: clamp(19px, 2vw, 24px); line-height: 1.45; }
+.aiw-banner {
+  position: relative;
+  margin-top: 16px;
+  margin-right: calc(var(--aiw-gutter) * -1);
+  padding: clamp(24px, 3.5vw, 40px) var(--aiw-gutter) clamp(24px, 3.5vw, 40px) clamp(24px, 3.5vw, 40px);
+  border-radius: 20px 0 0 20px;
+  background: linear-gradient(to right, var(--aiw-border), var(--aiw-accent), var(--aiw-primary));
+  box-shadow: 0 30px 60px -20px color-mix(in srgb, var(--aiw-primary) 50%, transparent);
+}
+.aiw-banner .aiw-heading { font-size: clamp(26px, 3.4vw, 44px); }
+.aiw-banner .aiw-body { margin-top: 8px; }
+.aiw-clip {
+  position: absolute;
+  top: -24px;
+  right: 18%;
+  width: 56px;
+  height: 56px;
+  transform: rotate(20deg);
+  color: var(--aiw-light);
+}
+
+/* ── Chapters ─────────────────────────────────────────────────────── */
+/* overflow stays visible here so the left column can stick while the list scrolls */
+.aiw .aiw-chapters { overflow: visible; background: color-mix(in srgb, var(--aiw-card) 40%, var(--aiw-bg)); }
+.aiw-chapters-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--aiw-bg), transparent 20%, transparent 80%, var(--aiw-bg));
+}
+.aiw-chapters h2 { margin-top: 16px; font-size: clamp(44px, 6vw, 96px); }
+.aiw-shot {
+  position: relative;
+  margin-top: 40px;
+  width: 100%;
+  aspect-ratio: 406 / 353;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--aiw-card);
+}
+.aiw-shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+.aiw-shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, color-mix(in srgb, var(--aiw-bg) 90%, transparent), transparent 50%);
+}
+.aiw-shot p { position: absolute; z-index: 1; left: 16px; bottom: 16px; }
+.aiw-chapter-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.aiw-chapter {
+  display: grid;
+  grid-template-columns: clamp(40px, 6vw, 80px) 1fr auto;
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 24px);
+  padding: 24px 0;
+  border-bottom: 1px solid var(--aiw-primary);
+}
+.aiw-chapter-num { font-size: clamp(22px, 2.6vw, 36px); color: var(--aiw-primary); }
+.aiw-chapter h3 { font-size: clamp(20px, 2.4vw, 32px); }
+.aiw-chapter .aiw-body { margin-top: 4px; font-size: clamp(15px, 1.4vw, 18px); }
+.aiw-chapter-page { white-space: nowrap; letter-spacing: 0.12em; text-transform: none; }
+
+/* ── Cheat sheets ─────────────────────────────────────────────────── */
+.aiw-sheets { background: var(--aiw-light); color: var(--aiw-bg); }
+.aiw-sheets-glow {
+  position: absolute;
+  right: -160px;
+  top: -160px;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--aiw-primary) 25%, transparent), transparent 65%);
+}
+.aiw-sheets-head { align-items: end; }
+/* the pink half of the headline always starts its own line */
+.aiw-sheets-head h2 .aiw-pink { display: block; }
+.aiw-sheets-head .aiw-rule { margin-top: 24px; width: 128px; }
+.aiw-sheets-lead { font-size: clamp(18px, 1.8vw, 22px); line-height: 1.5; color: color-mix(in srgb, var(--aiw-bg) 80%, transparent); }
+.aiw-sheets-body { margin-top: clamp(32px, 5vw, 64px); display: grid; grid-template-columns: 1fr; gap: 24px; }
+.aiw-peek {
+  position: relative;
+  margin: 0;
+  height: clamp(340px, 46vw, 600px);
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--aiw-bg);
+  box-shadow: 0 40px 80px -30px color-mix(in srgb, var(--aiw-bg) 80%, transparent);
+}
+.aiw-peek-blob { position: absolute; width: 320px; height: 320px; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+.aiw-peek-blob-a { left: -96px; top: -96px; background: color-mix(in srgb, var(--aiw-accent) 40%, transparent); }
+.aiw-peek-blob-b { right: -96px; bottom: -96px; background: color-mix(in srgb, var(--aiw-primary) 30%, transparent); }
+.aiw-peek img { position: absolute; width: 46%; height: auto; border-radius: 12px; box-shadow: 0 30px 60px -20px var(--aiw-bg); }
+.aiw-peek-1 { left: 4%; top: 14%; transform: rotate(-9deg); }
+.aiw-peek-2 { left: 27%; top: 7%; transform: rotate(-1deg); }
+.aiw-peek-3 { left: 51%; top: 17%; transform: rotate(7deg); }
+.aiw-peek::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 55%;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--aiw-bg), color-mix(in srgb, var(--aiw-bg) 85%, transparent) 50%, transparent);
+}
+.aiw-peek figcaption { position: absolute; z-index: 1; left: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 40px); color: var(--aiw-primary); }
+.aiw-sheet-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.aiw-sheet {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--aiw-bg) 15%, transparent);
+  border-radius: 20px;
+  transition: border-color 120ms ease;
+}
+.aiw-sheet:hover { border-color: var(--aiw-primary); }
+.aiw-sheet svg { flex: none; width: 28px; height: 28px; margin-top: 4px; color: var(--aiw-primary); }
+.aiw-sheet h3 { font-size: 24px; }
+.aiw-sheet .aiw-body { margin-top: 4px; font-size: 16px; color: color-mix(in srgb, var(--aiw-bg) 75%, transparent); }
+.aiw-sheets-cta { margin-top: clamp(32px, 5vw, 64px); }
+
+/* ── Get your copy ────────────────────────────────────────────────── */
+.aiw-get-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 70% 50%, color-mix(in srgb, var(--aiw-primary) 35%, transparent), transparent 60%);
+}
+/* the price card stretches to the left column's height; its button sits at the bottom */
+.aiw-get { align-items: stretch; }
+.aiw-get h2 { margin-top: 16px; }
+.aiw-features { margin: 40px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr; gap: 16px; }
+.aiw-feature {
+  padding: 24px;
+  border: 1px solid var(--aiw-border);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--aiw-card) 50%, transparent);
+}
+.aiw-feature svg { width: 28px; height: 28px; color: var(--aiw-primary); }
+.aiw-feature h3 { margin-top: 16px; font-size: 24px; }
+.aiw-feature .aiw-body { margin-top: 4px; font-size: 16px; color: var(--aiw-muted); }
+.aiw-buy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 3.5vw, 40px);
+  border-radius: 20px;
+  background: linear-gradient(to bottom right, var(--aiw-border), var(--aiw-accent), var(--aiw-primary));
+  box-shadow: 0 40px 100px -30px color-mix(in srgb, var(--aiw-primary) 70%, transparent);
+}
+/* The book floats over the card's top-right corner; the text beside it stays in a narrower column. */
+.aiw-buy-cover {
+  position: absolute;
+  top: clamp(-70px, -5vw, -44px);
+  right: -12px;
+  width: 48%;
+  max-width: 240px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.45));
+}
+.aiw-buy-top { position: relative; max-width: 56%; }
+.aiw-buy .aiw-label,
+.aiw-buy .aiw-caption { color: rgb(255 255 255 / 0.8); }
+.aiw-price-row { margin-top: 8px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 16px; }
+.aiw-price { margin: 0; font-family: var(--aiw-display); font-weight: 700; font-size: clamp(64px, 8vw, 96px); line-height: 1; }
+.aiw-price-row .aiw-caption { margin-bottom: 8px; }
+.aiw-checks { margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.aiw-checks li { display: flex; align-items: center; gap: 8px; font-size: 18px; line-height: 1.55; }
+.aiw-checks svg { flex: none; width: 20px; height: 20px; }
+.aiw-buy-action { margin-top: auto; padding-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+.aiw-buy-action .aiw-caption { text-transform: none; color: rgb(255 255 255 / 0.75); }
+
+/* ── Author footer ────────────────────────────────────────────────── */
+.aiw-author {
+  padding-top: var(--aiw-section);
+  padding-bottom: 40px;
+  background: linear-gradient(180deg, var(--aiw-bg), var(--aiw-deep));
+}
+.aiw-author-grid { display: grid; grid-template-columns: 1fr; align-items: center; gap: clamp(32px, 5vw, 64px); }
+.aiw-author-logo { width: clamp(120px, 14vw, 192px); height: auto; border-radius: 50%; transform: rotate(-6deg); }
+.aiw-author h2 { font-size: clamp(48px, 6vw, 96px); }
+.aiw-author-sub { margin-top: 8px; font-size: clamp(18px, 2vw, 24px); color: var(--aiw-muted); }
+.aiw-links { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.aiw-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--aiw-fg);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+.aiw-links a:hover { color: var(--aiw-primary); }
+.aiw-links svg { width: 24px; height: 24px; flex: none; }
+.aiw-tag { padding: 0 8px; border-radius: 999px; background: var(--aiw-warning); color: var(--aiw-deep); font-size: 12px; font-weight: 400; letter-spacing: 0.01em; }
+.aiw-legal {
+  margin-top: clamp(32px, 5vw, 64px);
+  padding-top: 24px;
+  border-top: 1px solid color-mix(in srgb, var(--aiw-border) 50%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--aiw-muted);
+}
+.aiw-legal .aiw-caption:first-child { text-transform: none; }
+
+/* ── Wider screens ────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .aiw-features { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .aiw-hero-grid { grid-template-columns: 1.1fr 1fr; }
+  .aiw-collage { align-self: center; }
+  .aiw-hero-title { font-size: clamp(80px, 8.4vw, 136px); }
+  .aiw-intro { grid-template-columns: 1fr 1.3fr; }
+  .aiw-chapters-grid { grid-template-columns: 0.8fr 1.4fr; }
+  .aiw-chapters-aside { position: sticky; top: 40px; align-self: start; }
+  /* same columns and gap as the row below, so the intro text lines up with the cards */
+  .aiw-sheets-head { grid-template-columns: 1.35fr 1fr; column-gap: 24px; }
+  .aiw-sheets-body { grid-template-columns: 1.35fr 1fr; }
+  .aiw-get { grid-template-columns: 1.2fr 1fr; }
+  .aiw-buy-cover { width: 58%; max-width: none; top: -48px; right: -16px; }
+  .aiw-buy .aiw-checks { max-width: 56%; }
+  .aiw-buy .aiw-checks li { align-items: flex-start; }
+  .aiw-buy .aiw-checks svg { margin-top: 4px; }
+  .aiw-author-grid { grid-template-columns: auto 1fr auto; }
+}
+/* Narrow two-column widths: the price card is slim, so the book and price shrink to stay apart. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .aiw-buy-cover { width: 50%; top: -40px; }
+  .aiw-price { font-size: 64px; }
+  .aiw-buy-top { max-width: 52%; }
+}
