@@ -47,6 +47,16 @@ function makeAccessToken(): string {
 
 const DEFAULT_SLUG = "ai-workflows";
 
+// Product slug → env var holding its Stripe price ID (same map as
+// mbd-create-checkout). Used to work out which products are in an order:
+// Stripe's checkout page can add a second product to a session (cross-sell),
+// so one session can hold more than the product named in its metadata.
+const PRICE_ENV_BY_SLUG: Record<string, string> = {
+  "ai-workflows": "MBD_STRIPE_PRICE_ID",
+  "figma-to-claude": "MBD_STRIPE_PRICE_ID_CLAUDE",
+  "kit": "MBD_STRIPE_PRICE_ID_KIT",
+};
+
 serve(async (req) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
@@ -98,26 +108,10 @@ serve(async (req) => {
 
     const session = event.data.object as Stripe.Checkout.Session;
 
-    // Idempotency check: don't process the same session twice
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { data: existing } = await supabase
-      .from("mbd_purchases")
-      .select("id")
-      .eq("stripe_session_id", session.id)
-      .maybeSingle();
-
-    if (existing) {
-      console.log("Session already processed:", session.id);
-      return new Response(JSON.stringify({ received: true, duplicate: true }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
     const customerEmail = session.customer_details?.email || session.customer_email;
-    const productSlug = session.metadata?.product_slug || DEFAULT_SLUG;
-    const amountPaid = session.amount_total || 0;
+    const metadataSlug = session.metadata?.product_slug || DEFAULT_SLUG;
     const currency = session.currency || "usd";
     // Marketing consent collected via consent_collection.promotions on the
     // checkout session. Stripe reports "opt_in" / "opt_out" (or null if the
@@ -128,104 +122,155 @@ serve(async (req) => {
       throw new Error("No customer email on session");
     }
 
-    // Resolve product details, falling back to the default if the slug is
-    // unknown (defensive — should never happen since mbd-create-checkout
-    // also enforces an allowlist).
-    const product = PRODUCTS[productSlug] || PRODUCTS[DEFAULT_SLUG];
-
-    // Signed download URL valid for 7 days (file products only)
-    let downloadUrl: string | null = null;
-    if (product.pdfPath) {
-      const { data: signedUrlData, error: signedUrlError } = await supabase
-        .storage
-        .from("mbd-products")
-        .createSignedUrl(product.pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
-
-      if (signedUrlError || !signedUrlData?.signedUrl) {
-        throw new Error(`Failed to create signed URL: ${signedUrlError?.message}`);
-      }
-      downloadUrl = signedUrlData.signedUrl;
+    // Work out every product in the order from its line items. Falls back to
+    // the metadata slug alone if the line items can't be read or none match.
+    const slugByPriceId: Record<string, string> = {};
+    for (const [slug, envName] of Object.entries(PRICE_ENV_BY_SLUG)) {
+      const priceId = Deno.env.get(envName);
+      if (priceId) slugByPriceId[priceId] = slug;
     }
-    const accessToken = product.accessLink ? makeAccessToken() : null;
-    const accessUrl = accessToken ? `${SITE_URL}/kit/${accessToken}` : null;
 
-    // Log the purchase
-    const { error: insertError } = await supabase
+    let items: { slug: string; amountPaid: number }[] = [];
+    try {
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
+      for (const li of lineItems.data) {
+        const slug = li.price?.id ? slugByPriceId[li.price.id] : undefined;
+        if (!slug) {
+          console.error("Line item with no known product:", li.price?.id, li.description);
+          continue;
+        }
+        if (items.some((i) => i.slug === slug)) continue;
+        items.push({ slug, amountPaid: li.amount_total || 0 });
+      }
+    } catch (err) {
+      console.error("Failed to list line items:", err.message);
+    }
+    if (items.length === 0) {
+      items = [{ slug: metadataSlug, amountPaid: session.amount_total || 0 }];
+    }
+
+    // One mbd_purchases row per product. stripe_session_id is unique, so the
+    // main product keeps the bare session id (as before) and any extra product
+    // gets "<session id>:<slug>".
+    const primarySlug = items.some((i) => i.slug === metadataSlug) ? metadataSlug : items[0].slug;
+    const rowIdFor = (slug: string) => slug === primarySlug ? session.id : `${session.id}:${slug}`;
+
+    // Idempotency check, per product: a Stripe retry only delivers the
+    // products that weren't already processed.
+    const { data: existingRows } = await supabase
       .from("mbd_purchases")
-      .insert({
-        stripe_session_id: session.id,
-        customer_email: customerEmail,
-        product_slug: productSlug,
-        amount_paid: amountPaid,
-        currency: currency,
-        marketing_opt_in: marketingOptIn,
-        access_token: accessToken,
+      .select("stripe_session_id")
+      .in("stripe_session_id", items.map((i) => rowIdFor(i.slug)));
+    const alreadyDone = new Set((existingRows || []).map((r) => r.stripe_session_id));
+
+    for (const { slug: productSlug, amountPaid } of items) {
+      const rowId = rowIdFor(productSlug);
+      if (alreadyDone.has(rowId)) {
+        console.log("Already processed:", rowId);
+        continue;
+      }
+
+      // Resolve product details, falling back to the default if the slug is
+      // unknown (defensive — should never happen).
+      const product = PRODUCTS[productSlug] || PRODUCTS[DEFAULT_SLUG];
+
+      // Signed download URL valid for 7 days (file products only)
+      let downloadUrl: string | null = null;
+      if (product.pdfPath) {
+        const { data: signedUrlData, error: signedUrlError } = await supabase
+          .storage
+          .from("mbd-products")
+          .createSignedUrl(product.pdfPath, 60 * 60 * 24 * 7); // 7 days in seconds
+
+        if (signedUrlError || !signedUrlData?.signedUrl) {
+          throw new Error(`Failed to create signed URL: ${signedUrlError?.message}`);
+        }
+        downloadUrl = signedUrlData.signedUrl;
+      }
+      const accessToken = product.accessLink ? makeAccessToken() : null;
+      const accessUrl = accessToken ? `${SITE_URL}/kit/${accessToken}` : null;
+
+      // Log the purchase
+      const { error: insertError } = await supabase
+        .from("mbd_purchases")
+        .insert({
+          stripe_session_id: rowId,
+          customer_email: customerEmail,
+          product_slug: productSlug,
+          amount_paid: amountPaid,
+          currency: currency,
+          marketing_opt_in: marketingOptIn,
+          access_token: accessToken,
+        });
+
+      if (insertError) {
+        console.error("Failed to insert purchase:", insertError);
+        // Continue anyway — we still want to send the email
+      }
+
+      // Send the email via Resend
+      const emailHtml = `
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
+            <h1 style="color: #1a1a1a;">Thanks for your purchase!</h1>
+            ${accessUrl ? `
+            <p><strong>${product.title}</strong> are ready. This is your personal link — keep this email, the link doesn't expire:</p>
+            <p style="margin: 32px 0;">
+              <a href="${accessUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
+                ${product.ctaLabel}
+              </a>
+            </p>
+            <p style="color: #666; font-size: 14px;">Opening an app once on a device remembers you there. If you lose this email, enter your purchase email at ${SITE_URL}/kit and the link will be re-sent.</p>
+            ` : `
+            <p>Your copy of <strong>${product.title}</strong> is ready to download.</p>
+            <p style="margin: 32px 0;">
+              <a href="${downloadUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
+                ${product.ctaLabel}
+              </a>
+            </p>
+            <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
+            <div style="margin: 40px 0 0; padding: 20px 24px; border: 1px solid #e5e5e5; border-radius: 12px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 0 14px;"><tr>
+                <td style="width: 50%; padding-right: 6px;"><img src="${SITE_URL}/apps/brand-palette.jpg" alt="Brand Palette" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
+                <td style="width: 50%; padding-left: 6px;"><img src="${SITE_URL}/apps/creative-remix.jpg" alt="Creative Remix" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
+              </tr></table>
+              <p style="margin: 0 0 6px; font-weight: bold;">Also from MBD Studio: Brand Palette &amp; Creative Remix Applications — $10</p>
+              <p style="margin: 0 0 12px; color: #444; font-size: 14px;">Two prompting apps for designers. Brand Palette builds a brand from concept to prompt-ready briefs; Creative Remix combines style, influence and mood into concepts you wouldn't have reached on your own. Browser-based, no account, no AI credits.</p>
+              <a href="${SITE_URL}/get-the-goods/brand-palette-remix" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
+            </div>
+            `}
+            <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">
+            <p style="color: #666; font-size: 14px;">
+              Thank you for supporting MBD Studio.<br>
+              — Michelle
+            </p>
+          </body>
+        </html>
+      `;
+
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "MBD Studio <hello@mbd.studio>",
+          // hello@ has no inbox (replies bounce) — send replies to Michelle.
+          reply_to: "michelle@mbd.studio",
+          to: customerEmail,
+          subject: product.emailSubject,
+          html: emailHtml,
+        }),
       });
 
-    if (insertError) {
-      console.error("Failed to insert purchase:", insertError);
-      // Continue anyway — we still want to send the email
-    }
+      if (!emailResponse.ok) {
+        const errorText = await emailResponse.text();
+        console.error("Failed to send email:", errorText);
+        // Don't throw — purchase is logged, buyer can still access via thank-you page
+      }
 
-    // Send the email via Resend
-    const emailHtml = `
-      <!DOCTYPE html>
-      <html>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a;">
-          <h1 style="color: #1a1a1a;">Thanks for your purchase!</h1>
-          ${accessUrl ? `
-          <p><strong>${product.title}</strong> are ready. This is your personal link — keep this email, the link doesn't expire:</p>
-          <p style="margin: 32px 0;">
-            <a href="${accessUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
-              ${product.ctaLabel}
-            </a>
-          </p>
-          <p style="color: #666; font-size: 14px;">Opening an app once on a device remembers you there. If you lose this email, enter your purchase email at ${SITE_URL}/kit and the link will be re-sent.</p>
-          ` : `
-          <p>Your copy of <strong>${product.title}</strong> is ready to download.</p>
-          <p style="margin: 32px 0;">
-            <a href="${downloadUrl}" style="background: #6d28d9; color: white; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: bold; display: inline-block;">
-              ${product.ctaLabel}
-            </a>
-          </p>
-          <p style="color: #666; font-size: 14px;">This download link is valid for 7 days. If it expires or you have any trouble accessing it, just reply to this email and I'll send you a fresh link.</p>
-          <div style="margin: 40px 0 0; padding: 20px 24px; border: 1px solid #e5e5e5; border-radius: 12px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 0 14px;"><tr>
-              <td style="width: 50%; padding-right: 6px;"><img src="${SITE_URL}/apps/brand-palette.jpg" alt="Brand Palette" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
-              <td style="width: 50%; padding-left: 6px;"><img src="${SITE_URL}/apps/creative-remix.jpg" alt="Creative Remix" width="270" style="display: block; width: 100%; height: auto; border-radius: 8px;"></td>
-            </tr></table>
-            <p style="margin: 0 0 6px; font-weight: bold;">Also from MBD Studio: Brand Palette &amp; Creative Remix Applications — $10</p>
-            <p style="margin: 0 0 12px; color: #444; font-size: 14px;">Two prompting apps for designers. Brand Palette builds a brand from concept to prompt-ready briefs; Creative Remix combines style, influence and mood into concepts you wouldn't have reached on your own. Browser-based, no account, no AI credits.</p>
-            <a href="${SITE_URL}/get-the-goods/brand-palette-remix" style="color: #6d28d9; font-weight: bold;">See the apps →</a>
-          </div>
-          `}
-          <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0;">
-          <p style="color: #666; font-size: 14px;">
-            Thank you for supporting MBD Studio.<br>
-            — Michelle
-          </p>
-        </body>
-      </html>
-    `;
-
-    const emailResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "MBD Studio <hello@mbd.studio>",
-        to: customerEmail,
-        subject: product.emailSubject,
-        html: emailHtml,
-      }),
-    });
-
-    if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error("Failed to send email:", errorText);
-      // Don't throw — purchase is logged, buyer can still access via thank-you page
     }
 
     return new Response(JSON.stringify({ received: true }), {

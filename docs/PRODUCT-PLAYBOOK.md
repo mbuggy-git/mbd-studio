@@ -29,7 +29,7 @@ Buyer on product page (e.g. /get-the-goods/figma-to-claude)
 | Product PDFs | Supabase Storage, private bucket `mbd-products` (also mirrored locally in `products/`, which is gitignored — never commit them) | Buyers get 7-day signed URLs |
 | Purchase log | Supabase table `mbd_purchases` (migration `supabase/migrations/20260530070421_create_mbd_purchases.sql`) | RLS enabled; only the webhook (service role) writes. Includes `marketing_opt_in` from Stripe's consent checkbox |
 | Prices/products | Stripe Dashboard | One Product + Price per PDF |
-| Email | Resend, domain mbd.studio, sender `hello@mbd.studio` | Plain HTML template inside the webhook function |
+| Email | Resend, domain mbd.studio, sender `hello@mbd.studio`, replies go to `michelle@mbd.studio` | Plain HTML template inside the webhook function |
 
 Secrets (set via `npx supabase secrets set NAME=value`, values in the usual
 password manager — never in the repo):
@@ -163,7 +163,7 @@ covers every product because the slug travels in the session metadata.
 
 - **Buyer lost the email / link expired:** create a fresh signed URL in the
   Supabase Dashboard (Storage → `mbd-products` → file → Create signed URL,
-  7 days) and reply from hello@mbd.studio. Purchases are verifiable in
+  7 days) and reply from michelle@mbd.studio (hello@ has no inbox). Purchases are verifiable in
   `mbd_purchases` by email.
 - **Idempotency:** the webhook skips sessions it has already processed
   (unique `stripe_session_id`), so Stripe retries are harmless.

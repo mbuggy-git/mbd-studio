@@ -76,6 +76,7 @@ serve(async (req) => {
           },
           body: JSON.stringify({
             from: "MBD Studio <hello@mbd.studio>",
+            reply_to: "michelle@mbd.studio",
             to: email,
             subject: "Your Brand Palette & Creative Remix link",
             html: `

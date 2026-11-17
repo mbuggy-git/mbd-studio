@@ -116,7 +116,7 @@ export function ThankYouPage() {
               ) : (
                 <>
                   Check your spam folder, or{" "}
-                  <a href="mailto:hello@mbd.studio" className="font-bold underline underline-offset-4 hover:text-white">
+                  <a href="mailto:michelle@mbd.studio" className="font-bold underline underline-offset-4 hover:text-white">
                     contact us
                   </a>{" "}
                   and we'll resend it.
