@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export type AppView = "brand" | "remix";
+export type AppView = "brand" | "remix" | "type";
 
 type Props = {
   current: AppView;
@@ -23,6 +23,12 @@ export function AppSwitcher({ current, className = "mb-ds-xl flex flex-wrap item
         // Text in the slate of "Remix" in the Creative Remix title (the accent token); ! beats the pill's default text colour.
         <Link to="/remix" className={`${link} text-accent!`}>
           Creative Remix
+        </Link>
+      )}
+      {current !== "type" && (
+        // Free, like Art Direction Palette. Text in the purple of the Type Palette page.
+        <Link to="/type" className={`${link} text-[#954b9d]!`}>
+          Type Palette
         </Link>
       )}
       {/* Text in the navy of the Art Direction Palette title (that page's primary, #06405e). */}

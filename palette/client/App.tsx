@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes"
 import { BrowserRouter, Route, Routes } from "./lib/router"
 import Index from "./pages/Index"
 import BrandPalette from "./pages/BrandPalette"
+import TypePalette from "./pages/TypePalette"
 import NotFound from "./pages/NotFound"
 import { RequireAccess } from "./components/RequireAccess"
 
@@ -21,6 +22,8 @@ export default function App() {
         <Routes>
           {/* Art Direction Palette is the free tool and the front door. */}
           <Route path="/" element={<Titled title="Art Direction Palette"><Index view="vocabulary" /></Titled>} />
+          {/* Type Palette is free too: no purchase check. */}
+          <Route path="/type" element={<Titled title="Type Palette"><TypePalette /></Titled>} />
           <Route path="/remix" element={<Titled title="Creative Remix"><RequireAccess><Index view="remix" /></RequireAccess></Titled>} />
           <Route path="/brand" element={<Titled title="Brand Palette"><RequireAccess><BrandPalette /></RequireAccess></Titled>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

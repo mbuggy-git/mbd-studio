@@ -6,6 +6,12 @@
       "runtimeExecutable": "corepack",
       "runtimeArgs": ["pnpm", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "palette",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "palette", "run", "dev"],
+      "port": 5174
     }
   ]
 }
