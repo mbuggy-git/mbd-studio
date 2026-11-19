@@ -1,6 +1,6 @@
 import { previewStyle, resolveFont } from "../brand/fonts";
-import { colorName, inkOn, luminance, PALETTE_ROLES } from "../brand/color";
-import { displaySpacingEm, OPTION_LABELS, type TypeOption } from "./state";
+import { colorName, inkOn, PALETTE_ROLES } from "../brand/color";
+import { darkColors, displaySpacingEm, OPTION_LABELS, type TypeOption } from "./state";
 
 const W = 1600;
 const PAD = 64;
@@ -86,10 +86,11 @@ function drawOption(ctx: Ctx, o: TypeOption, index: number, y: number, head: str
   ctx.fillText(`Display: ${d.name} · ${ds.fontWeight} · ${o.displaySize}px · kerning ${kern > 0 ? `+${kern}` : kern}`, innerX, cy + 26);
   setFont(ctx, `400 18px ${UI_SANS}`);
   ctx.fillStyle = "#6e4a73";
-  ctx.fillText(`Supporting: ${b.name} · ${bs.fontWeight} · ${BODY_SIZE}px / ${BODY_LH.toFixed(0)}px`, innerX, cy + 62);
+  ctx.fillText(`Body: ${b.name} · ${bs.fontWeight} · ${BODY_SIZE}px / ${BODY_LH.toFixed(0)}px`, innerX, cy + 62);
   cy += headerH;
 
-  const panel = (bg: string, label: string, labelColor: string, headColor: string, bodyColor: string, bodyAlpha: number) => {
+  const panel = (bg: string, label: string, colors: string[], bodyColor: string, bodyAlpha: number) => {
+    const [headColor, , labelColor] = colors;
     ctx.save();
     rrect(ctx, innerX, cy, innerW, panelH, 12, bg);
     ctx.clip();
@@ -116,26 +117,22 @@ function drawOption(ctx: Ctx, o: TypeOption, index: number, y: number, head: str
     const colW = textW / 3;
     [0, 1, 2].forEach((k) => {
       const cx = innerX + PANEL_PAD + k * colW;
-      const isDark = bg === p[4].hex && headColor === p[3].hex;
-      const hex = k === 0 && isDark ? headColor : p[k].hex;
-      const role = k === 0 && isDark ? "Display · Light neutral" : PALETTE_ROLES[k];
-      const [hi, lo] = [luminance(hex), luminance(bg)].sort((a, b) => b - a);
-      const ratio = (hi + 0.05) / (lo + 0.05);
+      const hex = colors[k];
       setFont(ctx, `${ds.fontWeight} 40px ${d.stack}`);
       ctx.fillStyle = hex;
       ctx.fillText("Aa", cx, ty);
       const aw = ctx.measureText("Aa").width + 14;
       setFont(ctx, `400 13px ${UI_MONO}`);
       ctx.fillStyle = bodyColor;
-      ctx.fillText(`${role} ${hex.toUpperCase()}`, cx + aw, ty + 4);
-      ctx.fillText(`${ratio.toFixed(1)}:1 ${ratio >= 4.5 ? "· reads well" : ratio >= 3 ? "· large type only" : "· low contrast"}`, cx + aw, ty + 24);
+      ctx.fillText(PALETTE_ROLES[k], cx + aw, ty + 4);
+      ctx.fillText(hex.toUpperCase(), cx + aw, ty + 24);
     });
     ctx.restore();
     cy += panelH;
   };
-  panel(p[3].hex, "LIGHT GROUND", p[2].hex, p[0].hex, p[4].hex, 1);
+  panel(p[3].hex, "LIGHT THEME", [p[0].hex, p[1].hex, p[2].hex], p[4].hex, 1);
   cy += 16;
-  panel(p[4].hex, "DARK GROUND", p[2].hex, p[3].hex, p[3].hex, 0.8);
+  panel(p[4].hex, "DARK THEME", darkColors(o), p[3].hex, 0.8);
   cy += 24;
 
   // Color chips
@@ -166,7 +163,7 @@ function drawOption(ctx: Ctx, o: TypeOption, index: number, y: number, head: str
   return total;
 }
 
-/** Renders every option (fonts, sizes, both grounds and color chips) to a PNG and downloads it. */
+/** Renders every option (fonts, sizes, both themes and color chips) to a PNG and downloads it. */
 export async function exportOptionsPng(allOptions: TypeOption[], headline: string, body: string, only?: number) {
   const entries = allOptions.map((o, i) => ({ o, i })).filter((e) => only === undefined || e.i === only);
   const options = entries.map((e) => e.o);

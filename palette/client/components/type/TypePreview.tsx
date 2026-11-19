@@ -2,36 +2,24 @@ import { useState, type CSSProperties } from "react";
 import { ChevronDown, ChevronsDownUp, ChevronsUpDown, Download, Eraser, Pencil, Plus, X } from "lucide-react";
 import { exportOptionsPng } from "../../lib/type/exportPng";
 import { previewStyle, resolveFont } from "../../lib/brand/fonts";
-import { luminance, PALETTE_ROLES } from "../../lib/brand/color";
-import { displaySpacingEm, MAX_OPTIONS, OPTION_LABELS, type TypeOption } from "../../lib/type/state";
+import { PALETTE_ROLES } from "../../lib/brand/color";
+import { darkColors, displaySpacingEm, MAX_OPTIONS, OPTION_LABELS, type TypeOption } from "../../lib/type/state";
 
 export type GroundMode = "both" | "light" | "dark";
 
-const contrast = (a: string, b: string) => {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-};
-
-/** Shows primary, secondary and accent as type on a ground, with a contrast readout. */
-function GroundColors({ palette, ground, fontStyle, inkColor, displayHex, displayLabel }: { palette: { hex: string }[]; ground: string; fontStyle: CSSProperties; inkColor: string; displayHex?: string; displayLabel?: string }) {
+/** Shows primary, secondary and accent as type in one theme. */
+function GroundColors({ colors, fontStyle, inkColor }: { colors: string[]; fontStyle: CSSProperties; inkColor: string }) {
   return (
     <div className="grid grid-cols-3 gap-ds-md border-t pt-ds-md" style={{ borderColor: `${inkColor}33` }}>
-      {[0, 1, 2].map((k) => {
-        const hex = k === 0 && displayHex ? displayHex : palette[k].hex;
-        const label = k === 0 && displayLabel ? displayLabel : PALETTE_ROLES[k];
-        const ratio = contrast(hex, ground);
-        return (
-          <div key={k} className="flex min-w-0 items-center gap-ds-sm">
-            <span className="shrink-0 text-[40px] leading-none" style={{ ...fontStyle, color: hex }}>Aa</span>
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate font-caption text-caption" style={{ color: inkColor }}>{label} {hex.toUpperCase()}</span>
-              <span className="font-caption text-caption" style={{ color: inkColor, opacity: 0.75 }}>
-                {ratio.toFixed(1)}:1 {ratio >= 4.5 ? "· reads well" : ratio >= 3 ? "· large type only" : "· low contrast"}
-              </span>
-            </div>
+      {colors.map((hex, k) => (
+        <div key={k} className="flex min-w-0 items-center gap-ds-sm">
+          <span className="shrink-0 text-[40px] leading-none" style={{ ...fontStyle, color: hex }}>Aa</span>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate font-caption text-caption" style={{ color: inkColor }}>{PALETTE_ROLES[k]}</span>
+            <span className="truncate font-caption text-caption" style={{ color: inkColor, opacity: 0.75 }}>{hex.toUpperCase()}</span>
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 }
@@ -113,6 +101,8 @@ export function TypePreview({ options, activeId, onSelect, onRemove, onClear, on
         const d = resolveFont(o.display, [], "display");
         const b = resolveFont(o.body, [], "body");
         const p = o.palette;
+        // The dark theme set: the light hues lightened to read on the deep neutral, unless the user set their own.
+        const dark = darkColors(o);
         const dStyle = previewStyle(o.display, d);
         const headStyle = { ...dStyle, letterSpacing: `${displaySpacingEm(o, dStyle.letterSpacing as string | undefined)}em`, fontSize: `${o.displaySize}px`, lineHeight: 1 };
         const kern = o.displayTracking ?? 0;
@@ -207,18 +197,18 @@ export function TypePreview({ options, activeId, onSelect, onRemove, onClear, on
             <div className="flex flex-col gap-ds-sm">
               {mode !== "dark" && (
                 <div className="flex flex-col gap-ds-md overflow-hidden rounded-lg p-ds-xl" style={{ background: p[3].hex }}>
-                  <span className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: p[2].hex }}>Light ground</span>
+                  <span className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: p[2].hex }}>Light theme</span>
                   <p className="break-words" style={{ ...headStyle, color: p[0].hex }}>{head}</p>
                   <p className="max-w-[62ch]" style={{ ...bodyStyle, color: p[4].hex }}>{copy}</p>
-                  <GroundColors palette={p} ground={p[3].hex} fontStyle={dStyle} inkColor={p[4].hex} />
+                  <GroundColors colors={[p[0].hex, p[1].hex, p[2].hex]} fontStyle={dStyle} inkColor={p[4].hex} />
                 </div>
               )}
               {mode !== "light" && (
                 <div className="flex flex-col gap-ds-md overflow-hidden rounded-lg p-ds-xl" style={{ background: p[4].hex }}>
-                  <span className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: p[2].hex }}>Dark ground</span>
-                  <p className="break-words" style={{ ...headStyle, color: p[3].hex }}>{head}</p>
+                  <span className="font-caption text-caption uppercase tracking-[0.2em]" style={{ color: dark[2] }}>Dark theme</span>
+                  <p className="break-words" style={{ ...headStyle, color: dark[0] }}>{head}</p>
                   <p className="max-w-[62ch] opacity-80" style={{ ...bodyStyle, color: p[3].hex }}>{copy}</p>
-                  <GroundColors palette={p} ground={p[4].hex} fontStyle={dStyle} inkColor={p[3].hex} displayHex={p[3].hex} displayLabel="Display · Light neutral" />
+                  <GroundColors colors={dark} fontStyle={dStyle} inkColor={p[3].hex} />
                 </div>
               )}
               <div className="flex h-3 overflow-hidden rounded-full" aria-hidden="true">

@@ -35,14 +35,14 @@ export function FontSlotPanel({ role, option, optionLabel, onChange, copy, onCop
   }, [recKey]);
 
   return (
-    <section aria-label={isDisplay ? "Display typeface" : "Supporting typeface"} className="rounded-xl border border-[#d2acd7] bg-[#ecd9ee] p-ds-xl">
+    <section aria-label={isDisplay ? "Display typeface" : "Body typeface"} className="rounded-xl border border-[#d2acd7] bg-[#ecd9ee] p-ds-xl">
       <div className="mb-ds-xl flex flex-wrap items-start justify-between gap-ds-lg">
         <div className="flex max-w-2xl flex-col gap-ds-xs">
           <span className="font-caption text-caption font-medium uppercase tracking-[0.2em] text-[#6e4a73]">
-            {isDisplay ? "01 · Display" : "02 · Supporting"} · Option {optionLabel}
+            {isDisplay ? "01 · Display" : "02 · Body"} · Option {optionLabel}
           </span>
           <h2 className="font-display text-[44px] font-semibold leading-none tracking-[-0.02em] text-[#3f1a44] xl:text-[56px]">
-            {isDisplay ? "Pick the headline face" : "Pair a supporting face"}
+            {isDisplay ? "Pick the headline face" : "Pair a body face"}
           </h2>
           <p className="max-w-xl font-label text-label text-[#6e4a73]">
             {isDisplay

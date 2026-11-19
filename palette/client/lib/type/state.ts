@@ -1,12 +1,12 @@
 import type { Swatch, TypeSlot } from "../brand/types";
 import { COLOR_DIRECTIONS, TYPE_CLASSIFICATIONS, TYPE_PERSONALITY, TYPE_SHAPE } from "../brand/artVocab";
-import { generatePalette } from "../brand/color";
+import { accentsOnDark, generatePalette } from "../brand/color";
 import { newSeed, pickR, rng, sampleR, uid, type Rand } from "../brand/random";
 
 export type TypeTab = "display" | "body" | "color";
 export type TypeRole = "display" | "body";
 
-/** One font combination being explored: a display face, a supporting face and its own palette. */
+/** One font combination being explored: a display face, a body face and its own palette. */
 export type TypeOption = {
   id: string;
   display: TypeSlot;
@@ -15,14 +15,27 @@ export type TypeOption = {
   /** Extra display letter-spacing in 1/1000 em (design-tool units). Optional for older saved options. */
   displayTracking?: number;
   palette: Swatch[];
+  /**
+   * Dark-theme primary, secondary and accent the user has set by hand. A missing or null entry
+   * follows the light color (see darkColors). Remixing the whole palette clears these.
+   */
+  darkPalette?: (string | null)[];
   colorDirection: string | null;
 };
+
+/** The dark theme's primary, secondary and accent: the user's own where set, otherwise derived from the light set. */
+export function darkColors(o: TypeOption): [string, string, string] {
+  const derived = accentsOnDark(o.palette);
+  return [0, 1, 2].map((i) => o.darkPalette?.[i] ?? derived[i]) as [string, string, string];
+}
 
 export type TypeState = {
   options: TypeOption[];
   activeId: string;
   headline: string;
   body: string;
+  /** The library entry this working state was saved to or opened from, if any. */
+  savedId?: string | null;
 };
 
 export const MAX_OPTIONS = 3;
@@ -40,7 +53,7 @@ export function displaySpacingEm(o: TypeOption, shapeSpacing?: string | number):
 
 export const DEFAULT_HEADLINE = "Letters with a point of view";
 export const DEFAULT_BODY =
-  "Good type is felt before it is read. Pair a confident display face with a quiet, readable companion, then test the combination on light and dark grounds before it ever reaches a layout.";
+  "Good type is felt before it is read. Pair a confident display face with a quiet, readable companion, then test the combination in light and dark themes before it ever reaches a layout.";
 
 const slot = (classification: string, personality: string[], shape: string[]): TypeSlot => ({
   classification,
@@ -105,7 +118,7 @@ export function remixSlot(role: TypeRole, current: TypeSlot, r: Rand): TypeSlot 
   };
 }
 
-/** Surprise Me: new display + supporting faces and a fresh palette; locked pieces stay. */
+/** Surprise Me: new display + body faces and a fresh palette; locked pieces stay. */
 export function remixOption(o: TypeOption): TypeOption {
   const r = rng(newSeed());
   return {
@@ -113,10 +126,17 @@ export function remixOption(o: TypeOption): TypeOption {
     display: remixSlot("display", o.display, r),
     body: remixSlot("body", o.body, r),
     palette: generatePalette(o.colorDirection ?? pickR(r, COLOR_DIRECTIONS).name, o.palette, r),
+    darkPalette: undefined,
   };
 }
 
 const KEY = "type-palette-v1";
+
+/** Clear all / New palette: one blank option and the default preview copy. */
+export function blankState(): TypeState {
+  const first = clearOption(createOption(0));
+  return { options: [first], activeId: first.id, headline: DEFAULT_HEADLINE, body: DEFAULT_BODY, savedId: null };
+}
 
 export function initialState(): TypeState {
   const first = createOption(0);

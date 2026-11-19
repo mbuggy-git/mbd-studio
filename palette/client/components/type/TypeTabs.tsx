@@ -39,7 +39,7 @@ export function TypeTabs({ active, onChange }: { active: TypeTab; onChange: (t: 
         className="flex flex-col items-start gap-1 rounded-lg bg-white px-ds-md py-ds-sm text-left text-[#3f1a44] shadow-[0_1px_2px_rgba(63,26,68,0.12)] transition-colors hover:bg-[#faf3fb] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-selected:bg-foreground aria-selected:text-background aria-selected:hover:bg-foreground"
       >
         <span className="font-caption text-caption opacity-70">02</span>
-        <span className="font-label text-[16px] font-medium">Supporting</span>
+        <span className="font-label text-[16px] font-medium">Body</span>
       </button>
       <button
         type="button"

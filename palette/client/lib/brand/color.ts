@@ -145,6 +145,20 @@ export function primaryOnDark(palette: Swatch[]): string {
 }
 
 /**
+ * Primary, secondary and accent as their dark-theme tints: each lightened until it reads on the
+ * deep neutral at 4.5:1. Derived, never stored, like primaryOnDark.
+ */
+export function accentsOnDark(palette: Swatch[]): [string, string, string] {
+  const on = (i: number) => tintForDark(palette[i].hex, palette[4].hex);
+  return [on(0), on(1), on(2)];
+}
+
+/** Any color, lightened until it reads on the dark surface at 4.5:1. */
+export function tintForDark(hex: string, surface: string): string {
+  return fitContrast(hex, surface, TEXT_AA, false);
+}
+
+/**
  * Every generated palette is usable as text: the light neutral is kept light and the deep
  * neutral deep, and primary / secondary / accent are darkened until each reads on the light
  * neutral at 4.5:1. Locked swatches are left exactly as the user set them.
