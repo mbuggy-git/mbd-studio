@@ -439,3 +439,9 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/mbd-kit-access/deno.json"
 entrypoint = "./functions/mbd-kit-access/index.ts"
+
+[functions.mbd-kit-brands]
+enabled = true
+verify_jwt = false
+import_map = "./functions/mbd-kit-brands/deno.json"
+entrypoint = "./functions/mbd-kit-brands/index.ts"

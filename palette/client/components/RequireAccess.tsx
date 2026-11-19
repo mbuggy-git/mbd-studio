@@ -86,7 +86,7 @@ function Locked() {
 
         <p className="mt-ds-xl max-w-xl text-body text-[#cfcfe6]">
           Both run in the browser. No account, no AI credits used. One payment, a personal link
-          by email, yours to keep.
+          by email, yours to keep. Your saved brands follow that link to any device.
         </p>
 
         <div className="mt-ds-lg flex flex-wrap items-center gap-ds-md">

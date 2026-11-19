@@ -31,6 +31,9 @@ function read(key: string, session = false): string | null {
   }
 }
 
+/** The buyer's personal token, if this browser has one (none on the local dev server). */
+export const getAccessToken = () => read(TOKEN_KEY);
+
 /** Pull ?t= off the URL into storage, then strip it so it isn't shared by copy-paste. */
 export function captureTokenFromUrl() {
   const url = new URL(window.location.href);

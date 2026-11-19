@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { Copy, FolderOpen, HardDrive, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { Cloud, CloudOff, Copy, FolderOpen, HardDrive, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { SectionShell, softButton } from "../ui";
 import type { BrandState, SavedBrand } from "../../../lib/brand/types";
+import type { SyncStatus } from "../../../lib/brand/useBrandStore";
+
+/** Where the library is kept right now: [icon, bold lead, rest of the line]. */
+const STORAGE_NOTE: Record<SyncStatus, [typeof Cloud, string, string]> = {
+  synced: [Cloud, "Saved to your personal link.", "Open your link in another browser or on another device and these brands come with you. Your work-in-progress is auto-saved in this browser as a draft."],
+  syncing: [Cloud, "Saving to your personal link…", "Your brands are also kept in this browser."],
+  error: [CloudOff, "Saved in this browser only for now.", "The server couldn't be reached. Your brands will be saved to your personal link as soon as the connection is back."],
+  local: [HardDrive, "Stored locally in this browser.", "Brands are not synced to the cloud or shared across devices, and clearing browser data removes them. Your work-in-progress is also auto-saved locally as a draft."],
+};
 
 type Props = {
   brand: BrandState;
   library: SavedBrand[];
+  sync: SyncStatus;
   savedId: string | null;
   onSave: () => void;
   onOpen: (id: string) => void;
@@ -15,10 +25,11 @@ type Props = {
   onNew: () => void;
 };
 
-export function LibrarySection({ brand, library, savedId, onSave, onOpen, onDuplicate, onRename, onDelete, onNew }: Props) {
+export function LibrarySection({ brand, library, sync, savedId, onSave, onOpen, onDuplicate, onRename, onDelete, onNew }: Props) {
   const [renaming, setRenaming] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [confirming, setConfirming] = useState<string | null>(null);
+  const [NoteIcon, noteLead, noteRest] = STORAGE_NOTE[sync];
 
   return (
     <SectionShell
@@ -39,9 +50,9 @@ export function LibrarySection({ brand, library, savedId, onSave, onOpen, onDupl
       }
     >
       <div className="flex items-start gap-ds-md rounded-xl border border-dashed border-[color-mix(in_srgb,var(--primary)_30%,var(--border))] p-ds-md" data-oid="75f719274c">
-        <HardDrive className="mt-1 h-5 w-5 shrink-0 text-[#5f5f7a]" data-oid="aae6ec3184" />
-        <p className="font-label text-label text-[#5f5f7a]" data-oid="3bf145d7b8">
-          <strong className="font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="f504ce2fe8">Stored locally in this browser.</strong> Brands are not synced to the cloud or shared across devices, and clearing browser data removes them. Your work-in-progress is also auto-saved locally as a draft.
+        <NoteIcon className="mt-1 h-5 w-5 shrink-0 text-[#5f5f7a]" data-oid="aae6ec3184" />
+        <p className="font-label text-label text-[#5f5f7a]" data-oid="3bf145d7b8" aria-live="polite">
+          <strong className="font-semibold text-[color-mix(in_srgb,var(--primary)_28%,var(--foreground))]" data-oid="f504ce2fe8">{noteLead}</strong> {noteRest}
         </p>
       </div>
 

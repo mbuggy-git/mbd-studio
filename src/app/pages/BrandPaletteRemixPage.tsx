@@ -38,7 +38,7 @@ const includes: [string, string][] = [
   ["Prompt Studio", ": a brand board prompt and asset prompts for any AI design tool"],
   ["Creative Remix", " — style + influence + mood, with a remix prompt"],
   ["Runs in the browser", ", no account, no AI credits"],
-  ["Personal link by email", ", yours to keep"],
+  ["Personal link by email", ", yours to keep, with your saved brands on any device"],
 ];
 
 function BuyButton() {

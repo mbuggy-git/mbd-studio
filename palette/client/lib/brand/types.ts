@@ -100,4 +100,5 @@ export type BrandState = {
   contentSync?: number;
 };
 
-export type SavedBrand = { id: string; name: string; savedAt: number; state: BrandState };
+/** `updatedAt` is set by a rename (which leaves `savedAt` alone); sync treats the later of the two as the newest copy. */
+export type SavedBrand = { id: string; name: string; savedAt: number; updatedAt?: number; state: BrandState };
