@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { checkAccess } from "../lib/access";
 
-export type AppView = "brand" | "remix" | "type";
+export type AppView = "brand" | "remix" | "type" | "vocabulary";
 
 type Props = {
   current: AppView;
@@ -33,7 +33,7 @@ function PaidLink({ to, className, children }: { to: string; className: string; 
   return hasAccess ? <Link to={to} className={className}>{children}</Link> : <a href={LANDING} className={className}>{children}</a>;
 }
 
-/** Top menu inside the paid pair: pills to the other tools. The app you're already in isn't listed. */
+/** Top menu on every tool: pills to the other tools. The app you're already in isn't listed. */
 export function AppSwitcher({ current, className = "mb-ds-xl flex flex-wrap items-center justify-end gap-ds-sm", compact = false }: Props) {
   const link = `${pillBase} ${compact ? "px-3.5 py-1.5 text-[14px]" : "px-5 py-2 text-[16px]"}`;
   return (
@@ -52,9 +52,11 @@ export function AppSwitcher({ current, className = "mb-ds-xl flex flex-wrap item
         </Link>
       )}
       {/* Text in the navy of the Art Direction Palette title (that page's primary, #06405e). */}
-      <Link to="/" className={`${link} text-[#06405e]!`}>
-        Art Direction Palette
-      </Link>
+      {current !== "vocabulary" && (
+        <Link to="/" className={`${link} text-[#06405e]!`}>
+          Art Direction Palette
+        </Link>
+      )}
     </nav>
   );
 }

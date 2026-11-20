@@ -132,8 +132,10 @@ export default function Index({ view }: { view: "vocabulary" | "remix" }) {
                 canGenerate={canGenerate} />
             )}
           </div>
-          <div className="flex flex-col gap-ds-xl lg:sticky lg:top-ds-xl" data-oid="7d1a6e69f3">
-            <AppsCard />
+          {/* Pinned beside the board; scrolls on its own when it's taller than the window. */}
+          <div className="flex flex-col gap-ds-xl lg:sticky lg:top-ds-xl lg:max-h-[calc(100vh-2*var(--spacing-ds-xl))] lg:overflow-y-auto lg:overscroll-contain" data-oid="7d1a6e69f3">
+            {/* The ad steps aside once you start picking words, so the brief has the room. */}
+            {selected.length === 0 && <AppsCard />}
             <DirectionPanel
               brief={brief}
               onBriefChange={setBrief}

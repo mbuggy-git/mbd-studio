@@ -1,5 +1,6 @@
 import { Search, Shuffle, X } from "lucide-react";
 import { ConfirmClearButton } from "./ConfirmClearButton";
+import { AppSwitcher } from "./AppSwitcher";
 
 type Props = {
   query: string;
@@ -22,6 +23,7 @@ export function AppHeader({ query, onQueryChange, onSurprise, onClearAll, select
         </p>
       </div>
       <div className="flex flex-col gap-ds-lg" data-oid="afc2fcba4b">
+        <AppSwitcher current="vocabulary" compact className="flex flex-wrap items-center gap-ds-xs" />
         <p className="max-w-md text-body text-[color-mix(in_srgb,var(--primary)_30%,var(--muted-foreground))]" data-oid="ff47c8eb7f" style={{ color: "#d5e4e6" }}>
           You can see it — now say it. Hover a word to see what it means, collect the ones that
           match the picture in your head, and turn them into a precise image prompt.
